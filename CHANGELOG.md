@@ -14,43 +14,54 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.1.0] - 2024-11-19
 
-### Added - Clean Static Site
-- Complete site structure with semantic HTML5
-- Responsive CSS with mobile-first approach
-- Sticky header with navigation
-- Hero section with client logo display
-- Tabbed services interface (4 offerings)
-- 6-step process methodology section
-- Testimonials section (5 customer quotes)
-- About section with founder bio
-- Footer with contact links
-- JavaScript tab switching functionality
-- Smooth scroll for anchor navigation
-- URL parameter handling for direct tab linking
+### Added - True Clean Static Site
+- **Actual source HTML** from https://gtm.consulting (not a rebuild!)
+- All CDN dependencies (Bootstrap 5, AOS, Swiper, GLightbox, Remixicon)
+- **Real assets downloaded from live site:**
+  - Presento template CSS (style.css, ~24KB)
+  - Presento template JS (main.js)
+  - Hero background image (priscilla-du-preez unsplash, 2.4MB)
+  - 7 client logos (Stylo, Cast, Zoee, Eva, Replayz, SL, Techvestor)
+  - 5 real testimonial photos (Jeff Swearingen, Nichole Lowe, Austin Emser, Channing Moreland, Lindsey Scott)
+  - 4 service tab images (tabs-1 through tabs-4)
+
+### Features (from original site)
+- Bootstrap 5 responsive layout
+- Fixed header with dropdown navigation
+- Full-screen hero section with background image
+- Swiper.js client logo carousel
+- Tabbed services interface (4 offerings with icons)
+- 6-step process section (2-column layout)
+- Swiper.js testimonials carousel
+- About section with modal for founder bio
+- Contact modal with embedded Calendly iframe
+- Social links footer with animations
+- Back-to-top button
+- Mobile navigation toggle
 
 ### Project Setup
 - Initialized Git repository
-- Created directory structure (styles/, scripts/, assets/)
+- Directory structure: assets/css/, assets/js/, assets/img/
 - Added .gitignore for development files
-- Created README.md with project overview
-- Created CHANGELOG.md for version tracking
-- Added assets/README.md with guidelines
+- Created README.md and CHANGELOG.md
 
 ### Technical Details
-- Pure HTML/CSS/JS (no frameworks or build process)
-- CSS custom properties for theming
-- Mobile responsive breakpoints at 768px and 480px
-- Smooth transitions and hover effects
-- Accessible semantic markup
+- Pure HTML with Bootstrap 5 framework
+- Presento corporate template (v3.9.1)
+- CDN dependencies (no local vendor files)
+- Font Awesome icons (CDN)
+- Google Fonts (Open Sans, Raleway, Poppins)
+- Mobile responsive via Bootstrap grid
+- AOS scroll animations
 
 ### Notes
-- Static images referenced but not yet added (placeholder paths)
-- Video animation system prepared but not implemented
-- Ready for Phase 1.5: video integration
+- This is a pixel-perfect copy of the live site
+- Removed incorrect rebuild from earlier attempt
+- Ready for Phase 1.5: video animation integration
 
 ---
 
 ## Version Tags
 
-- `v0.1-clean-base` - Initial static site conversion (review checkpoint)
+- `v0.1-clean-base` - Actual source from live site with all real assets
 - `v1.0-phase-1` - (Upcoming) First phase with video animations
