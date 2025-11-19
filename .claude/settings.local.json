@@ -9,7 +9,10 @@
       "Bash(tree:*)",
       "WebFetch(domain:gtm.consulting)",
       "Bash(curl:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git tag:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
