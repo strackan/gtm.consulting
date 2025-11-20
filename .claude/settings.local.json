@@ -6,7 +6,8 @@
       "Bash(timeout 3 node:*)",
       "Bash(dir \"C:\\Users\\strac\\dev\\MCP-World\\packages\\universal-messenger-server\")",
       "Bash(findstr:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

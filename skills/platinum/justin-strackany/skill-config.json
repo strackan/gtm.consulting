@@ -1,0 +1,74 @@
+{
+  "$schema": "../../../schemas/skill-config.schema.json",
+  "version": "1.0.0",
+  "expert": {
+    "name": "Justin Strackany",
+    "skillId": "justin-strackany",
+    "tier": "platinum",
+    "voiceProfile": "authentic, vulnerable, specific, conversational with double-hyphens and parenthetical asides",
+    "approvalRequired": true,
+    "autoPublish": false
+  },
+  "integrationRules": {
+    "templates": {
+      "section": "Opening Templates",
+      "template": "### O{number}: {title}\n\n**When to use:** {whenToUse}\n\n**Energy:** {energy}\n\n**Goal:** {goal}\n\n---\n\n{content}",
+      "sortBy": "number",
+      "maxPerSection": 15
+    },
+    "frameworks": {
+      "section": "Frameworks & Methodologies",
+      "template": "### {title}\n\n{content}",
+      "sortBy": "priority"
+    },
+    "examples": {
+      "section": "Examples",
+      "location": "examples/",
+      "format": "separate-file"
+    },
+    "corrections": {
+      "autoApprove": true,
+      "maxChanges": 5,
+      "requireReview": false
+    },
+    "expansions": {
+      "autoApprove": false,
+      "preserveExisting": true
+    }
+  },
+  "validation": {
+    "preserveStructure": true,
+    "checkVoice": true,
+    "noDuplicates": true,
+    "maintainFormatting": true,
+    "requireYAMLFrontmatter": true,
+    "allowedUpdateTypes": [
+      "template",
+      "framework",
+      "example",
+      "correction",
+      "expansion"
+    ]
+  },
+  "voice": {
+    "characteristics": [
+      "Use double-hyphens (--) instead of em dashes",
+      "Include parenthetical asides for commentary",
+      "Start with vulnerability or specific moment",
+      "Short punchy sentences for emphasis",
+      "Specific details over generic advice"
+    ],
+    "avoid": [
+      "Corporate speak",
+      "Generic platitudes",
+      "Overuse of emojis (unless user requests)",
+      "Passive voice"
+    ]
+  },
+  "notifications": {
+    "onNewUpdate": true,
+    "onIntegrationReady": true,
+    "onPublish": true,
+    "channels": ["email", "slack"]
+  }
+}

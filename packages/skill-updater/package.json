@@ -1,0 +1,32 @@
+{
+  "name": "@mcp-world/skill-updater",
+  "version": "0.1.0",
+  "description": "Living document update system for MCP-World Skills",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "watch": "node dist/watcher.js",
+    "test": "echo \"Tests coming in Phase 1 validation\" && exit 0"
+  },
+  "keywords": [
+    "mcp",
+    "skills",
+    "automation",
+    "updates"
+  ],
+  "author": "MCP-World",
+  "license": "MIT",
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "gray-matter": "^4.0.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4",
+    "typescript": "^5.3.3"
+  }
+}

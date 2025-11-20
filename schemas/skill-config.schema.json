@@ -1,0 +1,218 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gtm.consulting/schemas/skill-config.schema.json",
+  "title": "Skill Configuration",
+  "description": "Configuration schema for living document Skills with automated update integration",
+  "type": "object",
+  "required": ["version", "expert", "integrationRules", "validation"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the config schema",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "expert": {
+      "type": "object",
+      "description": "Expert information and preferences",
+      "required": ["name", "skillId", "tier"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the expert"
+        },
+        "skillId": {
+          "type": "string",
+          "description": "Unique identifier for this Skill",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "tier": {
+          "type": "string",
+          "enum": ["platinum", "premium", "regular", "spotlight"],
+          "description": "Skill tier level"
+        },
+        "voiceProfile": {
+          "type": "string",
+          "description": "Description of expert's writing voice and style"
+        },
+        "approvalRequired": {
+          "type": "boolean",
+          "description": "Whether expert must approve integrations before publish",
+          "default": true
+        },
+        "autoPublish": {
+          "type": "boolean",
+          "description": "Whether to automatically publish approved updates",
+          "default": false
+        }
+      }
+    },
+    "integrationRules": {
+      "type": "object",
+      "description": "Rules for integrating different types of updates",
+      "patternProperties": {
+        "^[a-zA-Z]+$": {
+          "type": "object",
+          "properties": {
+            "section": {
+              "type": "string",
+              "description": "Target section in SKILL.md"
+            },
+            "location": {
+              "type": "string",
+              "description": "File system location for this content type"
+            },
+            "format": {
+              "type": "string",
+              "enum": ["inline", "separate-file"],
+              "description": "How to store this content"
+            },
+            "template": {
+              "type": "string",
+              "description": "Markdown template with {placeholders}"
+            },
+            "sortBy": {
+              "type": "string",
+              "enum": ["priority", "date", "alphabetical", "number"],
+              "description": "How to order items in this section"
+            },
+            "maxPerSection": {
+              "type": "number",
+              "description": "Maximum items allowed in this section"
+            },
+            "autoApprove": {
+              "type": "boolean",
+              "description": "Auto-approve this type of update"
+            },
+            "maxChanges": {
+              "type": "number",
+              "description": "Max changes for auto-approval"
+            },
+            "requireReview": {
+              "type": "boolean",
+              "description": "Require expert review even if auto-approved"
+            },
+            "preserveExisting": {
+              "type": "boolean",
+              "description": "Preserve existing content when expanding"
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "description": "Validation rules for updates",
+      "properties": {
+        "preserveStructure": {
+          "type": "boolean",
+          "description": "Ensure SKILL.md structure is preserved",
+          "default": true
+        },
+        "checkVoice": {
+          "type": "boolean",
+          "description": "Validate voice consistency",
+          "default": true
+        },
+        "noDuplicates": {
+          "type": "boolean",
+          "description": "Prevent duplicate content",
+          "default": true
+        },
+        "maintainFormatting": {
+          "type": "boolean",
+          "description": "Maintain markdown formatting consistency",
+          "default": true
+        },
+        "requireYAMLFrontmatter": {
+          "type": "boolean",
+          "description": "Require YAML frontmatter in all updates",
+          "default": true
+        },
+        "allowedUpdateTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of allowed update types for this Skill"
+        }
+      }
+    },
+    "voice": {
+      "type": "object",
+      "description": "Voice and style guidelines",
+      "properties": {
+        "characteristics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Key characteristics of expert's voice"
+        },
+        "avoid": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Things to avoid in this expert's voice"
+        }
+      }
+    },
+    "notifications": {
+      "type": "object",
+      "description": "Notification preferences",
+      "properties": {
+        "onNewUpdate": {
+          "type": "boolean",
+          "description": "Notify when new update detected",
+          "default": true
+        },
+        "onIntegrationReady": {
+          "type": "boolean",
+          "description": "Notify when integration is ready for review",
+          "default": true
+        },
+        "onPublish": {
+          "type": "boolean",
+          "description": "Notify when update is published",
+          "default": true
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["email", "slack", "webhook", "none"]
+          },
+          "description": "Notification channels to use"
+        }
+      }
+    },
+    "research": {
+      "type": "object",
+      "description": "Settings for RESEARCH.md integration (optional)",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether research integration is enabled",
+          "default": false
+        },
+        "researchFile": {
+          "type": "string",
+          "description": "Path to research file",
+          "default": "RESEARCH.md"
+        },
+        "autoIntegrate": {
+          "type": "boolean",
+          "description": "Automatically integrate research content",
+          "default": false
+        },
+        "priorityTriggers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Keywords that trigger priority integration from research"
+        }
+      }
+    }
+  }
+}

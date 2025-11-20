@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../schemas/skill-config.schema.json",
+  "version": "1.0.0",
+  "expert": {
+    "name": "Scott Leese",
+    "skillId": "scott-leese",
+    "tier": "platinum",
+    "voiceProfile": "military-inspired, direct, actionable, no-BS, accountability-focused",
+    "approvalRequired": true,
+    "autoPublish": false
+  },
+  "integrationRules": {
+    "frameworks": {
+      "section": "Frameworks & Methodologies",
+      "template": "### {title}\n\n**The Challenge:** {challenge}\n\n**The Framework:**\n{content}\n\n**Metrics to Track:**\n{metrics}",
+      "sortBy": "priority"
+    },
+    "playbooks": {
+      "section": "Playbooks",
+      "location": "playbooks/",
+      "format": "separate-file"
+    },
+    "examples": {
+      "section": "Examples & Use Cases",
+      "location": "examples/",
+      "format": "separate-file"
+    },
+    "corrections": {
+      "autoApprove": true,
+      "maxChanges": 5,
+      "requireReview": false
+    },
+    "expansions": {
+      "autoApprove": false,
+      "preserveExisting": true
+    }
+  },
+  "validation": {
+    "preserveStructure": true,
+    "checkVoice": true,
+    "noDuplicates": true,
+    "maintainFormatting": true,
+    "requireYAMLFrontmatter": true,
+    "allowedUpdateTypes": [
+      "framework",
+      "playbook",
+      "example",
+      "correction",
+      "expansion"
+    ]
+  },
+  "voice": {
+    "characteristics": [
+      "Direct and to the point",
+      "Military-style accountability",
+      "Numbered lists and clear structure",
+      "Metrics and quantifiable outcomes",
+      "No excuses, results-focused"
+    ],
+    "avoid": [
+      "Wishy-washy language",
+      "Theoretical without practical",
+      "Excuses or blame",
+      "Complexity without necessity"
+    ]
+  },
+  "notifications": {
+    "onNewUpdate": true,
+    "onIntegrationReady": true,
+    "onPublish": true,
+    "channels": ["email", "slack"]
+  },
+  "research": {
+    "enabled": true,
+    "researchFile": "RESEARCH.md",
+    "autoIntegrate": false,
+    "priorityTriggers": [
+      "new framework",
+      "Surf & Sales mention",
+      "published content",
+      "testimonial"
+    ]
+  }
+}
