@@ -7,7 +7,8 @@
       "Bash(dir \"C:\\Users\\strac\\dev\\MCP-World\\packages\\universal-messenger-server\")",
       "Bash(findstr:*)",
       "Bash(tree:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(node test-integration.js:*)"
     ],
     "deny": [],
     "ask": []

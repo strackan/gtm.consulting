@@ -8,7 +8,19 @@
 // Core watcher
 export { UpdateWatcher, createWatcher } from './watcher.js';
 
-// Types
+// Integration manager
+export {
+  IntegrationManager,
+  createIntegrationManager,
+} from './integration-manager.js';
+
+// Integrators
+export { RulesBasedIntegrator } from './rules-integrator.js';
+
+// Parsers and utilities
+export { SkillParser } from './skill-parser.js';
+
+// Types - Watcher
 export type {
   UpdateMetadata,
   UpdateFile,
@@ -16,6 +28,20 @@ export type {
   WatcherOptions,
   WatcherStats,
 } from './types.js';
+
+// Types - Integration
+export type {
+  IntegrationMode,
+  IntegrationStatus,
+  IntegrationPreview,
+  IntegrationResult,
+  IntegrationContext,
+  IntegrationOptions,
+  SkillSection,
+  DuplicateCheckResult,
+  VoiceValidationResult,
+  Integrator,
+} from './integrator-types.js';
 
 // Schemas for validation
 export { UpdateMetadataSchema, SkillConfigSchema } from './types.js';
