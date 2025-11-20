@@ -9,10 +9,10 @@
   // Obfuscated resource mapping (base path encoded)
   const _bp = 'assets/img/v/';
   const _m = {
-    'h': ['ph1a', 'ph2a', 'ph3a', 'ph4a', 'ph5a', 'ph6a'],  // hero videos (array for random selection)
-    'l': 'ph1b',    // logo
-    't1': 'ph1c',   // tabs instance 1
-    't2': 'ph1d'    // tabs instance 2
+    'h': 'ph1a',   // hero
+    'l': 'ph1b',   // logo
+    't1': 'ph1c',  // tabs instance 1
+    't2': 'ph1d'   // tabs instance 2
   };
 
   // Video configuration
@@ -74,13 +74,7 @@
     `;
 
     const source = document.createElement('source');
-    // Handle array (for hero random selection) or string
-    let videoFile = _m[key];
-    if (Array.isArray(videoFile)) {
-      // Random selection from array
-      videoFile = videoFile[Math.floor(Math.random() * videoFile.length)];
-    }
-    source.src = _bp + videoFile + '.mp4';
+    source.src = _bp + _m[key] + '.mp4';
     source.type = 'video/mp4';
     video.appendChild(source);
 
@@ -180,7 +174,7 @@
   }
 
   /**
-   * Swap hero background with video (dreamy blur transition, multi-video support)
+   * Swap hero background with video
    */
   function _swapHero(key) {
     const hero = document.querySelector(_targets[key]);
@@ -188,106 +182,56 @@
 
     const cfg = _cfg.hero;
 
-    // Initialize hero video collection if not exists
-    if (!_active[key]) {
-      _active[key] = {
-        target: hero,
-        videos: {},  // Store all video instances by filename
-        currentVideo: null  // Track which is currently playing
-      };
-    }
+    // Create video element
+    const video = _cv(key);
+    video.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity ${cfg.fadeIn}ms ease-in-out;
+      z-index: 1;
+    `;
 
-    // Randomly pick a video filename
-    const videoFiles = _m[key];
-    const randomFile = Array.isArray(videoFiles)
-      ? videoFiles[Math.floor(Math.random() * videoFiles.length)]
-      : videoFiles;
+    // Insert before content
+    hero.insertBefore(video, hero.firstChild);
+    _active[key] = { video, target: hero };
 
-    console.log('Random hero video selected:', randomFile);
-
-    // Hide all other videos before showing the selected one
-    const previousVideo = _active[key].currentVideo;
-    if (previousVideo && previousVideo !== randomFile && _active[key].videos[previousVideo]) {
-      const prevVid = _active[key].videos[previousVideo];
-      prevVid.style.opacity = '0';
-      prevVid.style.filter = 'blur(20px)';
-      prevVid.pause();
-      console.log('Hiding previous video:', previousVideo);
-    }
-
-    // Update current video
-    _active[key].currentVideo = randomFile;
-
-    // Check if this video already exists
-    if (_active[key].videos[randomFile]) {
-      // Video exists - resume it
-      const video = _active[key].videos[randomFile];
-      console.log('Resuming existing video from', video.currentTime);
+    // Load and play
+    video.addEventListener('loadeddata', function() {
+      // Set playback rate AFTER video is loaded
+      video.playbackRate = cfg.playbackRate;
+      console.log('Hero playback rate set to:', video.playbackRate);
 
       video.play().then(() => {
         requestAnimationFrame(() => {
           video.style.opacity = '1';
-          video.style.filter = 'blur(0px)';
         });
-      }).catch(err => console.error('Resume failed:', err));
-    } else {
-      // Create new video element
-      const video = document.createElement('video');
-      video.muted = true;
-      video.playsInline = true;
-      video.setAttribute('muted', '');
-      video.setAttribute('playsinline', '');
-      video.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        opacity: 0;
-        filter: blur(20px);
-        transition: opacity ${cfg.fadeIn}ms ease-in-out, filter ${cfg.fadeIn}ms ease-in-out;
-        z-index: 1;
-      `;
 
-      const source = document.createElement('source');
-      source.src = _bp + randomFile + '.mp4';
-      source.type = 'video/mp4';
-      video.appendChild(source);
+        // Only schedule fade out if not continuous (playDuration > 0)
+        if (cfg.playDuration > 0) {
+          setTimeout(() => {
+            video.style.opacity = '0';
+            setTimeout(() => {
+              video.pause();
+              video.currentTime = 0;
+              if (hero.contains(video)) {
+                hero.removeChild(video);
+              }
+              delete _active[key];
+            }, cfg.fadeOut);
+          }, cfg.playDuration);
+        } else {
+          // Continuous playback - loop video
+          video.setAttribute('loop', '');
+        }
+      }).catch(err => console.log('Playback prevented:', err));
+    }, { once: true });
 
-      // Insert into hero
-      hero.insertBefore(video, hero.firstChild);
-
-      // Store in collection
-      _active[key].videos[randomFile] = video;
-
-      // Add error handling
-      video.addEventListener('error', function(e) {
-        console.error('Video load error for', randomFile, ':', e);
-      }, { once: true });
-
-      // Load and play
-      video.addEventListener('loadeddata', function() {
-        video.playbackRate = cfg.playbackRate;
-        console.log('New hero video loaded:', randomFile);
-
-        video.play().then(() => {
-          requestAnimationFrame(() => {
-            video.style.opacity = '1';
-            video.style.filter = 'blur(0px)';
-          });
-
-          // Loop if video ends
-          video.addEventListener('ended', function() {
-            video.currentTime = 0;
-            video.play();
-          });
-        }).catch(err => console.log('Playback prevented:', err));
-      }, { once: true });
-
-      console.log('Loading new video:', _bp + randomFile + '.mp4');
-      video.load();
-    }
+    video.load();
   }
 
   /**
@@ -313,51 +257,58 @@
     if (pos === 'static') {
       container.style.position = 'relative';
     }
-    // Set container height
-    container.style.height = '75px';
+    // Hide overflow to keep video contained
+    container.style.overflow = 'hidden';
     container.style.margin = '0';
     container.style.padding = '0';
 
-    // Add fade mask overlay to soften edges (no overflow:hidden needed)
-    const maskOverlay = document.createElement('div');
-    maskOverlay.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 20;
-      background: linear-gradient(to right,
-        rgba(255,255,255,0.3) 0%,
-        transparent 5%,
-        transparent 95%,
-        rgba(255,255,255,0.3) 100%);
-    `;
-    container.appendChild(maskOverlay);
-
-    let currentVideo = null;
+    let currentVideo = _cv(key);
     let nextVideo = null;
     let crossfadeTriggered = false;
 
-    // Function to setup crossfade monitoring for a video
-    function setupCrossfade(video) {
-      video.addEventListener('timeupdate', function() {
-        const crossfadePoint = video.duration - 0.25; // Start 250ms before end
+    // Fixed size at natural position
+    currentVideo.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 242px;
+      height: 42px;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity ${cfg.fadeIn}ms ease-in-out;
+      pointer-events: none;
+      z-index: 10;
+      margin: 0;
+      padding: 0;
+    `;
+
+    container.appendChild(currentVideo);
+    console.log('Video element appended to container, src:', currentVideo.querySelector('source')?.src);
+    _active[key] = { video: currentVideo, target: logo, container };
+
+    currentVideo.addEventListener('loadeddata', function() {
+      console.log('Video loadeddata event fired');
+      // Set playback rate to 0.8x (80% speed)
+      currentVideo.playbackRate = 0.8;
+      console.log('Logo looping at 0.8x speed with crossfade');
+
+      // Crossfade loop - start next video before current ends
+      currentVideo.addEventListener('timeupdate', function() {
+        const crossfadePoint = currentVideo.duration - 0.25; // Start 250ms before end
 
         // Trigger crossfade when approaching the end
-        if (video.currentTime >= crossfadePoint && !crossfadeTriggered) {
+        if (currentVideo.currentTime >= crossfadePoint && !crossfadeTriggered) {
           crossfadeTriggered = true;
-          console.log('Triggering crossfade at', video.currentTime);
 
           // Create next video instance
           nextVideo = _cv(key);
           nextVideo.style.cssText = `
             position: absolute;
+            top: 0;
             left: 0;
             width: 242px;
-            height: 75px;
-            object-fit: contain;
+            height: 42px;
+            object-fit: cover;
             opacity: 0;
             transition: opacity ${cfg.crossfadeDuration}ms ease-in-out;
             pointer-events: none;
@@ -372,66 +323,29 @@
             nextVideo.playbackRate = 0.8;
             nextVideo.currentTime = 0;
             nextVideo.play().then(() => {
-              console.log('Next video playing, crossfading...');
               // Fade in next video
               requestAnimationFrame(() => {
                 nextVideo.style.opacity = cfg.maxOpacity.toString();
-                video.style.opacity = '0';
+                currentVideo.style.opacity = '0';
               });
 
               // After crossfade, remove old video and set up for next loop
               setTimeout(() => {
-                if (container.contains(video)) {
-                  container.removeChild(video);
+                if (container.contains(currentVideo)) {
+                  container.removeChild(currentVideo);
                 }
-                // Swap references and setup next crossfade
+                // Swap references
                 currentVideo = nextVideo;
                 nextVideo = null;
                 crossfadeTriggered = false;
                 _active[key].video = currentVideo;
-
-                // Setup crossfade for the new current video
-                setupCrossfade(currentVideo);
-                console.log('Ready for next crossfade cycle');
               }, cfg.crossfadeDuration);
             });
           }, { once: true });
 
-          nextVideo.addEventListener('error', function(e) {
-            console.error('Next video error:', e);
-          });
-
           nextVideo.load();
         }
       });
-    }
-
-    // Initialize first video
-    currentVideo = _cv(key);
-    currentVideo.style.cssText = `
-      position: absolute;
-      left: 0;
-      width: 242px;
-      height: 75px;
-      object-fit: contain;
-      opacity: 0;
-      transition: opacity ${cfg.fadeIn}ms ease-in-out;
-      pointer-events: none;
-      z-index: 10;
-      margin: 0;
-      padding: 0;
-    `;
-
-    container.appendChild(currentVideo);
-    console.log('Video element appended to container, src:', currentVideo.querySelector('source')?.src);
-    _active[key] = { video: currentVideo, target: logo, container };
-
-    currentVideo.addEventListener('loadeddata', function() {
-      console.log('Initial video loaded');
-      currentVideo.playbackRate = 0.8;
-
-      // Setup crossfade monitoring
-      setupCrossfade(currentVideo);
 
       currentVideo.play().then(() => {
         // Fade in and stay at max opacity
@@ -466,8 +380,8 @@
       return;
     }
 
-    // Prevent duplicate triggers (but allow hero to re-trigger for random selection)
-    if (_active[key] && key !== 'h') {
+    // Prevent duplicate triggers
+    if (_active[key]) {
       console.log('Already active:', key);
       return;
     }
@@ -542,52 +456,22 @@
       return;
     }
 
-    // Hero video: Add blur and fade out (dreamy exit), keep all videos in memory
-    if (key === 'h') {
-      const currentFile = _active[key].currentVideo;
-      if (currentFile && _active[key].videos[currentFile]) {
-        const video = _active[key].videos[currentFile];
-        video.style.opacity = '0';
-        video.style.filter = 'blur(20px)';
+    const { video, container } = _active[key];
 
-        setTimeout(() => {
-          video.pause();
-          console.log('Hero video paused at', video.currentTime, '(file:', currentFile, ')');
-        }, 250);
+    // Fade out immediately
+    video.style.opacity = '0';
+
+    setTimeout(() => {
+      video.pause();
+      video.currentTime = 0;
+      if (container && container.contains(video)) {
+        container.removeChild(video);
+      } else if (video.parentElement) {
+        video.parentElement.removeChild(video);
       }
-    } else {
-      // Other videos: Regular fade out and remove
-      const { video, container } = _active[key];
-      video.style.opacity = '0';
-
-      setTimeout(() => {
-        video.pause();
-        video.currentTime = 0;
-        if (container && container.contains(video)) {
-          container.removeChild(video);
-        } else if (video.parentElement) {
-          video.parentElement.removeChild(video);
-        }
-        delete _active[key];
-        console.log('Stopped:', key);
-      }, 250);
-    }
-  }
-
-  /**
-   * Lazy load hero background image
-   */
-  function _loadHeroBackground() {
-    const hero = document.querySelector('#hero');
-    if (!hero) return;
-
-    // Preload the image
-    const img = new Image();
-    img.onload = function() {
-      hero.classList.add('loaded');
-      console.log('Hero background loaded');
-    };
-    img.src = 'assets/img/priscilla-du-preez-XkKCui44iM0-unsplash.jpg';
+      delete _active[key];
+      console.log('Stopped:', key);
+    }, 250);
   }
 
   // Initialize on DOM ready
@@ -603,33 +487,15 @@
     window._adjust = _adjust;
     window._stop = _stop;
 
-    // Lazy load hero background after initial page load
-    setTimeout(_loadHeroBackground, 100);
+    // Auto-start logo video on load (muted videos can autoplay)
+    console.log('Attempting to start logo video...');
+    const logoTarget = document.querySelector(_targets['l']);
+    console.log('Logo target found:', logoTarget);
 
-    // Delay logo video to reduce initial lag (start after 1.5s)
-    console.log('Logo video will start after page settles...');
     setTimeout(() => {
-      const logoTarget = document.querySelector(_targets['l']);
-      if (logoTarget) {
-        console.log('Starting logo video...');
-        _trigger('l');
-      }
-    }, 1500);
-
-    // Hero video: Light switch on hover over "Book A Meeting" button
-    const heroBtn = document.querySelector('#hero-trigger-btn');
-    if (heroBtn) {
-      heroBtn.addEventListener('mouseenter', function() {
-        console.log('Hero button hover - picking random video');
-        // _swapHero now handles random selection and resume logic
-        _trigger('h');
-      });
-
-      heroBtn.addEventListener('mouseleave', function() {
-        console.log('Hero button leave - pausing current video');
-        _stop('h');
-      });
-    }
+      console.log('Triggering logo video now...');
+      _trigger('l');
+    }, 500);
 
     // Log ready state (remove in production)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
