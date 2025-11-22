@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "scott-leese": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\strac\\dev\\MCP-World\\packages\\powerpak-server\\dist\\index.js",
+        "scott-leese",
+        "platinum"
+      ],
+      "env": {},
+      "description": "Scott Leese PowerPak - Sales Leadership + Team Building + Org Design"
+    }
+  }
+}

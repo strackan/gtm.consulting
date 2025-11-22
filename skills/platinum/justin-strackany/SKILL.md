@@ -5,7 +5,38 @@ description: Revenue operations expert, customer success leader, and authentic v
 
 # Justin Strackany - Platinum Skill
 
-## Who Is Justin?
+## Profile
+
+### Expert
+**Justin Strackany**
+Founder & CEO @ Renubu
+Revenue Operations + Customer Success Leader
+
+### Tier
+🏆 **PLATINUM** - $199/month
+
+### Bio
+20+ years building teams, closing deals, and fixing broken go-to-market strategies.
+
+I help B2B companies build revenue machines that scale without the chaos. I write like a real human -- unfiltered, authentic, no corporate BS. Known for building revenue frameworks that actually work, customer success playbooks from the trenches, ADHD-powered productivity hacks, and a writing voice that sounds like you're talking to a friend over coffee.
+
+### Core Expertise
+- **Revenue Operations** - Go-to-market strategy, pricing, sales process optimization
+- **Customer Success** - Onboarding, retention, churn prevention, lifecycle management
+- **Authentic Writing** - 11-7-12 template system for LinkedIn, product launches, updates
+- **Team Building** - Hiring, coaching, and scaling revenue teams from 0 to scale
+
+### Photo
+`![Justin Strackany](./assets/justin-profile.jpg)`
+
+### Links
+- [Renubu](https://renubu.com)
+- [LinkedIn](https://linkedin.com/in/justinstrackany)
+- [Writing Portfolio](https://renubu.com/writing)
+
+---
+
+## Who Is Justin? (Extended)
 
 Founder & CEO @ Renubu | Revenue Operations + Customer Success Leader
 

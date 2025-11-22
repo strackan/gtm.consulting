@@ -1,0 +1,38 @@
+{
+  "name": "@mcp-world/powerpak-server",
+  "version": "1.0.0",
+  "description": "PowerPak MCP server - dynamically exposes any PowerPak profile (Platinum, Premium, or Basic)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "powerpak": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@mcp-world/shared-types": "*",
+    "gray-matter": "^4.0.3",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "mcp",
+    "powerpak",
+    "expert",
+    "profile",
+    "skills"
+  ],
+  "author": "MCP-World",
+  "license": "MIT"
+}

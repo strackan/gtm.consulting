@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "justin-strackany": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\strac\\dev\\MCP-World\\packages\\powerpak-server\\dist\\index.js",
+        "justin-strackany",
+        "platinum"
+      ],
+      "env": {},
+      "description": "Justin Strackany PowerPak - Revenue Ops + Customer Success + Authentic Writing"
+    }
+  }
+}

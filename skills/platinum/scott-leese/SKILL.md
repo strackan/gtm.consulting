@@ -5,7 +5,37 @@ description: Elite sales leadership expert. 8x VP Sales, multiple exits and IPOs
 
 # Scott Leese - Platinum Skill
 
-## Who Is Scott?
+## Profile
+
+### Expert
+**Scott Leese**
+8x VP Sales | Military Veteran (Combat Medic) | Founder of Surf & Sales
+
+### Tier
+🏆 **PLATINUM** - $199/month
+
+### Bio
+Former combat medic who brought military discipline and accountability to sales organizations. 8x VP Sales across high-growth startups with 4 exits and 2 IPOs.
+
+Built and led sales teams from seed stage through IPO, creating repeatable systems for hiring, training, and scaling revenue. Known for military-grade execution, no-BS leadership, and turning average reps into elite closers. Founder of Surf & Sales, a community of 20K+ sales professionals.
+
+### Core Expertise
+- **Sales Leadership** - Building and scaling high-performance revenue teams (5 to 50+ reps)
+- **Organizational Design** - Territory planning, quota design, comp plans, team structure
+- **Hiring & Development** - Assessment frameworks, onboarding systems, coaching cadences
+- **Performance Management** - Accountability systems, PIP protocols, culture building
+
+### Photo
+`![Scott Leese](./assets/scott-profile.jpg)`
+
+### Links
+- [Surf & Sales](https://surfandsales.com)
+- [LinkedIn](https://linkedin.com/in/scottleese)
+- [Sales Leadership Resources](https://surfandsales.com/resources)
+
+---
+
+## Who Is Scott? (Extended)
 
 **Sales Leadership Icon | Military Veteran | Founder of Surf & Sales**
 
