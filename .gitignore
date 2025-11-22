@@ -45,3 +45,18 @@ yarn-error.log*
 # Temporary files
 tmp/
 temp/
+
+# Neo4j data (knowledge graph)
+neo4j-data/
+neo4j-logs/
+neo4j-import/
+
+# PowerPak audit logs
+.audit/
+
+# Skill update queue and archive
+.queue/
+.archive/
+
+# Claude settings
+.claude/settings.local.json

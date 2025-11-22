@@ -1,0 +1,41 @@
+{
+  "name": "@mcp-world/knowledge-graph",
+  "version": "1.0.0",
+  "description": "PowerPak Knowledge Graph - Import SKILL.md data into Neo4j via Memento MCP",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "powerpak-graph": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "load": "npm run build && node dist/loader.js",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@mcp-world/shared-types": "*",
+    "@mcp-world/powerpak-server": "*",
+    "gray-matter": "^4.0.3",
+    "zod": "^3.22.0",
+    "neo4j-driver": "^5.13.0",
+    "openai": "^4.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "knowledge-graph",
+    "neo4j",
+    "memento",
+    "mcp",
+    "powerpak"
+  ],
+  "author": "MCP-World",
+  "license": "MIT"
+}
