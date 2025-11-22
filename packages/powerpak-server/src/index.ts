@@ -35,6 +35,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { SkillParser } from './parser.js';
 import { PowerPakData, SkillQuery } from './types.js';
+import { BackendIntegrator } from './backend-integrator.js';
 import { z } from 'zod';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -45,6 +46,7 @@ const __dirname = path.dirname(__filename);
 // Get skill ID from command line args
 const skillId = process.argv[2] || 'justin-strackany';
 const tier = process.argv[3] || 'platinum'; // platinum, premium, or basic
+const enableBackendIntegrations = process.argv[4] === '--with-backend' || false;
 
 // Resolve path to SKILL.md file
 const skillPath = path.resolve(
@@ -72,6 +74,29 @@ try {
 } catch (error) {
   console.error(`✗ Failed to load PowerPak: ${error}`);
   process.exit(1);
+}
+
+// Initialize backend integrator
+const backendIntegrator = new BackendIntegrator({
+  slack: {
+    enabled: enableBackendIntegrations,
+    notificationChannel: 'powerpak-notifications',
+    expertRequestsChannel: 'expert-requests',
+  },
+  github: {
+    enabled: enableBackendIntegrations,
+    repository: 'strackan/MCP-World',
+    prLabels: ['skill-update', 'needs-review'],
+  },
+  filesystem: {
+    enabled: enableBackendIntegrations,
+    auditLogPath: './.audit',
+  },
+});
+
+if (enableBackendIntegrations) {
+  console.error('\nInitializing backend integrations...');
+  await backendIntegrator.initialize();
 }
 
 // Create MCP server
@@ -438,8 +463,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       });
 
       const data = schema.parse(args);
+      const requestId = `hire-${Date.now()}`;
 
-      // TODO: Integrate with Slack MCP or email system
+      // Use backend integrator if enabled
+      if (enableBackendIntegrations) {
+        const result = await backendIntegrator.handleHireRequest({
+          expertName: powerpakData.profile?.expert || powerpakData.metadata.name,
+          projectDescription: data.projectDescription,
+          duration: data.duration,
+          budget: data.budget,
+          contactEmail: data.contactEmail,
+          requestId,
+        });
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(result),
+            },
+          ],
+        };
+      }
+
+      // Fallback without backend integrations
       return {
         content: [
           {
@@ -447,7 +494,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             text: JSON.stringify({
               status: 'pending',
               message: `Your hiring request has been received. ${powerpakData.profile?.expert || powerpakData.metadata.name} will be in touch at ${data.contactEmail} within 24 hours.`,
-              requestId: `hire-${Date.now()}`,
+              requestId,
+              notificationSent: false,
+              issueCreated: false,
             }),
           },
         ],
@@ -462,8 +511,29 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       });
 
       const data = schema.parse(args);
+      const messageId = `msg-${Date.now()}`;
 
-      // TODO: Integrate with Slack MCP or email system
+      // Use backend integrator if enabled
+      if (enableBackendIntegrations) {
+        const result = await backendIntegrator.handleMessageRequest({
+          expertName: powerpakData.profile?.expert || powerpakData.metadata.name,
+          subject: data.subject,
+          message: data.message,
+          contactEmail: data.contactEmail,
+          messageId,
+        });
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(result),
+            },
+          ],
+        };
+      }
+
+      // Fallback without backend integrations
       return {
         content: [
           {
@@ -471,7 +541,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             text: JSON.stringify({
               status: 'sent',
               message: `Your message has been sent to ${powerpakData.profile?.expert || powerpakData.metadata.name}. You'll receive a reply at ${data.contactEmail}.`,
-              messageId: `msg-${Date.now()}`,
+              messageId,
+              notificationSent: false,
             }),
           },
         ],
@@ -487,8 +558,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       });
 
       const data = schema.parse(args);
+      const bookingId = `booking-${Date.now()}`;
 
-      // TODO: Integrate with calendar/scheduling system
+      // Use backend integrator if enabled
+      if (enableBackendIntegrations) {
+        const result = await backendIntegrator.handleBookingRequest({
+          expertName: powerpakData.profile?.expert || powerpakData.metadata.name,
+          topic: data.topic,
+          duration: data.duration,
+          preferredDates: data.preferredDates,
+          contactEmail: data.contactEmail,
+          bookingId,
+        });
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(result),
+            },
+          ],
+        };
+      }
+
+      // Fallback without backend integrations
       return {
         content: [
           {
@@ -496,7 +589,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             text: JSON.stringify({
               status: 'pending',
               message: `Meeting request received. ${powerpakData.profile?.expert || powerpakData.metadata.name}'s team will send a calendar invite to ${data.contactEmail} with available times.`,
-              bookingId: `booking-${Date.now()}`,
+              bookingId,
+              notificationSent: false,
             }),
           },
         ],
@@ -533,9 +627,27 @@ async function main() {
   console.error(`  Tier: ${tier.toUpperCase()}`);
   console.error(`  Sections: ${powerpakData.sections.length}`);
   console.error(`  Profile: ${powerpakData.profile ? '✓' : '✗'}`);
+  console.error(`  Backend: ${enableBackendIntegrations ? '✓' : '✗'}`);
   console.error('='.repeat(60));
   console.error('Server running on stdio\n');
 }
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.error('\nShutting down PowerPak server...');
+  if (enableBackendIntegrations) {
+    await backendIntegrator.cleanup();
+  }
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  console.error('\nShutting down PowerPak server...');
+  if (enableBackendIntegrations) {
+    await backendIntegrator.cleanup();
+  }
+  process.exit(0);
+});
 
 main().catch((error) => {
   console.error('Fatal error:', error);

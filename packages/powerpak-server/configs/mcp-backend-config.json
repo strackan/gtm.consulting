@@ -1,0 +1,119 @@
+{
+  "description": "Backend MCP server configuration for PowerPak system integration",
+  "mcpServers": {
+    "slack-notifications": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@zencoderai/slack-mcp-server"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}",
+        "SLACK_CHANNEL_IDS": "powerpak-notifications,skill-updates,expert-requests"
+      },
+      "description": "Slack integration for notifications (hire, message, booking requests)",
+      "features": [
+        "slack_post_message - Send notifications to channels",
+        "slack_reply_to_thread - Respond to conversations",
+        "slack_list_channels - Manage notification channels"
+      ]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:\\Users\\strac\\dev\\MCP-World\\skills",
+        "C:\\Users\\strac\\dev\\MCP-World\\packages\\skill-updater\\.queue",
+        "C:\\Users\\strac\\dev\\MCP-World\\packages\\skill-updater\\.archive"
+      ],
+      "env": {},
+      "description": "Secure filesystem access for SKILL.md files and update management",
+      "features": [
+        "read_file - Read SKILL.md content",
+        "write_file - Update skill files",
+        "list_directory - Browse skills and updates",
+        "search_files - Find specific content",
+        "move_file - Archive processed updates"
+      ]
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}",
+        "GITHUB_TOOLSETS": "repos,pull_requests,issues"
+      },
+      "description": "GitHub integration for PR-based skill update workflow",
+      "features": [
+        "create_or_update_pull_request - Submit skill updates as PRs",
+        "create_issue - Track feature requests and updates",
+        "search_repositories - Find skill repositories",
+        "get_file_contents - Read remote SKILL.md files"
+      ]
+    }
+  },
+  "integrationWorkflows": {
+    "hireRequest": {
+      "description": "When someone requests to hire an expert",
+      "steps": [
+        "1. PowerPak server receives hire tool call",
+        "2. Store request details in queue (filesystem MCP)",
+        "3. Send Slack notification to expert's channel",
+        "4. Create GitHub issue for tracking",
+        "5. Return confirmation to requester"
+      ],
+      "channels": ["slack-notifications", "filesystem", "github"]
+    },
+    "messageRequest": {
+      "description": "When someone sends a message to an expert",
+      "steps": [
+        "1. PowerPak server receives message tool call",
+        "2. Send Slack message to expert's DM or channel",
+        "3. Log message in filesystem for audit trail",
+        "4. Return confirmation to sender"
+      ],
+      "channels": ["slack-notifications", "filesystem"]
+    },
+    "bookingRequest": {
+      "description": "When someone books a meeting with an expert",
+      "steps": [
+        "1. PowerPak server receives book_meeting tool call",
+        "2. Send Slack notification with booking details",
+        "3. Create calendar placeholder (future: integrate calendar API)",
+        "4. Return confirmation to requester"
+      ],
+      "channels": ["slack-notifications", "filesystem"]
+    },
+    "skillUpdate": {
+      "description": "When a skill update is detected and needs approval",
+      "steps": [
+        "1. File watcher detects new .md file in _updates folder",
+        "2. Parse and validate update metadata",
+        "3. Create GitHub PR with changes",
+        "4. Send Slack notification for expert review",
+        "5. On PR merge, update SKILL.md and archive update file"
+      ],
+      "channels": ["filesystem", "github", "slack-notifications"]
+    }
+  },
+  "slackChannels": {
+    "powerpak-notifications": "General PowerPak activity notifications",
+    "skill-updates": "Skill update PR notifications and approvals",
+    "expert-requests": "Hire, message, and booking requests"
+  },
+  "githubConfig": {
+    "repository": "strackan/MCP-World",
+    "prLabels": ["skill-update", "needs-review"],
+    "prReviewers": ["strackan"],
+    "autoMerge": false
+  }
+}

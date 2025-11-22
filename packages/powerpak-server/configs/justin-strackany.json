@@ -9,6 +9,21 @@
       ],
       "env": {},
       "description": "Justin Strackany PowerPak - Revenue Ops + Customer Success + Authentic Writing"
+    },
+    "justin-strackany-production": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\strac\\dev\\MCP-World\\packages\\powerpak-server\\dist\\index.js",
+        "justin-strackany",
+        "platinum",
+        "--with-backend"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}",
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "description": "Justin Strackany PowerPak - WITH BACKEND (Slack, GitHub, Filesystem)"
     }
   }
 }
