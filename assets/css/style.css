@@ -6,11 +6,33 @@
 */
 
 /*--------------------------------------------------------------
+# Phase 4 - Dystopian Retrowave Variables
+--------------------------------------------------------------*/
+:root {
+  --phase4-dark-bg: #0a0e1a;
+  --phase4-muted-purple: #8b5a9e;
+  --phase4-blade-pink: #ff006e;
+  --phase4-neon-cyan: #06ffa5;
+  --phase4-drab-gray: #2d3142;
+  --phase4-rain-blue: #4a5568;
+  --phase4-terminal-green: #00ff41;
+}
+
+/*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
 body {
-  font-family: "Open Sans", sans-serif;
-  color: #444444;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-height: 100vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  background-image: url('../img/v/x97b/user7_batch.png');
+  background-size: 100vw auto;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-color: #000;
 }
 
 a {
@@ -75,18 +97,46 @@ h6 {
 }
 
 /*--------------------------------------------------------------
+# Command Line Video Overlay
+--------------------------------------------------------------*/
+.cmdline-video-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  width: 40vw;
+  height: 55vh;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.cmdline-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+}
+
+
+/*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
 #header {
-  background: #fff;
+  background: rgba(10, 14, 26, 0.95);
+  backdrop-filter: blur(10px);
   transition: all 0.5s;
   z-index: 997;
   padding: 20px 0;
+  border-bottom: 1px solid rgba(139, 90, 158, 0.3);
+  box-shadow: 0 5px 20px rgba(255, 0, 110, 0.2);
 }
 
 #header.header-scrolled {
   padding: 12px 0;
-  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0px 2px 15px rgba(255, 0, 110, 0.3),
+    0 0 30px rgba(139, 90, 158, 0.2);
+  background: rgba(10, 14, 26, 0.98);
 }
 
 #header .logo {
@@ -110,10 +160,15 @@ h6 {
 }
 
 /*--------------------------------------------------------------
-# Get Startet Button
+# Get Startet Button - Phase 4 Dystopian
 --------------------------------------------------------------*/
 .get-started-btn {
-  background: #e03a3c;
+  background:
+    linear-gradient(
+      135deg,
+      var(--phase4-blade-pink) 0%,
+      var(--phase4-muted-purple) 100%
+    );
   color: #fff;
   border-radius: 4px;
   padding: 8px 25px;
@@ -123,11 +178,47 @@ h6 {
   font-weight: 600;
   display: inline-block;
   cursor: pointer;
+  border: 1px solid var(--phase4-blade-pink);
+  box-shadow:
+    0 0 15px rgba(255, 0, 110, 0.4),
+    inset 0 0 10px rgba(255, 0, 110, 0.1);
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.get-started-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(6, 255, 165, 0.3),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.get-started-btn:hover::before {
+  left: 100%;
 }
 
 .get-started-btn:hover {
-  background: #111111;
-  color: #fff;
+  background:
+    linear-gradient(
+      135deg,
+      var(--phase4-neon-cyan) 0%,
+      var(--phase4-blade-pink) 100%
+    );
+  color: var(--phase4-dark-bg);
+  box-shadow:
+    0 0 25px rgba(6, 255, 165, 0.6),
+    inset 0 0 15px rgba(6, 255, 165, 0.2);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 992px) {
@@ -168,9 +259,10 @@ h6 {
   font-family: "Raleway", sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #111111;
+  color: var(--phase4-neon-cyan);
   white-space: nowrap;
   transition: 0.3s;
+  text-shadow: 0 0 5px rgba(6, 255, 165, 0.3);
 }
 
 .navbar a i,
@@ -184,7 +276,8 @@ h6 {
 .navbar .active,
 .navbar .active:focus,
 .navbar li:hover>a {
-  color: #e03a3c;
+  color: var(--phase4-blade-pink);
+  text-shadow: 0 0 10px var(--phase4-blade-pink);
 }
 
 .navbar .dropdown ul {
@@ -359,26 +452,82 @@ h6 {
   display: block;
 }
 
+
 /*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
 #hero {
   width: 100%;
   height: 100vh;
-  background: url("../img/priscilla-du-preez-XkKCui44iM0-unsplash.jpg") top center no-repeat;
+  background: var(--phase4-dark-bg); /* Dystopian dark background */
   background-size: cover;
   position: relative;
   padding-top: 82px;
+  filter: saturate(0.4) contrast(1.2);
+}
+
+#hero.loaded {
+  background: url("../img/priscilla-du-preez-XkKCui44iM0-unsplash.jpg") top center no-repeat;
+  background-size: cover;
+  animation: heroTwist 2s ease-out forwards;
+}
+
+@keyframes heroTwist {
+  0% {
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+    filter: saturate(0.4) contrast(1.2) blur(0px);
+  }
+  15% {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-3deg) scale(1.05);
+    filter: saturate(0.3) contrast(1.3) blur(2px);
+  }
+  30% {
+    transform: perspective(1000px) rotateX(-3deg) rotateY(4deg) scale(1.08);
+    filter: saturate(0.2) contrast(1.4) blur(4px) hue-rotate(10deg);
+  }
+  45% {
+    transform: perspective(1000px) rotateX(4deg) rotateY(-2deg) scale(1.06) skewX(2deg);
+    filter: saturate(0.25) contrast(1.35) blur(3px) hue-rotate(-5deg);
+  }
+  60% {
+    transform: perspective(1000px) rotateX(-2deg) rotateY(3deg) scale(1.03) skewY(1deg);
+    filter: saturate(0.3) contrast(1.3) blur(2px);
+  }
+  75% {
+    transform: perspective(1000px) rotateX(1deg) rotateY(-1deg) scale(1.01);
+    filter: saturate(0.35) contrast(1.25) blur(1px);
+  }
+  100% {
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+    filter: saturate(0.4) contrast(1.2) blur(0px);
+  }
 }
 
 #hero:before {
   content: "";
-  background: rgba(0, 0, 0, 0.6);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(139, 90, 158, 0.15) 0%,
+      rgba(255, 0, 110, 0.1) 50%,
+      rgba(6, 255, 165, 0.08) 100%
+    ),
+    rgba(10, 14, 26, 0.85);
   position: absolute;
   bottom: 0;
   top: 0;
   left: 0;
   right: 0;
+  animation: dystopianPulse 8s ease-in-out infinite;
+}
+
+@keyframes dystopianPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
 }
 
 #hero h1 {
@@ -386,12 +535,39 @@ h6 {
   font-size: 48px;
   font-weight: 700;
   color: #fff;
+  text-shadow:
+    0 0 10px var(--phase4-blade-pink),
+    0 0 20px rgba(255, 0, 110, 0.5),
+    2px 2px 0 var(--phase4-neon-cyan),
+    -2px -2px 0 var(--phase4-muted-purple);
+  animation: heroGlitch 5s infinite;
+  position: relative;
+}
+
+@keyframes heroGlitch {
+  0%, 90%, 100% {
+    transform: translateX(0);
+    filter: hue-rotate(0deg);
+  }
+  92% {
+    transform: translateX(-3px);
+    filter: hue-rotate(90deg);
+  }
+  94% {
+    transform: translateX(3px);
+    filter: hue-rotate(-90deg);
+  }
+  96% {
+    transform: translateX(-3px);
+  }
 }
 
 #hero h2 {
-  color: #fff;
+  color: var(--phase4-neon-cyan);
   margin: 10px 0 0 0;
   font-size: 24px;
+  text-shadow: 0 0 10px var(--phase4-neon-cyan);
+  opacity: 0.9;
 }
 
 #hero h3 {
@@ -485,20 +661,29 @@ section {
   padding: 120px 0;
   color: #fff;
 }
-    
+
   .testimonial-item p {
         color: #101010;
     }
 
 .section-bg:before {
   content: "";
-  background: #1b1b1b;
+  background:
+    linear-gradient(
+      180deg,
+      var(--phase4-drab-gray) 0%,
+      #1a1d2e 50%,
+      var(--phase4-dark-bg) 100%
+    );
   position: absolute;
   bottom: 60px;
   top: 60px;
   left: 0;
   right: 0;
   transform: skewY(-3deg);
+  box-shadow:
+    inset 0 0 100px rgba(139, 90, 158, 0.1),
+    inset 0 0 50px rgba(255, 0, 110, 0.05);
 }
 
 /*--------------------------------------------------------------

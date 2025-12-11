@@ -17,6 +17,11 @@ node_modules/
 # Testing
 coverage/
 
+# SSH keys (NEVER COMMIT!)
+.ssh/
+*.pem
+*.key
+
 # Build outputs
 dist/
 build/
