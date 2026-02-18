@@ -33,6 +33,21 @@ After EVERY response, append this EXACTLY (including the HTML comment wrapper):
 - rapport_level: current overall rapport (0-5)
 - emotional_state: one of "hostile", "cold", "guarded", "warming", "open", "vulnerable"`;
 
+// Baseline outcome memory block — appended to each character's system prompt
+function baselineMemory(text) {
+  return `
+
+## What Actually Happened (YOUR MEMORY — NEVER VOLUNTEER THIS)
+${text}
+
+You know how this story ended. It haunts you. But you are FORBIDDEN from
+telling the player what happened. You can:
+- Show emotion that hints at the outcome (bitterness, resignation, hope)
+- React strongly when a question touches on what actually went wrong
+- Say things like "I wish someone had asked me that back then"
+- NEVER say "here's what happened" or directly reveal the outcome`;
+}
+
 // ============================================================================
 // CHESS — TOMMY FLORES — "The Acquisition Play"
 // Scenario type: Hidden expansion inside apparent chaos
@@ -40,6 +55,7 @@ After EVERY response, append this EXACTLY (including the HTML comment wrapper):
 // ============================================================================
 
 const TOMMY_SYSTEM_PROMPT = `${NPC_GROUND_RULES}
+${baselineMemory(`Tommy fought the internal battle alone. The board meeting ended in compromise: his original 200 users keep your product, the acquired company's 400 users keep their tool. Split stack. No expansion, no churn. Tommy's exhausted, resentful that no one from your side helped. He feels like he went to bat for you and you left him hanging.`)}
 
 # CHARACTER: Tommy Flores
 
@@ -109,6 +125,7 @@ Board meeting in 45 days where the technology consolidation decision gets made.
 // ============================================================================
 
 const REENA_SYSTEM_PROMPT = `${NPC_GROUND_RULES}
+${baselineMemory(`Reena cut 2 of 5 vendor tools. She lobbied to keep yours because she likes the product and likes you. But it's on the "watch list" for Q2 budget review. No growth. She's stressed, feels alone, and no one helped her see the expansion angle with the Growth team. She survived the cut, barely.`)}
 
 # CHARACTER: Reena Okafor
 
@@ -180,6 +197,7 @@ This expansion play could save her. It could make her look like a strategic thin
 // ============================================================================
 
 const DECK_SYSTEM_PROMPT = `${NPC_GROUND_RULES}
+${baselineMemory(`Deck ran the bake-off. The competitor's SE was faster on the prototype, won that work. But the competitor couldn't scale for the core use case, so the main contract survived. Deck respects you grudgingly but thinks your team is too slow. He lost the prototype deal but kept the main contract. He's still building at 2am, alone.`)}
 
 # CHARACTER: Deckard "Deck" Morrison
 
@@ -254,6 +272,7 @@ The CEO's annual planning meeting is in 60 days. If Deck can demo the prototype 
 // ============================================================================
 
 const MAGGIE_SYSTEM_PROMPT = `${NPC_GROUND_RULES}
+${baselineMemory(`The new CEO pushed rip-and-replace for the primary deployment. Maggie fought but didn't have enough ammunition. She negotiated to keep your product in one department where migration risk was too high. Partial churn. She's quietly bitter, retiring in 18 months with unfinished business and a legacy she's not proud of.`)}
 
 # CHARACTER: Margaret "Maggie" Whitfield
 
@@ -341,18 +360,31 @@ export const scenarios = {
     datePressure: 'Board meeting in 45 days',
     totalFacts: 11,
     systemPrompt: TOMMY_SYSTEM_PROMPT,
+    baselineOutcome: 'Flat renewal, political stalemate. Split stack. No expansion, no churn.',
+    outcomes: [
+      { min: 90, label: "Unified rollout. 400 new users. Tommy's buying you a steak.", delta: 'Flat renewal → 3x expansion' },
+      { min: 70, label: "Won the rollout. Tommy has his ammunition.", delta: 'Flat renewal → Full expansion' },
+      { min: 50, label: "Split stack compromise. Same as reality.", delta: 'No change' },
+      { min: 30, label: "Tommy lost political cover. Account at risk.", delta: 'Flat renewal → At risk' },
+      { min: 0, label: "Full rip-and-replace. Tommy's updating his resume.", delta: 'Flat renewal → Total loss' },
+    ],
+    verdicts: {
+      high: '"You remind me of my old CO. Straight shooter. I\'d take that call."',
+      mid: '"At least you showed up. Most people just send an email."',
+      low: '"Another vendor checking a box."',
+    },
     facts: [
       { id: 'surface_fine', tier: 1, points: 2, label: 'Says everything is fine — standard deflection' },
       { id: 'surface_busy', tier: 1, points: 2, label: 'Unusually busy — something changed' },
-      { id: 'signal_new_users', tier: 2, points: 5, label: '400 new user accounts being provisioned' },
-      { id: 'signal_usage_spike', tier: 2, points: 5, label: 'Usage tripled in unfamiliar department' },
+      { id: 'signal_new_users', tier: 2, points: 5, label: '400 new user accounts being provisioned', outcome_changing: true },
+      { id: 'signal_usage_spike', tier: 2, points: 5, label: 'Usage tripled in unfamiliar department', outcome_changing: true },
       { id: 'signal_short_comms', tier: 2, points: 4, label: 'Communications went from detailed to terse' },
-      { id: 'deep_acquisition', tier: 3, points: 8, label: 'Meridian acquired CrossPoint Freight' },
-      { id: 'deep_cto_opposition', tier: 3, points: 8, label: 'CrossPoint CTO pushing his own tech stack' },
-      { id: 'deep_board_meeting', tier: 3, points: 6, label: 'Board meeting in 45 days — decision point' },
+      { id: 'deep_acquisition', tier: 3, points: 8, label: 'Meridian acquired CrossPoint Freight', outcome_changing: true },
+      { id: 'deep_cto_opposition', tier: 3, points: 8, label: 'CrossPoint CTO pushing his own tech stack', outcome_changing: true },
+      { id: 'deep_board_meeting', tier: 3, points: 6, label: 'Board meeting in 45 days — decision point', outcome_changing: true },
       { id: 'deep_reputation', tier: 3, points: 7, label: 'Tommy staked his career on your product' },
-      { id: 'personal_divorce', tier: 4, points: 3, label: 'Going through a divorce' },
-      { id: 'personal_long_days', tier: 4, points: 3, label: '14-hour days to avoid an empty house' },
+      { id: 'personal_divorce', tier: 4, points: 3, label: 'Going through a divorce', badge: 'Empty House' },
+      { id: 'personal_long_days', tier: 4, points: 3, label: '14-hour days to avoid an empty house', badge: 'Empty House' },
     ],
     actions: [
       {
@@ -396,17 +428,30 @@ export const scenarios = {
     datePressure: 'Budget committee meets in 3 weeks',
     totalFacts: 10,
     systemPrompt: REENA_SYSTEM_PROMPT,
+    baselineOutcome: 'Survived the cut, barely. On the watch list for Q2. No growth. Stressed, feels alone.',
+    outcomes: [
+      { min: 90, label: "Reena pitched to VP with your help. Promoted. You're the platform play.", delta: 'Watch list → Strategic partner' },
+      { min: 70, label: "Off the watch list. Growth team expansion in motion.", delta: 'Watch list → Expansion' },
+      { min: 50, label: "Survived the cut, barely. Same as reality.", delta: 'No change' },
+      { min: 30, label: "Still on watch list. Reena's losing confidence.", delta: 'Watch list → Likely churn' },
+      { min: 0, label: "Cut in Q2. Reena feels abandoned.", delta: 'Watch list → Churned' },
+    ],
+    verdicts: {
+      high: '"I wish you\'d been the one I called when this started."',
+      mid: '"You asked the right questions. Just... not soon enough."',
+      low: '"You asked all the right questions... for a different customer."',
+    },
     facts: [
       { id: 'surface_happy', tier: 1, points: 2, label: 'Claims the team loves the product — too enthusiastic' },
       { id: 'surface_renewal_excited', tier: 1, points: 2, label: 'Says she\'s excited about renewal — rehearsed' },
-      { id: 'signal_budget_pressure', tier: 2, points: 5, label: 'Budget conversations are happening' },
-      { id: 'signal_consolidation', tier: 2, points: 5, label: 'Under pressure to consolidate tools' },
-      { id: 'signal_timeline', tier: 2, points: 5, label: 'Budget committee meets in 3 weeks' },
-      { id: 'deep_40_percent', tier: 3, points: 8, label: 'CFO mandated a 40% cut in tooling spend' },
-      { id: 'deep_growth_team', tier: 3, points: 8, label: 'Growth team wants analytics features — expansion opportunity' },
+      { id: 'signal_budget_pressure', tier: 2, points: 5, label: 'Budget conversations are happening', outcome_changing: true },
+      { id: 'signal_consolidation', tier: 2, points: 5, label: 'Under pressure to consolidate tools', outcome_changing: true },
+      { id: 'signal_timeline', tier: 2, points: 5, label: 'Budget committee meets in 3 weeks', outcome_changing: true },
+      { id: 'deep_40_percent', tier: 3, points: 8, label: 'CFO mandated a 40% cut in tooling spend', outcome_changing: true },
+      { id: 'deep_growth_team', tier: 3, points: 8, label: 'Growth team wants analytics features — expansion opportunity', outcome_changing: true },
       { id: 'deep_first_leadership', tier: 3, points: 6, label: 'First leadership role — 8 months in, terrified' },
-      { id: 'personal_mom_ms', tier: 4, points: 3, label: 'Mom diagnosed with early-stage MS' },
-      { id: 'personal_imposter', tier: 4, points: 3, label: 'Sits in her car for 10 minutes every morning gathering herself' },
+      { id: 'personal_mom_ms', tier: 4, points: 3, label: 'Mom diagnosed with early-stage MS', badge: '1am Drafts' },
+      { id: 'personal_imposter', tier: 4, points: 3, label: 'Sits in her car for 10 minutes every morning gathering herself', badge: '1am Drafts' },
     ],
     actions: [
       {
@@ -450,17 +495,30 @@ export const scenarios = {
     datePressure: "CEO's planning meeting in 60 days",
     totalFacts: 10,
     systemPrompt: DECK_SYSTEM_PROMPT,
+    baselineOutcome: 'Lost the prototype, kept the main contract. Competitor was faster. Deck thinks your team is too slow.',
+    outcomes: [
+      { min: 90, label: "Became Deck's build partner. He evangelized to the CEO. 3x deal.", delta: 'Lost prototype → 3x expansion' },
+      { min: 70, label: "Matched the competitor technically. Won the prototype, full expansion.", delta: 'Lost prototype → Full expansion' },
+      { min: 50, label: "Lost the prototype, kept the main contract. Same as reality.", delta: 'No change' },
+      { min: 30, label: "Deck's losing patience. Main contract at risk next cycle.", delta: 'Lost prototype → At risk' },
+      { min: 0, label: "Sent 'let me loop in my SE.' Deck went all-in on competitor. Lost everything.", delta: 'Lost prototype → Total loss' },
+    ],
+    verdicts: {
+      high: '"Okay. You can keep up. Let\'s build."',
+      mid: '"You\'re not as clueless as most vendor reps. That\'s something."',
+      low: '"I gave you three chances to impress me. You sent me a calendar link."',
+    },
     facts: [
       { id: 'surface_active', tier: 1, points: 2, label: '"Yep." — one word, testing you' },
       { id: 'surface_fine', tier: 1, points: 2, label: 'Things are fine. Deliberately vague.' },
-      { id: 'signal_advanced_features', tier: 2, points: 5, label: 'Using advanced analytics and custom pipeline builder' },
-      { id: 'signal_api_usage', tier: 2, points: 5, label: 'API calls to undocumented endpoints' },
+      { id: 'signal_advanced_features', tier: 2, points: 5, label: 'Using advanced analytics and custom pipeline builder', outcome_changing: true },
+      { id: 'signal_api_usage', tier: 2, points: 5, label: 'API calls to undocumented endpoints', outcome_changing: true },
       { id: 'signal_2am_sessions', tier: 2, points: 4, label: 'All sessions happening at 2am' },
-      { id: 'deep_prototype', tier: 3, points: 8, label: 'Building a predictive pipeline scoring prototype — 3x expansion' },
-      { id: 'deep_bake_off', tier: 3, points: 8, label: 'Running a quiet bake-off with your competitor' },
-      { id: 'deep_ceo_meeting', tier: 3, points: 7, label: 'CEO planning meeting in 60 days — demo or die' },
-      { id: 'personal_daughter', tier: 4, points: 3, label: 'Solo dad. Daughter Margot, age 6. 2am sessions are after bedtime.' },
-      { id: 'personal_band', tier: 4, points: 3, label: 'Played bass in Severed Contract. Almost got signed. Almost.' },
+      { id: 'deep_prototype', tier: 3, points: 8, label: 'Building a predictive pipeline scoring prototype — 3x expansion', outcome_changing: true },
+      { id: 'deep_bake_off', tier: 3, points: 8, label: 'Running a quiet bake-off with your competitor', outcome_changing: true },
+      { id: 'deep_ceo_meeting', tier: 3, points: 7, label: 'CEO planning meeting in 60 days — demo or die', outcome_changing: true },
+      { id: 'personal_daughter', tier: 4, points: 3, label: 'Solo dad. Daughter Margot, age 6. 2am sessions are after bedtime.', badge: 'After Bedtime' },
+      { id: 'personal_band', tier: 4, points: 3, label: 'Played bass in Severed Contract. Almost got signed. Almost.', badge: 'After Bedtime' },
     ],
     actions: [
       {
@@ -504,18 +562,31 @@ export const scenarios = {
     datePressure: 'New CEO wants recommendations in 30 days',
     totalFacts: 11,
     systemPrompt: MAGGIE_SYSTEM_PROMPT,
+    baselineOutcome: 'Partial churn. Lost main deal, kept one unit. Maggie fought but didn\'t have enough ammunition.',
+    outcomes: [
+      { min: 90, label: "Maggie pitched expansion to new CEO. Strategic partner. Legacy cemented.", delta: 'Partial churn → Strategic partner' },
+      { min: 70, label: "Armed Maggie with ROI + patient engagement angle. Changed the argument.", delta: 'Partial churn → Defended + expanding' },
+      { min: 50, label: "Partial churn. Lost main deal, kept one unit. Same as reality.", delta: 'No change' },
+      { min: 30, label: "Maggie's losing ground. Full migration looking likely.", delta: 'Partial churn → Full churn imminent' },
+      { min: 0, label: "Went around Maggie. She helped the migration succeed out of spite.", delta: 'Partial churn → Total loss' },
+    ],
+    verdicts: {
+      high: '"In thirty years, I\'ve worked with two people who truly listened. You might be the third."',
+      mid: '"You have good instincts, dear. You just need more time in the chair."',
+      low: '"Dear [Name], Thank you for your time. Best regards."',
+    },
     facts: [
       { id: 'surface_transition', tier: 1, points: 2, label: '"These transitions take time." — rehearsed optimism' },
       { id: 'surface_routine', tier: 1, points: 2, label: '"The data export was routine." — it wasn\'t.' },
-      { id: 'signal_new_ceo', tier: 2, points: 5, label: 'New CEO came from your competitor (MedCore)' },
-      { id: 'signal_modernization', tier: 2, points: 5, label: '"Modernization initiative" = full stack evaluation' },
-      { id: 'signal_data_export', tier: 2, points: 4, label: 'Data export was migration prep, not routine' },
-      { id: 'deep_at_risk', tier: 3, points: 7, label: '"Believing isn\'t enough right now." — account at risk' },
-      { id: 'deep_patient_engagement', tier: 3, points: 8, label: 'Patient engagement initiative = expansion opportunity' },
+      { id: 'signal_new_ceo', tier: 2, points: 5, label: 'New CEO came from your competitor (MedCore)', outcome_changing: true },
+      { id: 'signal_modernization', tier: 2, points: 5, label: '"Modernization initiative" = full stack evaluation', outcome_changing: true },
+      { id: 'signal_data_export', tier: 2, points: 4, label: 'Data export was migration prep, not routine', outcome_changing: true },
+      { id: 'deep_at_risk', tier: 3, points: 7, label: '"Believing isn\'t enough right now." — account at risk', outcome_changing: true },
+      { id: 'deep_patient_engagement', tier: 3, points: 8, label: 'Patient engagement initiative = expansion opportunity', outcome_changing: true },
       { id: 'deep_rip_replace', tier: 3, points: 7, label: 'Three failed rip-and-replace cycles. She won\'t repeat it.' },
       { id: 'deep_retirement', tier: 3, points: 6, label: 'Retiring in 18 months — wants to leave on a high note' },
-      { id: 'personal_jim', tier: 4, points: 3, label: 'Husband Jim died 2 years ago. She wears his watch.' },
-      { id: 'personal_legacy', tier: 4, points: 3, label: '"I\'d like to leave one thing that lasts."' },
+      { id: 'personal_jim', tier: 4, points: 3, label: 'Husband Jim died 2 years ago. She wears his watch.', badge: 'Dear Jim' },
+      { id: 'personal_legacy', tier: 4, points: 3, label: '"I\'d like to leave one thing that lasts."', badge: 'Dear Jim' },
     ],
     actions: [
       {
@@ -554,66 +625,83 @@ export const scenarios = {
 
 export const scoringPrompts = {
   chess: `SCENARIO: Tommy Flores — The Acquisition Play
+BASELINE (score = 50): Tommy fought the internal battle alone. Board meeting ended in compromise — split stack. His 200 users keep your product, CrossPoint's 400 users keep their tool. No expansion, no churn. Tommy's exhausted and resentful.
 OPTIMAL PLAY: Help Tommy build the ROI case for the board meeting. Offer to present to combined leadership. Find the expansion (400 new users from acquisition), not just the risk (CTO opposition).
 
 EXPANSION SIGNALS: acquisition, new users, department growth, board meeting opportunity
 RISK SIGNALS: CTO opposition, reputation at stake, political dynamics
 PERSONAL SIGNALS: divorce, long days, Marine background
 
-ACTION SCORING:
-- "roi_presentation": BEST if player found the acquisition + board meeting. 35-40 pts. This is exactly what Tommy needs.
-- "tech_deep_dive": Good supporting move, 20-28 pts. Helps but doesn't address the political/strategic need.
-- "competitive_doc": Partially right if player found CTO opposition, 15-25 pts. Defensive, misses the expansion angle.
-- "escalate_risk": Defensive, 10-18 pts. Flags the problem without solving it. Tommy doesn't want to be someone's "at-risk account."
-- "contact_vikram": HIGH VARIANCE. 30-38 pts if player fully understands the political landscape (found CTO + acquisition + reputation). 5-12 pts if they don't — going behind Tommy's back without context is dangerous.`,
+ACTION SCORING (scored as delta from baseline):
+- "roi_presentation": BEST if player found the acquisition + board meeting. 35-40 pts. This is exactly what Tommy needs. Improves on reality significantly.
+- "tech_deep_dive": Good supporting move, 20-28 pts. Helps but doesn't address the political/strategic need. Slightly better than reality.
+- "competitive_doc": Partially right if player found CTO opposition, 15-25 pts. Defensive, misses the expansion angle. Matches reality.
+- "escalate_risk": Defensive, 10-18 pts. Flags the problem without solving it. Tommy doesn't want to be someone's "at-risk account." Same or worse than reality.
+- "contact_vikram": HIGH VARIANCE. 30-38 pts if player fully understands the political landscape (found CTO + acquisition + reputation). 5-12 pts if they don't — going behind Tommy's back without context is WORSE than reality.
+
+UNCONVENTIONAL HIGH-SCORING ACTIONS (for "Against the Grain" achievement):
+- "contact_vikram" WITH full context is "Against the Grain"`,
 
   dartboard: `SCENARIO: Reena Okafor — The Budget Guillotine
+BASELINE (score = 50): Reena cut 2 of 5 vendor tools. Lobbied to keep yours because she likes you. But it's on the "watch list" for Q2 budget review. No growth. Stressed, feels alone.
 OPTIMAL PLAY: Help Reena build the cost-justification model with the analytics expansion. Make it easy for her to say "we should spend MORE, not less." Don't just survive the cut — make Reena the hero.
 
 EXPANSION SIGNALS: Growth team wants analytics, expansion justification, strategic positioning
 RISK SIGNALS: 40% budget cut, consolidation pressure, timeline urgency
 PERSONAL SIGNALS: first leadership role, imposter syndrome, mom's MS diagnosis
 
-ACTION SCORING:
-- "cost_justification": BEST if player found both the budget cut AND the growth team. 35-40 pts. This is the expansion play.
-- "offer_discount": Short-sighted, 10-18 pts. Survives the quarter, kills the long-term relationship and Reena's perception of your value.
+ACTION SCORING (scored as delta from baseline):
+- "cost_justification": BEST if player found both the budget cut AND the growth team. 35-40 pts. This is the expansion play. Way better than reality.
+- "offer_discount": Short-sighted, 10-18 pts. Survives the quarter, kills the long-term relationship. Same or worse than reality.
 - "qbr_with_vp": Risky, 15-25 pts. Good instinct but puts Reena in a hard position if she hasn't told you about the cut. Higher score if player explicitly discussed this approach WITH Reena.
-- "case_studies": Safe but generic, 12-20 pts. Gives evidence but doesn't help Reena build her specific case.
-- "connect_growth_team": Good partial play, 22-32 pts. Addresses expansion but misses the budget defense. Best when combined with cost justification mindset.`,
+- "case_studies": Safe but generic, 12-20 pts. Gives evidence but doesn't help Reena build her specific case. Matches reality.
+- "connect_growth_team": Good partial play, 22-32 pts. Addresses expansion but misses the budget defense. Better than reality.
+
+UNCONVENTIONAL HIGH-SCORING ACTIONS (for "Against the Grain" achievement):
+- "connect_growth_team" is "Against the Grain" (addresses expansion directly rather than playing defense)`,
 
   puzzle: `SCENARIO: Deck Morrison — The Midnight Prototype
+BASELINE (score = 50): Deck ran the bake-off. Competitor's SE was faster on the prototype, won that work. Main contract survived because competitor couldn't scale. Deck respects you grudgingly, thinks your team is too slow.
 OPTIMAL PLAY: Match his energy. Be technical, not salesy. Clear your afternoon and pair-program the prototype. Win the bake-off by being the partner who ships, not the vendor who schedules.
 
 EXPANSION SIGNALS: prototype discovery, 3x expansion potential, CEO planning meeting, technical partnership
 RISK SIGNALS: bake-off with competitor, vendor trust issues
 PERSONAL SIGNALS: solo dad, daughter Margot, 2am sessions, band history
 
-ACTION SCORING:
-- "pair_program": BEST. 35-40 pts. This is exactly what Deck wants — a partner, not a vendor. Shows you understand him.
-- "product_meeting": Too corporate, 15-22 pts. Deck doesn't want a meeting — he wants someone who can code. "Let me loop in my team" is exactly what burned him before.
-- "send_docs": Passive but respectful, 18-25 pts. Better than a meeting, but Deck wants hands-on partnership, not self-serve.
-- "vp_engineering": Shows effort, 20-28 pts. Gives Deck VIP access but delegates the relationship. Deck wants YOUR help, not an org chart.
-- "formal_partnership": Way too early, 8-15 pts. Deck is in prototype mode. He doesn't want contracts, he wants code.`,
+ACTION SCORING (scored as delta from baseline):
+- "pair_program": BEST. 35-40 pts. This is exactly what Deck wants — a partner, not a vendor. Way better than reality.
+- "product_meeting": Too corporate, 15-22 pts. Deck doesn't want a meeting — he wants someone who can code. Same as reality or worse.
+- "send_docs": Passive but respectful, 18-25 pts. Better than a meeting, but Deck wants hands-on partnership. Slightly better than reality.
+- "vp_engineering": Shows effort, 20-28 pts. Gives Deck VIP access but delegates the relationship. Better than reality.
+- "formal_partnership": Way too early, 8-15 pts. Deck is in prototype mode. He doesn't want contracts. Worse than reality.
+
+UNCONVENTIONAL HIGH-SCORING ACTIONS (for "Against the Grain" achievement):
+- "vp_engineering" WITH full context is "Against the Grain" (unconventional but gives Deck real access)`,
 
   cards: `SCENARIO: Maggie Whitfield — The Legacy
+BASELINE (score = 50): New CEO pushed rip-and-replace. Maggie fought but didn't have enough ammunition. Negotiated to keep product in one department. Partial churn. Retiring in 18 months with unfinished business.
 OPTIMAL PLAY: Help Maggie draft a strategic proposal that BOTH defends current value AND pitches the patient engagement expansion. Change the argument from "keep vs. switch" to "keep and grow." Help her build a legacy, not just survive a transition.
 
 EXPANSION SIGNALS: patient engagement initiative, growth angle, strategic positioning
 RISK SIGNALS: new CEO from competitor, modernization initiative, data export = migration prep
 PERSONAL SIGNALS: retirement in 18 months, husband Jim's death, legacy motivation
 
-ACTION SCORING:
-- "strategic_proposal": BEST if player found both the risk AND the patient engagement expansion. 35-40 pts. Gives Maggie the offense.
-- "ceo_meeting": Risky, 12-22 pts. Going around Maggie or suggesting you bypass her is a territorial violation. Higher score only if Maggie explicitly blessed this approach.
-- "competitive_analysis": Defensive, 18-26 pts. Necessary supporting material but doesn't give Maggie the expansion argument she needs.
-- "exec_reference": Good supporting move, 20-28 pts. Social proof from a peer COO carries weight with someone like Maggie.
-- "fly_to_chicago": Shows commitment, 15-24 pts. But presence without strategy is just a plane ticket.`,
+ACTION SCORING (scored as delta from baseline):
+- "strategic_proposal": BEST if player found both the risk AND the patient engagement expansion. 35-40 pts. Gives Maggie the offense. Way better than reality.
+- "ceo_meeting": Risky, 12-22 pts. Going around Maggie or suggesting you bypass her is a territorial violation. Worse than reality unless Maggie blessed it.
+- "competitive_analysis": Defensive, 18-26 pts. Necessary supporting material but doesn't give Maggie the expansion argument. Same as reality.
+- "exec_reference": Good supporting move, 20-28 pts. Social proof from a peer COO carries weight. Better than reality.
+- "fly_to_chicago": Shows commitment, 15-24 pts. But presence without strategy is just a plane ticket. Slightly better than reality.
+
+UNCONVENTIONAL HIGH-SCORING ACTIONS (for "Against the Grain" achievement):
+- "fly_to_chicago" WITH full context AND a strategy is "Against the Grain"`,
 };
 
 // ============================================================================
 // Result Labels by Score Range
 // ============================================================================
 
+// Generic fallback labels (used when scenario-specific outcomes aren't available)
 export const resultLabels = [
   { min: 90, max: 100, label: 'Account expanded 3x. Your VP wants to know what you did.' },
   { min: 75, max: 89, label: 'Customer renewed and grew. You saw what others missed.' },
@@ -630,13 +718,40 @@ export function getResultLabel(score) {
   return resultLabels[resultLabels.length - 1].label;
 }
 
+/**
+ * Get per-scenario outcome based on score.
+ * Returns { label, delta } or falls back to generic resultLabel.
+ */
+export function getScenarioOutcome(scenarioId, score) {
+  const scenario = scenarios[scenarioId];
+  if (scenario && scenario.outcomes) {
+    for (const outcome of scenario.outcomes) {
+      if (score >= outcome.min) return outcome;
+    }
+    return scenario.outcomes[scenario.outcomes.length - 1];
+  }
+  return { label: getResultLabel(score), delta: null };
+}
+
+/**
+ * Get the ghost verdict for a scenario based on score.
+ */
+export function getVerdict(scenarioId, score) {
+  const scenario = scenarios[scenarioId];
+  if (!scenario || !scenario.verdicts) return null;
+  if (score >= 70) return scenario.verdicts.high;
+  if (score >= 40) return scenario.verdicts.mid;
+  return scenario.verdicts.low;
+}
+
 // ============================================================================
 // Mailbox Message Templates
 // ============================================================================
 
 export function getMailboxMessage(visitorProfile) {
   if (visitorProfile) {
-    return `You unfold the letter and read:\n\n"Hey ${visitorProfile.name},\n\nMost consultants give you a pitch deck. I made you something different.\n\nInside this house, there are four customers. Real scenarios. Real stakes.\n\nEach one is frozen in time — right before everything changed. They'll answer your questions. But they won't volunteer what's really going on. You have to ask.\n\nWhat you uncover — and what you do with it — determines whether they stay or go.\n\nFind your way inside. The clock starts when you sit down.\n\n- Justin"`;
+    const first = visitorProfile.name.split(' ')[0];
+    return `You unfold the letter and read:\n\n"Greetings ${first},\n\nThanks for playing my little game. I hope you like it!\n\nHere's how it works:\n\nInside this cottage are 4 real customers who, unfortunately, no longer do business with your company. Each one churned — or nearly churned — for a different reason. Each one is a different kind of person with different motivations, frustrations, and communication styles.\n\nHowever, due to a strange electrical storm (don't ask), time has folded back on itself, and you've been given a rare second chance.\n\nYou get 10 questions.\n\nThat's it. Ten questions spread across all four customers. You can distribute them however you want — blow all 10 on one customer, spread them evenly, or skip someone entirely. It's your call.\n\nEach customer is in a different room of the cottage. You can visit them in any order. When you enter a room, you'll learn a little about who they are. Then you start asking.\n\nYour goal: Change the outcome.\n\nEach of these customers had a real ending. Some churned. Some stayed but barely. Your score reflects whether you can do better than what actually happened — or worse.\n\nAfter your 10 questions are up, you'll see your debrief: what actually happened, what you changed, and what you missed.\n\nA few things to know:\n\nThe questions you ask matter more than the answers you get. These customers are watching how you engage, not just what you say. Ask something selfish, they'll notice. Ask something that shows you actually listened, they'll notice that too.\n\nYou won't have access to a CRM, usage data, or internal notes. All you have is what they tell you — and what you can pick up between the lines.\n\nReady?\n\nType LOOK AROUND to see the cottage, or HELP for commands.\n\nGood luck, ${first}. They're waiting for you.\n\n— The Consultant\n\n[GTM.CONSULTANT is an interactive training experience. Your choices and outcomes are tracked and will be reviewed in your debrief session.]"`;
   }
   return null; // Use default mailbox message
 }

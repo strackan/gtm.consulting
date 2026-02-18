@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { streamGhostChat, extractMetadata } from './api';
 
-export function GhostChat({ scenario, visitorProfile, onComplete }) {
+export function GhostChat({ scenario, visitorProfile, onComplete, remainingQuestions: globalRemaining }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
@@ -11,10 +11,13 @@ export function GhostChat({ scenario, visitorProfile, onComplete }) {
   const [factsDiscovered, setFactsDiscovered] = useState([]);
   const [isEnding, setIsEnding] = useState(false);
   const [flickering, setFlickering] = useState(false);
+  const [maxRapport, setMaxRapport] = useState(2); // Track highest rapport achieved
 
   const outputRef = useRef(null);
   const inputRef = useRef(null);
-  const maxQuestions = 10;
+
+  // Use global remaining questions as the limit for this session
+  const maxQuestions = globalRemaining || 10;
 
   // Show intro message on mount
   useEffect(() => {
@@ -61,7 +64,7 @@ export function GhostChat({ scenario, visitorProfile, onComplete }) {
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
-  const endConversation = useCallback(() => {
+  const endConversation = useCallback((earlyExit = false) => {
     setIsEnding(true);
     setIsTimerRunning(false);
     setFlickering(true);
@@ -73,9 +76,9 @@ export function GhostChat({ scenario, visitorProfile, onComplete }) {
         role: m.role,
         content: m.content,
       }));
-      onComplete(transcript, factsDiscovered);
-    }, 1500);
-  }, [messages, factsDiscovered, onComplete]);
+      onComplete(transcript, factsDiscovered, maxRapport);
+    }, earlyExit ? 800 : 1500);
+  }, [messages, factsDiscovered, maxRapport, onComplete]);
 
   const formatTime = (seconds) => {
     const min = Math.floor(seconds / 60);
@@ -87,6 +90,19 @@ export function GhostChat({ scenario, visitorProfile, onComplete }) {
     e.preventDefault();
     const trimmedInput = input.trim();
     if (!trimmedInput || isWaiting || isEnding) return;
+
+    // Check for early exit commands
+    const upperInput = trimmedInput.toUpperCase();
+    if (upperInput === 'LEAVE' || upperInput === 'DONE' || upperInput === 'EXIT') {
+      setInput('');
+      setMessages(prev => [...prev, { role: 'user', content: trimmedInput }]);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: `*${scenario.character.name.split(' ')[0]} watches you stand up. A flicker of something — disappointment? Relief? — crosses their face before it fades.*`
+      }]);
+      setTimeout(() => endConversation(true), 800);
+      return;
+    }
 
     // Add user message
     const userMsg = { role: 'user', content: trimmedInput };
@@ -146,6 +162,11 @@ export function GhostChat({ scenario, visitorProfile, onComplete }) {
           const combined = new Set([...prev, ...metadata.facts_revealed]);
           return [...combined];
         });
+      }
+
+      // Track max rapport
+      if (metadata && typeof metadata.rapport_level === 'number') {
+        setMaxRapport(prev => Math.max(prev, metadata.rapport_level));
       }
     } catch (err) {
       // On error, show a fallback message
@@ -240,7 +261,7 @@ export function GhostChat({ scenario, visitorProfile, onComplete }) {
             className="input-field"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={isWaiting ? 'waiting...' : `${questionsRemaining} questions remain`}
+            placeholder={isWaiting ? 'waiting...' : `${questionsRemaining} questions remain — type LEAVE to exit early`}
             disabled={isWaiting}
             autoFocus
             autoComplete="off"

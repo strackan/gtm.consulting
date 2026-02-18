@@ -51,6 +51,10 @@ body {
   color: #4A9D4A;
 }
 
+.status-bar .questions-remaining {
+  color: #E8A838;
+}
+
 /* Output Area */
 .output {
   flex: 1;
@@ -531,6 +535,126 @@ body {
   font-size: 14px;
 }
 
+/* Verdict */
+.score-verdict {
+  margin-bottom: 32px;
+  padding: 16px 0;
+  border-bottom: 1px solid #222;
+}
+
+.score-verdict-name {
+  color: #666;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.score-verdict-quote {
+  color: #D4D4D4;
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* Score color tiers */
+.score-high .score-category,
+.score-high .score-total-value {
+  color: #4A9D4A;
+}
+
+.score-mid .score-category,
+.score-mid .score-total-value {
+  color: #E8A838;
+}
+
+.score-low .score-category,
+.score-low .score-total-value {
+  color: #E84038;
+}
+
+/* Delta Section */
+.score-delta-section {
+  margin-bottom: 32px;
+  padding: 16px 0;
+  border-top: 1px solid #222;
+}
+
+.score-delta {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.score-delta-label {
+  color: #666;
+  margin-right: 8px;
+}
+
+.score-delta-value {
+  color: #D4D4D4;
+  font-weight: 500;
+}
+
+.score-outcome-label {
+  color: #888;
+  font-size: 14px;
+  font-style: italic;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* Bonuses */
+.score-bonuses {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #1A1A1A;
+}
+
+.score-bonuses-header {
+  color: #666;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.score-bonus-total {
+  color: #4A9D4A;
+  margin-left: 8px;
+}
+
+.score-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.score-badge-icon {
+  color: #4A9D4A;
+  font-size: 12px;
+  width: 16px;
+  text-align: center;
+}
+
+.score-badge-egg .score-badge-icon {
+  color: #E8A838;
+}
+
+.score-badge-achievement .score-badge-icon {
+  color: #6A9FD4;
+}
+
+.score-badge-label {
+  color: #D4D4D4;
+}
+
+.score-badge-points {
+  color: #4A9D4A;
+  font-size: 12px;
+  margin-left: auto;
+}
+
 /* CTA */
 .score-cta {
   margin-top: 32px;
@@ -550,7 +674,12 @@ body {
   color: #666;
   font-size: 13px;
   line-height: 1.6;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+
+.score-renubu-tagline {
+  color: #555;
+  font-style: italic;
 }
 
 .score-renubu a {
@@ -560,6 +689,12 @@ body {
 
 .score-renubu a:hover {
   text-decoration: underline;
+}
+
+.score-footer {
+  color: #444;
+  font-size: 12px;
+  margin-bottom: 24px;
 }
 
 .score-nav {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export function Terminal({ gameEngine, onGhostTrigger, visitorProfile }) {
+export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remainingQuestions, globalQuestionCount, maxQuestions }) {
   const [output, setOutput] = useState([]);
   const [input, setInput] = useState('');
   const [gameState, setGameState] = useState(null);
@@ -103,6 +103,9 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile }) {
     }
   };
 
+  // Show questions remaining only when in the game room area and questions have been used
+  const showQuestions = globalQuestionCount > 0 || (gameState?.location === 'The Game Room' || gameState?.location?.includes('Room'));
+
   return (
     <div className="terminal">
       {/* Status Bar */}
@@ -111,6 +114,11 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile }) {
         <div className="stats">
           {visitorProfile?.name && (
             <span className="welcome">Welcome, {visitorProfile.name.split(' ')[0]}</span>
+          )}
+          {showQuestions && remainingQuestions !== undefined && (
+            <span className="questions-remaining">
+              Questions: {remainingQuestions}/{maxQuestions}
+            </span>
           )}
           <span>Score: {gameState?.score || 0}</span>
           <span>Moves: {gameState?.moves || 0}</span>

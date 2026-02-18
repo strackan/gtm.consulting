@@ -72,10 +72,45 @@
   },
   "game_room": {
     "name": "The Game Room",
-    "description": "You enter a warm, inviting space filled with the artifacts of play and strategy.\n\nAgainst the far wall sits a beautiful CHESS SET, pieces arranged mid-game. Nearby, a DARTBOARD hangs on the wall, its bullseye worn from use. On a side table rests an intricate PUZZLE, half-completed. A DECK OF CARDS sits neatly stacked beside it.\n\nThe door back WEST returns to the main room.",
-    "exits": { "west": "main_room" },
-    "objects": ["chess", "dartboard", "puzzle", "cards"],
+    "description": "You step into a large, warm room at the heart of the cottage. Four doorways lead to four different rooms, each with its own atmosphere.\n\nTo the NORTH, through an archway, you see the glow of a desk lamp and the silhouette of a chess set.\n\nTo the EAST, you hear what might be music — something rhythmic, faint — and see the flicker of a monitor.\n\nTo the SOUTH, a dartboard hangs on the wall of a bright, open workspace.\n\nTo the WEST, a heavy mahogany door stands slightly ajar, warm light spilling through the crack.\n\nType BACK or OUT to return to the main room.",
+    "exits": {
+      "back": "main_room",
+      "out": "main_room",
+      "north": "tommy_room",
+      "east": "deck_room",
+      "south": "reena_room",
+      "west": "maggie_room"
+    },
+    "objects": [],
     "score": 25
+  },
+  "tommy_room": {
+    "name": "Tommy's Room",
+    "description": "A leather chair sits behind a heavy desk. A military challenge coin glints on the desktop next to a Memphis Grizzlies mug, the coffee long gone cold. A framed photo of a platoon — twelve men squinting into desert sun — hangs on the wall.\n\nA CHESS SET dominates the desk, pieces frozen mid-game.\n\nThe door SOUTH leads back to the game room.",
+    "exits": { "south": "game_room" },
+    "objects": ["chess", "tommy_coin", "tommy_mug"],
+    "ghostRoom": "chess"
+  },
+  "reena_room": {
+    "name": "Reena's Room",
+    "description": "A standing desk with three monitors, all dark now. A DARTBOARD hangs on the wall, three darts clustered near the bullseye. On the windowsill, a collection of African violets — one has a label that reads \"Patience.\"\n\nA notebook sits open on the desk, filled with crossed-out lines.\n\nThe door NORTH leads back to the game room.",
+    "exits": { "north": "game_room" },
+    "objects": ["dartboard", "reena_violets", "reena_notebook"],
+    "ghostRoom": "dartboard"
+  },
+  "deck_room": {
+    "name": "Deck's Room",
+    "description": "A bass guitar leans against the wall — black, scuffed, well-loved. A terminal scrolls code on a monitor, casting green light across the room. A mechanical keyboard sits on the desk next to a half-finished PUZZLE — not a jigsaw, but a system architecture diagram made physical.\n\nTaped to the monitor: a child's drawing of a house with two stick figures, one big, one small. \"DADDY + ME\" in crayon.\n\nThe door WEST leads back to the game room.",
+    "exits": { "west": "game_room" },
+    "objects": ["puzzle", "deck_guitar", "deck_drawing"],
+    "ghostRoom": "puzzle"
+  },
+  "maggie_room": {
+    "name": "Maggie's Room",
+    "description": "Mahogany desk, polished to a mirror shine. Framed degrees line one wall — DePaul, two industry certifications, an award from the Healthcare IT Association. A photo of a man with kind eyes faces the desk chair. Next to it, a coffee mug — chipped, reads \"I Survived Y2K.\"\n\nA pristine DECK OF CARDS sits in a complex solitaire layout on a side table. Every option visible, nothing left to chance.\n\nThe door EAST leads back to the game room.",
+    "exits": { "east": "game_room" },
+    "objects": ["cards", "maggie_photo", "maggie_mug"],
+    "ghostRoom": "cards"
   },
   "ocean": {
     "name": "Rocky Beach",

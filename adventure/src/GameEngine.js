@@ -10,6 +10,14 @@ const GHOST_SCENARIO_MAP = {
   cards: 'cards',
 };
 
+// Rooms where ghost triggers happen on entry (via examining the key object)
+const GHOST_ROOM_MAP = {
+  tommy_room: 'chess',
+  reena_room: 'dartboard',
+  deck_room: 'puzzle',
+  maggie_room: 'cards',
+};
+
 export function createGameEngine() {
   // Game state
   let state = {
@@ -24,6 +32,8 @@ export function createGameEngine() {
 
   let visitorProfile = null;
   let ghostTriggerCallback = null;
+  let globalQuestionCount = 0;
+  let globalMaxQuestions = 10;
 
   function setVisitorProfile(profile) {
     visitorProfile = profile;
@@ -31,6 +41,11 @@ export function createGameEngine() {
 
   function onGhostTrigger(callback) {
     ghostTriggerCallback = callback;
+  }
+
+  function setGlobalQuestionCount(count, max) {
+    globalQuestionCount = count;
+    globalMaxQuestions = max;
   }
 
   // Get current location data
@@ -101,14 +116,46 @@ export function createGameEngine() {
   // Check if a ghost scenario should trigger for this object
   function checkGhostTrigger(objId) {
     if (!GHOST_SCENARIO_MAP[objId]) return false;
-    if (state.location !== 'game_room') return false;
+
+    // Ghost triggers work in character rooms OR game_room (backward compat)
+    const currentLoc = getCurrentLocation();
+    const isGhostRoom = currentLoc.ghostRoom === objId;
+    const isGameRoom = state.location === 'game_room';
+    if (!isGhostRoom && !isGameRoom) return false;
+
     if (!ghostTriggerCallback) return false;
 
     // One-play gate: check localStorage
     const hasPlayed = typeof localStorage !== 'undefined' && localStorage.getItem('ghost_played');
     if (hasPlayed) return false;
 
+    // Check if all global questions are used up
+    if (globalQuestionCount >= globalMaxQuestions) return false;
+
+    // Check if this specific scenario was already played
+    const scenarioPlayed = typeof localStorage !== 'undefined' && localStorage.getItem(`ghost_played_${objId}`);
+    if (scenarioPlayed) return false;
+
     return true;
+  }
+
+  // Check if entering a ghost room should trigger the ghost
+  function checkRoomGhostTrigger(roomId) {
+    const scenarioId = GHOST_ROOM_MAP[roomId];
+    if (!scenarioId) return null;
+
+    // One-play gate
+    const hasPlayed = typeof localStorage !== 'undefined' && localStorage.getItem('ghost_played');
+    if (hasPlayed) return null;
+
+    // Check global question limit
+    if (globalQuestionCount >= globalMaxQuestions) return null;
+
+    // Check if this scenario was already played
+    const scenarioPlayed = typeof localStorage !== 'undefined' && localStorage.getItem(`ghost_played_${scenarioId}`);
+    if (scenarioPlayed) return null;
+
+    return scenarioId;
   }
 
   // Parse a command into action and target
@@ -124,7 +171,8 @@ export function createGameEngine() {
     // Direction shortcuts
     const directionMap = {
       'n': 'north', 's': 'south', 'e': 'east', 'w': 'west',
-      'north': 'north', 'south': 'south', 'east': 'east', 'west': 'west'
+      'north': 'north', 'south': 'south', 'east': 'east', 'west': 'west',
+      'back': 'back', 'out': 'out'
     };
 
     if (directionMap[verb]) {
@@ -139,6 +187,11 @@ export function createGameEngine() {
 
     // Looking
     if (['look', 'l'].includes(verb) && !rest) {
+      return { action: 'look' };
+    }
+
+    // "look around" — same as look
+    if (['look', 'l'].includes(verb) && rest === 'around') {
       return { action: 'look' };
     }
 
@@ -177,7 +230,7 @@ export function createGameEngine() {
       return { action: verb, target: rest };
     }
 
-    // "talk to" / "speak to" / "interview" — trigger ghost if in game room
+    // "talk to" / "speak to" / "interview" — trigger ghost if in character room
     if (['talk', 'speak', 'interview', 'chat', 'sit'].includes(verb)) {
       let target = rest;
       if (target.startsWith('to ')) target = target.slice(3);
@@ -302,9 +355,10 @@ export function createGameEngine() {
 
       case 'look': {
         const loc = getCurrentLocation();
-        // In game room, add ghost scenario hints
-        if (state.location === 'game_room' && !localStorage.getItem('ghost_played')) {
-          return `${loc.name}\n${loc.description}\n\nThe objects in this room feel different — charged. As if someone were waiting behind each one.`;
+        // In character rooms, hint about the ghost
+        const ghostScenario = GHOST_ROOM_MAP[state.location];
+        if (ghostScenario && !localStorage.getItem('ghost_played') && !localStorage.getItem(`ghost_played_${ghostScenario}`) && globalQuestionCount < globalMaxQuestions) {
+          return `${loc.name}\n${loc.description}\n\nThe air feels heavy, expectant. Someone is waiting here. Examine what catches your eye to begin.`;
         }
         return `${loc.name}\n${loc.description}`;
       }
@@ -342,10 +396,18 @@ export function createGameEngine() {
         }
         const newLoc = locations[nextLocId];
 
-        // When entering game room for the first time, hint at ghost scenarios
+        // Check if entering a ghost room
+        const ghostScenario = checkRoomGhostTrigger(nextLocId);
+        if (ghostScenario) {
+          const questionsLeft = globalMaxQuestions - globalQuestionCount;
+          return `${newLoc.name}\n${newLoc.description}\n\nThe air shifts. Someone is here, waiting. You have ${questionsLeft} question${questionsLeft !== 1 ? 's' : ''} remaining.\n\nExamine what catches your eye to begin.`;
+        }
+
+        // When entering game room for the first time, show the hub
         if (nextLocId === 'game_room' && !state.flags.ghost_intro_shown && !localStorage.getItem('ghost_played')) {
           state.flags.ghost_intro_shown = true;
-          return `${newLoc.name}\n${newLoc.description}\n\nSomething feels different here. The air is heavy, expectant. Each game piece seems to pulse with a faint light, as if someone is waiting on the other side.\n\nExamine one to begin.`;
+          const questionsLeft = globalMaxQuestions - globalQuestionCount;
+          return `${newLoc.name}\n${newLoc.description}\n\nFour rooms. Four customers. ${questionsLeft} question${questionsLeft !== 1 ? 's' : ''} remaining.\n\nChoose a direction to enter a room.`;
         }
 
         return `${newLoc.name}\n${newLoc.description}`;
@@ -361,15 +423,25 @@ export function createGameEngine() {
           return "You don't see that here.";
         }
 
-        // Ghost scenario trigger for game room objects
+        // Ghost scenario trigger for game objects (in character rooms or game_room)
         if (checkGhostTrigger(obj.id)) {
           const scenarioId = GHOST_SCENARIO_MAP[obj.id];
           // Return a signal object instead of a string
           return { type: 'ghost_trigger', scenarioId, message: obj.descriptions.ghost || obj.descriptions.examine };
         }
 
-        // One-play gate — already played
-        if (GHOST_SCENARIO_MAP[obj.id] && state.location === 'game_room' && localStorage.getItem('ghost_played')) {
+        // Already played this scenario
+        if (GHOST_SCENARIO_MAP[obj.id] && localStorage.getItem(`ghost_played_${obj.id}`)) {
+          return obj.descriptions.played || "You've already had your turn. The figure is gone.";
+        }
+
+        // All questions used up
+        if (GHOST_SCENARIO_MAP[obj.id] && globalQuestionCount >= globalMaxQuestions) {
+          return "Your questions are spent. The figure fades. Time moves on.";
+        }
+
+        // One-play gate — already played any scenario
+        if (GHOST_SCENARIO_MAP[obj.id] && localStorage.getItem('ghost_played')) {
           return obj.descriptions.played || "You've already had your turn. The figure is gone. Ask Justin for a replay code.";
         }
 
@@ -595,13 +667,12 @@ export function createGameEngine() {
         return renderMap();
 
       case 'help':
-        return `MOVEMENT: north/n, south/s, east/e, west/w, go [direction]
-ACTIONS:  look, examine/x [object], read [object]
+        return `MOVEMENT: north/n, south/s, east/e, west/w, go [direction], back/out
+ACTIONS:  look, look around, examine/x [object], read [object]
           take/get [object], open [object], unlock [object]
           move/lift [object], enter [object]
-SPECIAL:  inventory/i, exits, map, help
-
-You can also just type naturally -- the game will try to understand.`;
+GHOST:    In a customer room, examine objects to begin. Type LEAVE to exit early.
+SPECIAL:  inventory/i, exits, map, help`;
 
       case 'kick':
       case 'break':
@@ -658,7 +729,9 @@ ${loc.description}`;
       score: state.score,
       moves: state.moves,
       inventory: [...state.inventory],
-      flags: { ...state.flags }
+      flags: { ...state.flags },
+      globalQuestionCount,
+      globalMaxQuestions,
     };
   }
 
@@ -669,5 +742,6 @@ ${loc.description}`;
     getCurrentLocation,
     setVisitorProfile,
     onGhostTrigger,
+    setGlobalQuestionCount,
   };
 }

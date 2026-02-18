@@ -169,8 +169,8 @@
     "name": "chess set",
     "aliases": ["chess", "chess set", "chess pieces", "chessboard", "tommy"],
     "descriptions": {
-      "examine": "A beautiful chess set, carved from dark and light wood. The pieces are arranged mid-game -- a complex position where both sides have chances.\n\nAs you reach for the board, the air thickens. You sense someone across the table -- stocky, crew cut, the ghost of black coffee on his breath.\n\nSit down?",
-      "ghost": "A beautiful chess set. The pieces are frozen mid-game. As you approach, the chair across from you seems occupied -- a flicker, like heat haze.\n\nYou feel the weight of someone's gaze.",
+      "examine": "A beautiful chess set, carved from dark and light wood. The pieces are arranged mid-game — a complex position where both sides have chances.\n\nAs you reach for the board, the air thickens. You sense someone across the table — stocky, crew cut, the ghost of black coffee on his breath.\n\nSit down?",
+      "ghost": "A beautiful chess set. The pieces are frozen mid-game. As you approach, the chair across from you seems occupied — a flicker, like heat haze.\n\nYou feel the weight of someone's gaze.",
       "played": "The chess set sits quiet. The chair across from you is empty now. Tommy's gone. You had your chance.",
       "read": "A small card reads: \"Tommy Flores. VP of Operations. Meridian Logistics.\"\n\nBelow, in different handwriting: \"45 days.\""
     },
@@ -180,7 +180,7 @@
     "name": "dartboard",
     "aliases": ["dartboard", "dart board", "darts", "board", "reena"],
     "descriptions": {
-      "examine": "A well-used dartboard. Three darts cluster near the bullseye -- someone here doesn't miss.\n\nAs you step closer, you hear a nervous laugh. A woman sits at the table beside the board, notebook open, pen tapping. She looks up with bright eyes and maybe a little too much energy.\n\nSit down?",
+      "examine": "A well-used dartboard. Three darts cluster near the bullseye — someone here doesn't miss.\n\nAs you step closer, you hear a nervous laugh. A woman sits at the table beside the board, notebook open, pen tapping. She looks up with bright eyes and maybe a little too much energy.\n\nSit down?",
       "ghost": "The dartboard. Three darts, tight cluster. The chair beside it feels warm, like someone just stood up. You catch the faint scent of African violet.",
       "played": "The dartboard hangs still. Reena's laugh has faded. The notebook is closed. You had your chance.",
       "read": "A scorecard reads: \"Reena Okafor. Director of Customer Success. FinPulse.\"\n\nBelow: \"3 weeks.\""
@@ -191,7 +191,7 @@
     "name": "puzzle",
     "aliases": ["puzzle", "jigsaw", "deck", "deckard"],
     "descriptions": {
-      "examine": "An intricate puzzle, half-completed. The image emerging is a system architecture diagram -- boxes, arrows, dependencies.\n\nA monitor flickers on the desk beside it. A guy in a black t-shirt sits with his feet up, mechanical keyboard on his lap. He doesn't smile. Doesn't frown. Just looks at you.\n\nSit down?",
+      "examine": "An intricate puzzle, half-completed. The image emerging is a system architecture diagram — boxes, arrows, dependencies.\n\nA monitor flickers on the desk beside it. A guy in a black t-shirt sits with his feet up, mechanical keyboard on his lap. He doesn't smile. Doesn't frown. Just looks at you.\n\nSit down?",
       "ghost": "The puzzle. Half-finished architecture diagram. The desk lamp is on and you can see terminal output scrolling on the monitor. Someone was here moments ago.",
       "played": "The puzzle sits half-done. The monitor is dark. Deck logged off. You had your chance.",
       "read": "A sticky note reads: \"Deckard Morrison. Head of Revenue Ops. Vaultline.\"\n\nBelow, in tight handwriting: \"60 days. Bake-off.\""
@@ -206,6 +206,71 @@
       "ghost": "The cards. Perfect solitaire layout. The desk behind them has a coffee mug — chipped, reads 'I Survived Y2K.' A framed photo faces away from you.",
       "played": "The cards lie still. Maggie's chair is empty, her reading glasses folded on the desk. You had your chance.",
       "read": "A card reads: \"Margaret Whitfield. COO. Elara Health Systems.\"\n\nBelow, in precise handwriting: \"30 days. Third CEO.\""
+    },
+    "takeable": false
+  },
+  "tommy_coin": {
+    "name": "challenge coin",
+    "aliases": ["coin", "military coin"],
+    "descriptions": {
+      "examine": "A heavy bronze challenge coin. One side shows the Marine Corps emblem. The other side is engraved: \"2nd Battalion, 1st Marines. Fallujah. 2004.\" It's been handled so many times the edges are smooth."
+    },
+    "takeable": false
+  },
+  "tommy_mug": {
+    "name": "coffee mug",
+    "aliases": ["mug", "grizzlies mug"],
+    "descriptions": {
+      "examine": "A Memphis Grizzlies mug. The coffee inside is stone cold. Looks like it's been sitting here a while. Tommy drinks it black — you can tell by the ring stains."
+    },
+    "takeable": false
+  },
+  "reena_violets": {
+    "name": "African violets",
+    "aliases": ["violets", "plants", "flowers", "patience"],
+    "descriptions": {
+      "examine": "A collection of African violets on the windowsill, each in a small ceramic pot. They're well-tended — clearly someone's quiet ritual. The newest one has a handwritten label: \"Patience.\""
+    },
+    "takeable": false
+  },
+  "reena_notebook": {
+    "name": "notebook",
+    "aliases": ["notebook", "notes"],
+    "descriptions": {
+      "examine": "A notebook filled with crossed-out lines. Lists, mostly. Budget numbers, vendor names, pros and cons. The handwriting gets more erratic toward the bottom of each page, like the thinking got harder.",
+      "read": "The visible page has two columns: KEEP and CUT. Your company's name appears in the KEEP column, but with a question mark next to it. Below, in smaller writing: \"How do I justify this?\""
+    },
+    "takeable": false
+  },
+  "deck_guitar": {
+    "name": "bass guitar",
+    "aliases": ["guitar", "bass", "instrument"],
+    "descriptions": {
+      "examine": "A black bass guitar, scuffed and worn in all the right places. The kind of instrument that's been on tour. A sticker on the body reads \"SEVERED CONTRACT\" in angular punk lettering. There are new strings on it — someone still plays."
+    },
+    "takeable": false
+  },
+  "deck_drawing": {
+    "name": "child's drawing",
+    "aliases": ["drawing", "picture", "crayon"],
+    "descriptions": {
+      "examine": "A child's drawing taped to the monitor. A house with a blue door. Two stick figures — one tall, one small — holding hands under a yellow sun. \"DADDY + ME\" in crayon, the letters getting bigger toward the end like she ran out of paper."
+    },
+    "takeable": false
+  },
+  "maggie_photo": {
+    "name": "framed photo",
+    "aliases": ["photo", "photograph", "picture", "jim"],
+    "descriptions": {
+      "examine": "A framed photo of a man with kind eyes and a gentle smile. He's wearing a battered Seiko watch. The frame is polished — someone touches it often."
+    },
+    "takeable": false
+  },
+  "maggie_mug": {
+    "name": "Y2K mug",
+    "aliases": ["mug", "y2k", "coffee mug", "chipped mug"],
+    "descriptions": {
+      "examine": "A coffee mug, chipped at the rim, that reads \"I Survived Y2K.\" Twenty-six years old and still in daily rotation. There's a faint lipstick mark on the rim. The coffee inside is half-finished — someone left in a hurry."
     },
     "takeable": false
   }
