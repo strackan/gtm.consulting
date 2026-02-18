@@ -1,0 +1,94 @@
+{
+  "west_of_house": {
+    "name": "West of House",
+    "description": "You are standing in an open field west of a white house, with a boarded front door.\n\nThere is a small mailbox here.",
+    "exits": {
+      "east": "front_of_house",
+      "north": "north_of_house",
+      "south": "south_of_house"
+    },
+    "look": {
+      "north": "To the north, you can see a path leading toward what looks like the ocean. You can hear waves in the distance.",
+      "south": "To the south, a dense forest looms. The trees grow thick and dark, swaying slightly in the breeze.",
+      "east": "To the east stands a white house. The front door appears to be boarded shut.",
+      "west": [
+        "You wander west into the open field. The grass sways gently. After a while, you find yourself back where you started.",
+        "You walk west for a bit. There's nothing but open field. Eventually you circle back to the mailbox.",
+        "You head west, enjoying the fresh air. The field stretches on. You eventually return to the house.",
+        "You explore the western field. It's peaceful, but empty. You make your way back.",
+        "You venture west. A pleasant breeze. Some birds. Nothing else. You return to the clearing."
+      ]
+    },
+    "objects": ["mailbox"]
+  },
+  "front_of_house": {
+    "name": "Front of House",
+    "description": "You are facing the front of the white house. The front door is boarded shut with heavy planks.\n\nYou can go around the house to the north or south, or back west to the field.",
+    "exits": {
+      "west": "west_of_house",
+      "north": "north_of_house",
+      "south": "south_of_house"
+    },
+    "objects": ["front_door", "boards"]
+  },
+  "north_of_house": {
+    "name": "North of House",
+    "description": "You are facing the north side of the white house. A path leads around to the back.\n\nTo the north, you can hear waves crashing. You can go east around to the back, south to the front, or west to the field.",
+    "exits": {
+      "west": "west_of_house",
+      "south": "front_of_house",
+      "east": "behind_house",
+      "north": "ocean"
+    },
+    "objects": []
+  },
+  "south_of_house": {
+    "name": "South of House",
+    "description": "You are facing the south side of the white house. A path leads around to the back.\n\nTo the south, a forest path beckons. You can go east around to the back, north to the front, or west to the field.",
+    "exits": {
+      "west": "west_of_house",
+      "north": "front_of_house",
+      "east": "behind_house",
+      "south": "forest"
+    },
+    "objects": ["forest"]
+  },
+  "behind_house": {
+    "name": "Behind House",
+    "description": "You are behind the white house. The back door is here, looking more accessible than the boarded front.\n\nBelow your feet is a welcome mat. One window is slightly ajar.\n\nPaths lead around the house to the north and south.",
+    "exits": {
+      "north": "north_of_house",
+      "south": "south_of_house"
+    },
+    "objects": ["door", "mat", "window"]
+  },
+  "main_room": {
+    "name": "Main Room",
+    "description": "You are in a cozy main room. Warm light fills the space.\n\nTo the NORTH, you see the boarded front door from the inside, flanked by a portrait on the left and a phone on a small table to the right.\n\nTo the WEST, a clock hangs on the wall, its hands frozen at 11:11.\n\nTo the EAST, a heavy wooden door with a glowing 4-digit keypad beckons.\n\nThe back door to the SOUTH leads outside.",
+    "exits": {
+      "south": "behind_house"
+    },
+    "objects": ["portrait", "phone", "clock", "coded_door", "front_door"]
+  },
+  "game_room": {
+    "name": "The Game Room",
+    "description": "You enter a warm, inviting space filled with the artifacts of play and strategy.\n\nAgainst the far wall sits a beautiful CHESS SET, pieces arranged mid-game. Nearby, a DARTBOARD hangs on the wall, its bullseye worn from use. On a side table rests an intricate PUZZLE, half-completed. A DECK OF CARDS sits neatly stacked beside it.\n\nThe door back WEST returns to the main room.",
+    "exits": { "west": "main_room" },
+    "objects": ["chess", "dartboard", "puzzle", "cards"],
+    "score": 25
+  },
+  "ocean": {
+    "name": "Rocky Beach",
+    "description": "You are standing on a rocky beach. Waves crash against the shore, and the salt air is refreshing.\n\nThere is a weathered boat here, half-buried in the sand.\n\nThe path back south leads to the house.",
+    "exits": { "south": "north_of_house" },
+    "objects": ["boat"],
+    "score": 5
+  },
+  "forest": {
+    "name": "Edge of Forest",
+    "description": "You stand at the edge of a dense forest. Sunlight filters through the canopy, casting shifting patterns on the ground.\n\nA thick tangle of vines blocks the path deeper in, but through small gaps you can see light flickering on the other side, as if something interesting awaits.\n\nThe path back north leads to the house.",
+    "exits": { "north": "south_of_house" },
+    "objects": ["vines"],
+    "score": 5
+  }
+}

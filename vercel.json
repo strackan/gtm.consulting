@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/adventure/:slug",
+      "destination": "/adventure/index.html"
+    }
+  ]
+}

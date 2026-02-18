@@ -1,0 +1,212 @@
+{
+  "mailbox": {
+    "name": "mailbox",
+    "aliases": ["box", "mail", "letter"],
+    "descriptions": {
+      "examine": "A simple wooden mailbox. The word \"WELCOME\" is painted on the side in cheerful letters.",
+      "read": "You unfold the letter and read:\n\n\"Hey! Welcome to gtm.consulting.\n\nMost consultants give you a pitch deck. I made you an adventure.\n\nIf you're here, you're probably wondering how AI actually transforms executive work -- not in theory, but in practice. Not in jargon, but in joy.\n\nExplore. Have fun. Type HELP if you get stuck.\n\nI'm excited to see where you go.\n\n- Justin\"",
+      "open": "You open the mailbox. There's a letter inside. (Try: READ LETTER)"
+    },
+    "takeable": false,
+    "setFlag": {
+      "read": "readMailbox"
+    }
+  },
+  "boat": {
+    "name": "boat",
+    "aliases": ["rowboat"],
+    "descriptions": {
+      "examine": "A weathered rowboat, half-filled with sand. It's seen better days -- one oar is missing and the hull has a crack running down the side.",
+      "look": "Inside the boat, you find a folded piece of paper tucked under the remaining oar.",
+      "read": "The note reads: \"Coming soon. - J\""
+    },
+    "takeable": false
+  },
+  "vines": {
+    "name": "vines",
+    "aliases": ["undergrowth", "foliage"],
+    "descriptions": {
+      "examine": "A thick tangle of vines blocks your path. Through small gaps, you can see light flickering on the other side, as if something interesting awaits. But for now, the passage is impassable."
+    },
+    "takeable": false
+  },
+  "mat": {
+    "name": "welcome mat",
+    "aliases": ["mat", "doormat", "welcome"],
+    "descriptions": {
+      "examine": "A worn welcome mat that reads \"Make Yourself at Home\" in faded letters.",
+      "move": "You lift the corner of the mat and find a small brass key!",
+      "lift": "You lift the corner of the mat and find a small brass key!",
+      "look": "You lift the corner of the mat and find a small brass key!"
+    },
+    "takeable": false,
+    "giveItem": "brass key",
+    "giveItemVerbs": ["move", "lift", "look"],
+    "setFlag": {
+      "move": "foundKey",
+      "lift": "foundKey",
+      "look": "foundKey"
+    }
+  },
+  "brass key": {
+    "name": "brass key",
+    "aliases": ["key"],
+    "descriptions": {
+      "examine": "A small brass key. It looks like it might fit the back door."
+    },
+    "takeable": true,
+    "inInventory": true
+  },
+  "window": {
+    "name": "window",
+    "aliases": ["ajar window"],
+    "descriptions": {
+      "examine": "One of the cabin's windows is slightly ajar, just enough that you might be able to open it further.",
+      "open": "With a bit of effort, you push the window open wide enough to climb through.",
+      "enter": "You climb through the window and land softly inside."
+    },
+    "teleportVerbs": ["enter", "climb"],
+    "teleportTo": "main_room",
+    "setFlag": {
+      "open": "windowOpen"
+    }
+  },
+  "door": {
+    "name": "back door",
+    "aliases": ["door", "back door", "backdoor", "rear door", "wooden door", "house"],
+    "descriptions": {
+      "examine": "A sturdy wooden back door. It appears to be locked.",
+      "examine_unlocked": "A sturdy wooden back door, now unlocked.",
+      "unlock": "You insert the key and hear a satisfying click. The door is now unlocked!",
+      "unlock_nokey": "The door is locked. You'll need a key.",
+      "open": "You open the door and step inside.",
+      "open_locked": "The door is locked."
+    },
+    "requiresItem": "brass key",
+    "requiresItemVerbs": ["unlock"],
+    "teleportVerbs": ["open", "enter"],
+    "teleportTo": "main_room",
+    "setFlag": {
+      "unlock": "doorUnlocked"
+    }
+  },
+  "portrait": {
+    "name": "portrait",
+    "aliases": ["painting", "picture", "frame"],
+    "descriptions": {
+      "examine": "A portrait of a man with an easy smile. Below the frame, a small plaque reads \"Justin Strackany, Founder.\"",
+      "read": "I'm Justin Strackany. I spent 18 years building and scaling customer success orgs, including serving as Chief Customer Officer at SecureLink through three exits.\n\nNow I help executives and their teams actually use AI -- not implement it for show, but integrate it into how they think, decide, and create.\n\nMost people are drowning in AI tools. I help you swim."
+    },
+    "takeable": false
+  },
+  "phone": {
+    "name": "phone",
+    "aliases": ["rotary phone", "telephone"],
+    "descriptions": {
+      "examine": "An old rotary phone sits on a small table. It has a satisfying weight to it. There's a small drawer in the table beneath it.",
+      "use": "You pick up the receiver and hear a warm voice: \"Hey, glad you made it this far. If you want to talk for real, check the drawer.\"",
+      "open": "You open the drawer and find a business card with clean, simple text:\n\n\"Ready to talk?\nBook a conversation: calendly.com/justinstrackany\n\nOr just reply to whatever email brought you here.\n\nNo pitch deck. No pressure. Just a conversation about what's possible.\""
+    },
+    "takeable": false
+  },
+  "clock": {
+    "name": "clock",
+    "aliases": ["wall clock"],
+    "descriptions": {
+      "examine": "A simple wall clock. The hands are frozen at 11:11. Something about that feels... intentional."
+    },
+    "takeable": false
+  },
+  "coded_door": {
+    "name": "coded door",
+    "aliases": ["keypad", "keypad door", "eastern door", "heavy door"],
+    "descriptions": {
+      "examine": "A heavy wooden door with a modern keypad lock. Four digits glow softly, waiting for input.",
+      "use": "The keypad awaits a 4-digit code. Try entering a number."
+    },
+    "takeable": false,
+    "acceptsCode": true,
+    "correctCode": "1111",
+    "codeSuccess": "The keypad beeps cheerfully. You hear a click, and the door swings open.",
+    "codeFail": "The keypad beeps sadly. That's not the right code."
+  },
+  "front_door": {
+    "name": "front door",
+    "aliases": ["door", "front", "entrance", "boarded door", "house"],
+    "descriptions": {
+      "examine": "The front door is solidly boarded shut from the outside. Heavy planks are nailed across it in an X pattern. Whoever did this really didn't want anyone getting in this way.",
+      "open": "You push against the door, but the boards hold firm. It's not budging.",
+      "kick": "You give the door a solid kick. The boards rattle but hold. Your foot hurts now.",
+      "break": "You'd need a lot more than bare hands to break through those boards.",
+      "knock": "You knock on the boarded door. The sound is muffled by the planks. No one answers.",
+      "pull": "You try pulling at the boards, but they're nailed tight. You'll need tools to get these off.",
+      "push": "You push against the door, but the boards hold firm. It's not budging.",
+      "use": "There's no way through this door. The boards are solid."
+    },
+    "takeable": false
+  },
+  "boards": {
+    "name": "boards",
+    "aliases": ["planks", "wood", "nails"],
+    "descriptions": {
+      "examine": "Heavy wooden planks nailed in an X pattern across the door. The nails are rusted but holding strong.",
+      "pull": "You try pulling at the boards, but they're nailed tight. You'd need a crowbar or something similar.",
+      "break": "You try to break the boards with your bare hands. They don't even budge. You'll need tools.",
+      "remove": "The boards are nailed too securely. You'd need proper tools to remove them.",
+      "take": "They're nailed to the door frame. You can't just take them."
+    },
+    "takeable": false
+  },
+  "forest": {
+    "name": "forest",
+    "aliases": ["trees", "woods", "dense forest"],
+    "descriptions": {
+      "examine": "A dense forest stretches to the south. The trees grow thick and dark, but a narrow path winds between them. You could go that way."
+    },
+    "takeable": false
+  },
+  "chess": {
+    "name": "chess set",
+    "aliases": ["chess", "chess set", "chess pieces", "chessboard", "tommy"],
+    "descriptions": {
+      "examine": "A beautiful chess set, carved from dark and light wood. The pieces are arranged mid-game -- a complex position where both sides have chances.\n\nAs you reach for the board, the air thickens. You sense someone across the table -- stocky, crew cut, the ghost of black coffee on his breath.\n\nSit down?",
+      "ghost": "A beautiful chess set. The pieces are frozen mid-game. As you approach, the chair across from you seems occupied -- a flicker, like heat haze.\n\nYou feel the weight of someone's gaze.",
+      "played": "The chess set sits quiet. The chair across from you is empty now. Tommy's gone. You had your chance.",
+      "read": "A small card reads: \"Tommy Flores. VP of Operations. Meridian Logistics.\"\n\nBelow, in different handwriting: \"45 days.\""
+    },
+    "takeable": false
+  },
+  "dartboard": {
+    "name": "dartboard",
+    "aliases": ["dartboard", "dart board", "darts", "board", "reena"],
+    "descriptions": {
+      "examine": "A well-used dartboard. Three darts cluster near the bullseye -- someone here doesn't miss.\n\nAs you step closer, you hear a nervous laugh. A woman sits at the table beside the board, notebook open, pen tapping. She looks up with bright eyes and maybe a little too much energy.\n\nSit down?",
+      "ghost": "The dartboard. Three darts, tight cluster. The chair beside it feels warm, like someone just stood up. You catch the faint scent of African violet.",
+      "played": "The dartboard hangs still. Reena's laugh has faded. The notebook is closed. You had your chance.",
+      "read": "A scorecard reads: \"Reena Okafor. Director of Customer Success. FinPulse.\"\n\nBelow: \"3 weeks.\""
+    },
+    "takeable": false
+  },
+  "puzzle": {
+    "name": "puzzle",
+    "aliases": ["puzzle", "jigsaw", "deck", "deckard"],
+    "descriptions": {
+      "examine": "An intricate puzzle, half-completed. The image emerging is a system architecture diagram -- boxes, arrows, dependencies.\n\nA monitor flickers on the desk beside it. A guy in a black t-shirt sits with his feet up, mechanical keyboard on his lap. He doesn't smile. Doesn't frown. Just looks at you.\n\nSit down?",
+      "ghost": "The puzzle. Half-finished architecture diagram. The desk lamp is on and you can see terminal output scrolling on the monitor. Someone was here moments ago.",
+      "played": "The puzzle sits half-done. The monitor is dark. Deck logged off. You had your chance.",
+      "read": "A sticky note reads: \"Deckard Morrison. Head of Revenue Ops. Vaultline.\"\n\nBelow, in tight handwriting: \"60 days. Bake-off.\""
+    },
+    "takeable": false
+  },
+  "cards": {
+    "name": "deck of cards",
+    "aliases": ["cards", "deck", "card deck", "deck of cards", "maggie", "margaret"],
+    "descriptions": {
+      "examine": "A pristine deck of cards in a complex solitaire layout. Every option visible, nothing left to chance.\n\nA woman sits at the desk behind the cards — back straight, reading glasses on, reviewing a document. She takes off her glasses and regards you with steady blue eyes.\n\nSit down?",
+      "ghost": "The cards. Perfect solitaire layout. The desk behind them has a coffee mug — chipped, reads 'I Survived Y2K.' A framed photo faces away from you.",
+      "played": "The cards lie still. Maggie's chair is empty, her reading glasses folded on the desk. You had your chance.",
+      "read": "A card reads: \"Margaret Whitfield. COO. Elara Health Systems.\"\n\nBelow, in precise handwriting: \"30 days. Third CEO.\""
+    },
+    "takeable": false
+  }
+}
