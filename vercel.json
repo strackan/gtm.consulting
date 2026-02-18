@@ -1,8 +1,14 @@
 {
   "installCommand": "cd adventure && npm install",
-  "buildCommand": "cd adventure && VITE_SUPABASE_URL=https://uuvdjjclwwulvyeboavk.supabase.co VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dmRqamNsd3d1bHZ5ZWJvYXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NjIzNzQsImV4cCI6MjA2NTMzODM3NH0.VO30vhbEelllMrf6ok3ZqWqsq-LkRcmBD3lAysS6Kwo npm run build && cp dist/index.html . && cp -r dist/assets .",
+  "buildCommand": "cd adventure && npm run build && cp dist/index.html . && cp -r dist/assets .",
   "outputDirectory": ".",
   "framework": null,
+  "build": {
+    "env": {
+      "VITE_SUPABASE_URL": "https://uuvdjjclwwulvyeboavk.supabase.co",
+      "VITE_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dmRqamNsd3d1bHZ5ZWJvYXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NjIzNzQsImV4cCI6MjA2NTMzODM3NH0.VO30vhbEelllMrf6ok3ZqWqsq-LkRcmBD3lAysS6Kwo"
+    }
+  },
   "rewrites": [
     {
       "source": "/adventure/:slug",
