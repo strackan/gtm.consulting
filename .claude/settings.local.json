@@ -15,9 +15,13 @@
       "Bash(git tag:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(ffprobe:*)",
-      "Bash(mkdir:*)",
-      "Bash(dir \"C:\\Users\\strac\\dev\\gtm.consulting.robot\\assets\\img\\v\")"
+      "Bash(git checkout:*)",
+      "Bash(ls:*)",
+      "Bash(npx vite:*)",
+      "Bash(npx supabase functions deploy:*)",
+      "Bash(npx supabase:*)",
+      "Bash(git stash:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []

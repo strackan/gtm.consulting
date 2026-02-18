@@ -5,7 +5,8 @@ export default defineConfig({
   plugins: [react()],
   base: '/adventure/',
   build: {
-    outDir: 'dist'
+    outDir: 'dist',
+    emptyOutDir: true
   },
   server: {
     // SPA fallback: serve index.html for all /adventure/* routes in dev
