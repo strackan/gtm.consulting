@@ -1,5 +1,6 @@
 {
-  "buildCommand": "cd adventure && npm install && npm run build && cp dist/index.html . && cp -r dist/assets .",
+  "installCommand": "cd adventure && npm install",
+  "buildCommand": "cd adventure && npm run build && cp dist/index.html . && cp -r dist/assets .",
   "outputDirectory": ".",
   "framework": null,
   "rewrites": [
