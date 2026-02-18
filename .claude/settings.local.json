@@ -14,7 +14,10 @@
       "Bash(rm:*)",
       "Bash(git tag:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(ffprobe:*)",
+      "Bash(mkdir:*)",
+      "Bash(dir \"C:\\Users\\strac\\dev\\gtm.consulting.robot\\assets\\img\\v\")"
     ],
     "deny": [],
     "ask": []

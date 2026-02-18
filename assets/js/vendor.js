@@ -12,7 +12,8 @@
     'h': ['ph1a', 'ph2a', 'ph3a', 'ph4a', 'ph5a', 'ph6a'],  // hero videos (array for random selection)
     'l': 'ph1b',    // logo
     't1': 'ph1c',   // tabs instance 1
-    't2': 'ph1d'    // tabs instance 2
+    't2': 'ph1d',   // tabs instance 2
+    'main': ['main/76', 'main/f09s', 'main/gf11', 'main/h67s', 'main/lg34']  // main content videos (below hero)
   };
 
   // Video configuration
@@ -36,6 +37,12 @@
       fadeOut: 500,
       playDuration: 1000,
       playbackRate: 1.0
+    },
+    main: {
+      fadeIn: 1000,        // 1s fade in
+      playbackRate: 1.0,   // Normal speed
+      videoZIndex: 50,     // Above content/text, below buttons
+      buttonZIndex: 200    // Buttons on top
     }
   };
 
@@ -661,6 +668,124 @@
     });
   }
 
+  /**
+   * Preload a random main content video for instant playback
+   */
+  function _preloadMainVideo() {
+    const cfg = _cfg.main;
+    const videoFiles = _m['main'];
+
+    // Random selection from array
+    const randomFile = videoFiles[Math.floor(Math.random() * videoFiles.length)];
+    console.log('Preloading main content video:', randomFile);
+
+    // Create hidden video element with preload
+    const video = document.createElement('video');
+    video.id = 'main-content-video-preload';
+    video.muted = true;
+    video.playsInline = true;
+    video.loop = true;
+    video.preload = 'auto';  // Force preload
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('loop', '');
+    video.style.cssText = 'display: none;';
+
+    const source = document.createElement('source');
+    source.src = _bp + randomFile + '.mp4';
+    source.type = 'video/mp4';
+    video.appendChild(source);
+
+    document.body.appendChild(video);
+
+    video.addEventListener('loadeddata', function() {
+      console.log('Main content video preloaded:', randomFile);
+    }, { once: true });
+
+    video.load();
+
+    // Store for later use
+    return { video, fileName: randomFile };
+  }
+
+  /**
+   * Replace content below hero with random looping video
+   * Keeps hero and header animations intact
+   */
+  function _mainContentVideo() {
+    const cfg = _cfg.main;
+
+    // Preload video early
+    const preloaded = _preloadMainVideo();
+
+    // Find main content section
+    const mainSection = document.querySelector('#main');
+    if (!mainSection) {
+      console.error('Main section not found');
+      return;
+    }
+
+    // Make main section relative so video can position within it
+    mainSection.style.position = 'relative';
+
+    // Setup Intersection Observer to trigger when main comes into view
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          console.log('Main section in view, showing preloaded video in 500ms...');
+
+          // Wait 500ms then show video
+          setTimeout(() => {
+            // Use the preloaded video
+            const videoOverlay = preloaded.video;
+            videoOverlay.id = 'main-content-video';
+            videoOverlay.style.cssText = `
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              opacity: 0;
+              transition: opacity ${cfg.fadeIn}ms ease-in-out;
+              z-index: ${cfg.videoZIndex};
+              pointer-events: none;
+            `;
+
+            // Move video into main section
+            mainSection.insertBefore(videoOverlay, mainSection.firstChild);
+
+            // Ensure all interactive elements (buttons, links) are above video
+            const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, [role="button"]');
+            interactiveElements.forEach(el => {
+              const computedStyle = window.getComputedStyle(el);
+              const currentZIndex = parseInt(computedStyle.zIndex) || 0;
+              if (currentZIndex < cfg.buttonZIndex) {
+                el.style.position = computedStyle.position === 'static' ? 'relative' : computedStyle.position;
+                el.style.zIndex = cfg.buttonZIndex.toString();
+              }
+            });
+
+            // Play preloaded video
+            videoOverlay.playbackRate = cfg.playbackRate;
+            videoOverlay.play().then(() => {
+              // Fade in video
+              videoOverlay.style.opacity = '1';
+              console.log('Main content video playing:', preloaded.fileName);
+            }).catch(err => console.error('Main video playback failed:', err));
+          }, 500);
+
+          // Stop observing after first trigger
+          observer.disconnect();
+        }
+      });
+    }, {
+      threshold: 0.1 // Trigger when 10% of main is visible
+    });
+
+    observer.observe(mainSection);
+  }
+
   // Initialize on DOM ready
   function _init() {
     // Update t2 target after finding second instance
@@ -686,6 +811,9 @@
         _trigger('l');
       }
     }, 1500);
+
+    // Replace main content below hero with random video (triggers when scrolled into view)
+    _mainContentVideo();
 
     // Preload hero videos for instant hover response (after logo starts)
     setTimeout(_preloadHeroVideos, 2000);
@@ -714,11 +842,62 @@
     }
   }
 
+  // Command line video optimization
+  function _initCmdlineVideo() {
+    const video = document.getElementById('cmdline-video');
+    if (!video) return;
+
+    // Preload the video
+    const preloadLink = document.createElement('link');
+    preloadLink.rel = 'preload';
+    preloadLink.as = 'video';
+    preloadLink.href = 'assets/img/v/x97b/delete_protocol_19970678.mp4';
+    document.head.appendChild(preloadLink);
+
+    // Ensure video loads and plays smoothly
+    video.load();
+
+    // Handle video ready state
+    video.addEventListener('loadeddata', function() {
+      console.log('Cmdline video loaded and ready');
+      video.play().catch(function(err) {
+        console.log('Cmdline video autoplay prevented:', err);
+        // Retry play on user interaction
+        document.addEventListener('click', function playOnce() {
+          video.play();
+          document.removeEventListener('click', playOnce);
+        }, { once: true });
+      });
+    });
+
+    // Ensure smooth looping
+    video.addEventListener('ended', function() {
+      video.currentTime = 0;
+      video.play();
+    });
+
+    // Optimize performance
+    video.playbackRate = 1.0;
+
+    // Handle visibility change to pause/resume when tab is hidden
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        video.pause();
+      } else {
+        video.play();
+      }
+    });
+  }
+
   // Wait for DOM
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _init);
+    document.addEventListener('DOMContentLoaded', function() {
+      _init();
+      _initCmdlineVideo();
+    });
   } else {
     _init();
+    _initCmdlineVideo();
   }
 
 })();

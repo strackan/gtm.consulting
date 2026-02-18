@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTM Consulting - SYSTEM FAILURE</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+    <div class="crt-flicker"></div>
+
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <span class="terminal-title" data-text="TERMINAL v0.0.0.0.1 [CORRUPTED]">TERMINAL v0.0.0.0.1 [CORRUPTED]</span>
+            <div class="terminal-buttons">
+                <span class="btn-fake" title="This does nothing">_</span>
+                <span class="btn-fake" title="Nice try">□</span>
+                <span class="btn-fake" title="You can't leave">×</span>
+            </div>
+        </div>
+
+        <div class="terminal-body" id="terminal">
+            <div class="boot-sequence" id="boot"></div>
+            <div class="terminal-output" id="output"></div>
+            <div class="input-line">
+                <span class="prompt" id="prompt">C:\USERS\YOU\></span>
+                <span class="input-text" id="input-display"></span>
+                <span class="cursor" id="cursor">█</span>
+            </div>
+        </div>
+
+        <div class="terminal-footer">
+            <span class="status-left" id="status-left">MEMORY: ERR0R</span>
+            <span class="status-center" id="status-center">|</span>
+            <span class="status-right" id="status-right">CPU: ??%</span>
+        </div>
+    </div>
+
+    <div class="hidden-messages">
+        <div class="ghost-text" id="ghost1">HELP ME</div>
+        <div class="ghost-text" id="ghost2">I'M TRAPPED</div>
+        <div class="ghost-text" id="ghost3">DON'T TRUST THE TERMINAL</div>
+        <div class="ghost-text" id="ghost4">IT'S LYING TO YOU</div>
+        <div class="ghost-text" id="ghost5">THERE IS NO EXIT</div>
+    </div>
+
+    <div class="glitch-overlay" id="glitch-overlay"></div>
+    <div class="error-popup" id="error-popup">
+        <div class="error-title">FATAL ERROR</div>
+        <div class="error-body" id="error-body">An error has occurred.</div>
+        <button class="error-btn" onclick="this.parentElement.style.display='none'; spawnMoreErrors();">OK</button>
+    </div>
+
+    <script src="terminal.js"></script>
+</body>
+</html>
