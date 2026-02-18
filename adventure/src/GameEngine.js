@@ -152,9 +152,13 @@ export function createGameEngine() {
     }
 
     if (['look', 'l', 'examine', 'x', 'inspect', 'read'].includes(verb)) {
-      // Handle "look at X" or "look under X"
+      // Handle "look at X", "look in X", "look under X"
       let target = rest;
       if (target.startsWith('at ')) target = target.slice(3);
+      if (target.startsWith('in ') || target.startsWith('inside ')) {
+        target = target.startsWith('in ') ? target.slice(3) : target.slice(7);
+        return { action: 'open', target };
+      }
       if (target.startsWith('under ')) {
         return { action: 'move', target: target.slice(6) };
       }
