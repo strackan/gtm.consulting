@@ -47,6 +47,10 @@ body {
   gap: 24px;
 }
 
+.status-bar .welcome {
+  color: #4A9D4A;
+}
+
 /* Output Area */
 .output {
   flex: 1;

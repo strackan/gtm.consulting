@@ -106,7 +106,7 @@ function App() {
 
   switch (mode) {
     case 'explore':
-      return <Terminal gameEngine={gameEngine} onGhostTrigger={handleGhostTrigger} />;
+      return <Terminal gameEngine={gameEngine} onGhostTrigger={handleGhostTrigger} visitorProfile={visitorProfile} />;
     case 'ghost':
       return (
         <GhostChat
@@ -132,7 +132,7 @@ function App() {
         />
       );
     default:
-      return <Terminal gameEngine={gameEngine} onGhostTrigger={handleGhostTrigger} />;
+      return <Terminal gameEngine={gameEngine} onGhostTrigger={handleGhostTrigger} visitorProfile={visitorProfile} />;
   }
 }
 

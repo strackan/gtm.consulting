@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export function Terminal({ gameEngine, onGhostTrigger }) {
+export function Terminal({ gameEngine, onGhostTrigger, visitorProfile }) {
   const [output, setOutput] = useState([]);
   const [input, setInput] = useState('');
   const [gameState, setGameState] = useState(null);
@@ -109,6 +109,9 @@ export function Terminal({ gameEngine, onGhostTrigger }) {
       <div className="status-bar">
         <span className="location">{gameState?.location || 'Loading...'}</span>
         <div className="stats">
+          {visitorProfile?.name && (
+            <span className="welcome">Welcome, {visitorProfile.name.split(' ')[0]}</span>
+          )}
           <span>Score: {gameState?.score || 0}</span>
           <span>Moves: {gameState?.moves || 0}</span>
         </div>
