@@ -3,6 +3,7 @@ import { Terminal } from './Terminal';
 import { GhostChat } from './GhostChat';
 import { ActionPhase } from './ActionPhase';
 import { ScoreCard } from './ScoreCard';
+import { PasskeyGate } from './PasskeyGate';
 import { createGameEngine } from './GameEngine';
 import { scenarios, scoringPrompts, getScenarioOutcome, getVerdict } from './scenarios';
 import { lookupVisitor, scoreSession } from './api';
@@ -10,8 +11,9 @@ import { lookupVisitor, scoreSession } from './api';
 const GLOBAL_MAX_QUESTIONS = 10;
 
 function App() {
-  const [mode, setMode] = useState('explore'); // explore | ghost | action | score | debrief
+  const [mode, setMode] = useState('loading'); // loading | gate | explore | ghost | action | score | debrief
   const [visitorProfile, setVisitorProfile] = useState(null);
+  const [isGuest, setIsGuest] = useState(false);
   const [currentScenarioId, setCurrentScenarioId] = useState(null);
   const [sessionData, setSessionData] = useState(null);
 
@@ -24,6 +26,7 @@ function App() {
   const gameEngine = useMemo(() => createGameEngine(), []);
 
   // Parse slug from URL path: /adventure/some-slug → "some-slug"
+  // If no slug, show the passkey gate
   useEffect(() => {
     const path = window.location.pathname;
     const prefix = '/adventure/';
@@ -35,8 +38,13 @@ function App() {
             setVisitorProfile(profile);
             gameEngine.setVisitorProfile(profile);
           }
+          setMode('explore');
         });
+      } else {
+        setMode('gate');
       }
+    } else {
+      setMode('gate');
     }
   }, [gameEngine]);
 
@@ -44,6 +52,19 @@ function App() {
   useEffect(() => {
     gameEngine.setGlobalQuestionCount(globalQuestionCount, GLOBAL_MAX_QUESTIONS);
   }, [gameEngine, globalQuestionCount]);
+
+  const handlePasskey = useCallback(async (slug) => {
+    const profile = await lookupVisitor(slug);
+    if (!profile) throw new Error('Not found');
+    setVisitorProfile(profile);
+    gameEngine.setVisitorProfile(profile);
+    setMode('explore');
+  }, [gameEngine]);
+
+  const handleGuest = useCallback(() => {
+    setIsGuest(true);
+    setMode('explore');
+  }, []);
 
   const handleGhostTrigger = useCallback((scenarioId) => {
     setCurrentScenarioId(scenarioId);
@@ -61,19 +82,25 @@ function App() {
   const handleActionComplete = useCallback(async (actionChosen) => {
     setSessionData(prev => ({ ...prev, actionChosen }));
 
-    // Score the session
+    // Score the session — guests use client-side scoring only (no API credits)
     let finalScores;
-    try {
-      const scores = await scoreSession(
-        currentScenarioId,
-        sessionData.transcript,
-        sessionData.factsDiscovered,
-        actionChosen,
-        scoringPrompts[currentScenarioId]
-      );
-      finalScores = scores;
-    } catch {
-      // Fallback scoring if edge function unavailable
+    const useClientScoring = isGuest;
+    if (!useClientScoring) {
+      try {
+        const scores = await scoreSession(
+          currentScenarioId,
+          sessionData.transcript,
+          sessionData.factsDiscovered,
+          actionChosen,
+          scoringPrompts[currentScenarioId]
+        );
+        finalScores = scores;
+      } catch {
+        // fall through to client-side scoring
+      }
+    }
+    if (!finalScores) {
+      // Client-side fallback scoring
       const scenario = scenarios[currentScenarioId];
       const discoveredPoints = scenario.facts
         .filter(f => sessionData.factsDiscovered.includes(f.id))
@@ -141,7 +168,7 @@ function App() {
     // Mark as played in localStorage
     localStorage.setItem('ghost_played', 'true');
     localStorage.setItem(`ghost_played_${currentScenarioId}`, 'true');
-  }, [currentScenarioId, sessionData]);
+  }, [currentScenarioId, sessionData, isGuest]);
 
   const handleScoreComplete = useCallback(() => {
     // Check if all questions are used up
@@ -159,6 +186,12 @@ function App() {
   const remainingQuestions = GLOBAL_MAX_QUESTIONS - globalQuestionCount;
 
   switch (mode) {
+    case 'loading':
+      return null;
+    case 'gate':
+      return (
+        <PasskeyGate onPasskey={handlePasskey} onGuest={handleGuest} />
+      );
     case 'explore':
       return (
         <Terminal

@@ -720,6 +720,120 @@ body {
 }
 
 /* ====================================================================
+   PASSKEY GATE
+   ==================================================================== */
+
+.gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 24px;
+}
+
+.gate-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 360px;
+  width: 100%;
+}
+
+.gate-title {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 6px;
+  color: #D4D4D4;
+}
+
+.gate-subtitle {
+  color: #555;
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+.gate-form {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.gate-input {
+  flex: 1;
+  background: transparent;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 10px 12px;
+  color: #D4D4D4;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.gate-input:focus {
+  border-color: #4A9D4A;
+}
+
+.gate-input::placeholder {
+  color: #555;
+}
+
+.gate-input:disabled {
+  opacity: 0.5;
+}
+
+.gate-submit {
+  background: #4A9D4A;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  color: #0D0D0D;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.gate-submit:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.gate-submit:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.gate-error {
+  color: #E84038;
+  font-size: 13px;
+  text-align: center;
+}
+
+.gate-guest {
+  background: transparent;
+  border: none;
+  color: #555;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.15s ease;
+}
+
+.gate-guest:hover:not(:disabled) {
+  color: #888;
+}
+
+.gate-guest:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ====================================================================
    ANIMATIONS
    ==================================================================== */
 
