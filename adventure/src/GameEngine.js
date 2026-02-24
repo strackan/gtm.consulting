@@ -280,6 +280,27 @@ export function createGameEngine() {
       return { action: 'take', target };
     }
 
+    // Natural unlock phrases → treat as "unlock <target>"
+    // "open door with key", "use key on door", "put key in door/lock"
+    if (verb === 'open' && rest.includes(' with ')) {
+      const target = rest.split(' with ')[0];
+      return { action: 'unlock', target };
+    }
+    if (verb === 'use' && (rest.includes(' on ') || rest.includes(' with '))) {
+      const sep = rest.includes(' on ') ? ' on ' : ' with ';
+      const target = rest.split(sep)[1];
+      return { action: 'unlock', target };
+    }
+    if (verb === 'put' && (rest.includes(' in ') || rest.includes(' into '))) {
+      const sep = rest.includes(' into ') ? ' into ' : ' in ';
+      const target = rest.split(sep)[1];
+      // "put key in lock" / "put key in door" → unlock door
+      if (target === 'lock' || target === 'keyhole') {
+        return { action: 'unlock', target: 'door' };
+      }
+      return { action: 'unlock', target };
+    }
+
     // Using/Opening/Unlocking
     if (['use', 'open', 'unlock', 'close'].includes(verb)) {
       return { action: verb, target: rest };
@@ -393,15 +414,15 @@ export function createGameEngine() {
     const vSSB = has('south_side', 'behind_house')       ? '│' : ' ';
 
     const lines = [
-      `         ${O}`,
-      `             ${vON}`,
-      `         ${N}${hNNS}${NS}`,
-      `          / ${vNF}              ${vNSB}`,
-      `${W}${hWF}${F}       ${B}${hBM}${M}${hMG}${G}`,
-      `          \\ ${vSF}              ${vSSB}`,
-      `         ${S}${hSSS}${SS}`,
-      `             ${vSFo}`,
-      `         ${Fo}`,
+      `                              ${O}`,
+      `                                  ${vON}`,
+      `                              ${N}${hNNS}${NS}`,
+      `                               / ${vNF}              ${vNSB}`,
+      `${G}${hMG}${M}${hBM}${B}       ${F}${hWF}${W}`,
+      `                               \\ ${vSF}              ${vSSB}`,
+      `                              ${S}${hSSS}${SS}`,
+      `                                  ${vSFo}`,
+      `                              ${Fo}`,
     ];
 
     return lines.join('\n');
@@ -560,6 +581,13 @@ export function createGameEngine() {
             if (obj.setFlag && obj.setFlag.read) {
               state.flags[obj.setFlag.read] = true;
             }
+            // Add letter to inventory and award points (once)
+            if (!state.flags.letterTaken) {
+              state.flags.letterTaken = true;
+              state.inventory.push('letter');
+              state.score += 3;
+              return personalizedMessage + '\n\n(The letter has been added to your inventory. +3 points)';
+            }
             return personalizedMessage;
           }
         }
@@ -574,6 +602,13 @@ export function createGameEngine() {
         if (obj.descriptions.read) {
           if (obj.setFlag && obj.setFlag.read) {
             state.flags[obj.setFlag.read] = true;
+          }
+          // Letter from mailbox → inventory + points
+          if ((obj.id === 'mailbox') && !state.flags.letterTaken) {
+            state.flags.letterTaken = true;
+            state.inventory.push('letter');
+            state.score += 3;
+            return obj.descriptions.read + '\n\n(The letter has been added to your inventory. +3 points)';
           }
           return obj.descriptions.read;
         }
