@@ -108,15 +108,15 @@
   },
   "main_room": {
     "name": "Main Room",
-    "description": "You are in a cozy main room. Warm light fills the space.\n\nTo the NORTH, you see the boarded front door from the inside, flanked by a portrait on the left and a phone on a small table to the right.\n\nOn the west wall, a clock hangs with its hands frozen at 11:11.\n\nIn the floor, a heavy trapdoor with a glowing 4-digit keypad. Stone steps lead down into darkness.\n\nThe back door to the SOUTH leads outside.",
+    "description": "You are in a cozy main room. Warm light fills the space.\n\nTo the WEST, the boarded front door — impassable from either side. A portrait hangs beside it.\n\nOn the NORTH wall, a clock hangs with its hands frozen at 11:11. Beneath it, a low shelf of books.\n\nTo the EAST, a phone sits on a small table.\n\nIn the center of the room, a shabby rug covers most of the floor. One corner is slightly upturned.\n\nThe back door to the SOUTH leads outside.",
     "exits": {
       "south": "behind_house"
     },
     "look": {
-      "left": "To your left, the west wall. A clock hangs there, hands frozen at 11:11. The wallpaper around it is slightly faded, like the clock has been there a long time. Beneath it, a low shelf holds a few dog-eared books.",
-      "right": "To your right, the east wall. A phone sits on a small table. Above it, a portrait of a man with an easy smile."
+      "left": "To your left, the west wall. The front door is boarded shut from the outside — heavy planks nailed in an X. A portrait of a man with an easy smile hangs beside it.",
+      "right": "To your right, the east wall. A phone sits on a small table with a drawer. Above the north wall, a clock with hands frozen at 11:11."
     },
-    "objects": ["portrait", "phone", "clock", "coded_door", "front_door", "shelf_book"]
+    "objects": ["portrait", "phone", "clock", "rug", "coded_door", "front_door", "shelf_book"]
   },
   "game_room": {
     "name": "The Game Room",

@@ -363,6 +363,12 @@ export function createGameEngine() {
     return { action: 'unknown', original: input };
   }
 
+  // Rooms that count as "indoors" for map switching
+  const INDOOR_ROOMS = new Set([
+    'main_room', 'game_room',
+    'tommy_room', 'reena_room', 'deck_room', 'maggie_room',
+  ]);
+
   // Render ASCII map with fog-of-war
   function renderMap() {
     const v = state.visited;
@@ -381,47 +387,86 @@ export function createGameEngine() {
       return ' ' + inner + ' ';
     }
 
-    // Show connections only when either room discovered
+    if (INDOOR_ROOMS.has(cur)) {
+      return renderIndoorMap(box, v);
+    }
+    return renderOutdoorMap(box, v);
+  }
+
+  function renderOutdoorMap(box, v) {
     const has = (a, b) => v.has(a) || v.has(b);
 
+    const B  = box('behind_house',   'BEHIND');
     const W  = box('west_of_house',  'WEST');
     const F  = box('front_of_house', 'FRONT');
     const N  = box('north_of_house', 'NORTH');
     const NS = box('north_side',     'N.SIDE');
     const S  = box('south_of_house', 'SOUTH');
     const SS = box('south_side',     'S.SIDE');
-    const B  = box('behind_house',   'BEHIND');
-    const M  = box('main_room',      'MAIN');
-    const G  = box('game_room',      'GAME');
     const O  = box('ocean',          'BEACH');
     const Fo = box('forest',         'FOREST');
 
-    // Horizontal connectors
     const hWF  = has('west_of_house', 'front_of_house')  ? '──' : '  ';
     const hNNS = has('north_of_house', 'north_side')     ? '──' : '  ';
     const hSSS = has('south_of_house', 'south_side')     ? '──' : '  ';
-    const hBM  = v.has('main_room')                      ? '──' : '  ';
 
-    // Vertical connectors
     const vON  = has('ocean', 'north_of_house')          ? '│' : ' ';
     const vNF  = has('north_of_house', 'front_of_house') ? '│' : ' ';
     const vSF  = has('south_of_house', 'front_of_house') ? '│' : ' ';
     const vSFo = has('south_of_house', 'forest')         ? '│' : ' ';
     const vNSB = has('north_side', 'behind_house')       ? '│' : ' ';
     const vSSB = has('south_side', 'behind_house')       ? '│' : ' ';
-    const vMG  = (v.has('game_room') || (v.has('main_room') && state.flags.codeEntered)) ? '│' : ' ';
 
     const lines = [
       `                    ${O}`,
       `                        ${vON}`,
       `                    ${N}${hNNS}${NS}`,
       `                     / ${vNF}              ${vNSB}`,
-      `${W}${hWF}${F}              ${B}${hBM}${M}`,
-      `                     \\ ${vSF}              ${vSSB}      ${vMG}`,
-      `                    ${S}${hSSS}${SS}        ${G}`,
+      `${W}${hWF}${F}              ${B}`,
+      `                     \\ ${vSF}              ${vSSB}`,
+      `                    ${S}${hSSS}${SS}`,
       `                        ${vSFo}`,
       `                    ${Fo}`,
     ];
+
+    return lines.join('\n');
+  }
+
+  function renderIndoorMap(box, v) {
+    const has = (a, b) => v.has(a) || v.has(b);
+
+    const M  = box('main_room',   'MAIN');
+    const G  = box('game_room',   'GAME');
+    const T  = box('tommy_room',  'TOMMY');
+    const R  = box('reena_room',  'REENA');
+    const D  = box('deck_room',   'DECK');
+    const Mg = box('maggie_room', 'MAGGIE');
+
+    const cellarFound = v.has('game_room') || state.flags.codeEntered;
+    const vMG = cellarFound ? '│' : ' ';
+    const divider = cellarFound ? '  ═══════╤════════' : '';
+    const vGT = has('game_room', 'tommy_room')  ? '│' : ' ';
+    const vGR = has('game_room', 'reena_room')  ? '│' : ' ';
+    const hGD = has('game_room', 'deck_room')   ? '──' : '  ';
+    const hMgG = has('game_room', 'maggie_room') ? '──' : '  ';
+
+    const lines = [
+      `— Ground Floor —`,
+      ``,
+      `          ${M}`,
+    ];
+
+    if (cellarFound) {
+      lines.push(divider);
+      lines.push(`              ${vMG}`);
+      lines.push(`— Below —`);
+      lines.push(``);
+      lines.push(`          ${T}`);
+      lines.push(`              ${vGT}`);
+      lines.push(`${Mg}${hMgG}${G}${hGD}${D}`);
+      lines.push(`              ${vGR}`);
+      lines.push(`          ${R}`);
+    }
 
     return lines.join('\n');
   }
@@ -776,10 +821,11 @@ export function createGameEngine() {
 
         for (const objId of loc.objects) {
           const obj = objects[objId];
-          if (obj && obj.acceptsCode) {
-            codeObj = { id: objId, ...obj };
-            break;
-          }
+          if (!obj || !obj.acceptsCode) continue;
+          // Respect requiresFlag (e.g. trapdoor hidden under rug)
+          if (obj.requiresFlag && !state.flags[obj.requiresFlag]) continue;
+          codeObj = { id: objId, ...obj };
+          break;
         }
 
         if (!codeObj) {

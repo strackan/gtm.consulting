@@ -149,6 +149,22 @@
     },
     "takeable": false
   },
+  "rug": {
+    "name": "rug",
+    "aliases": ["shabby rug", "carpet", "floor rug", "corner"],
+    "descriptions": {
+      "examine": "A shabby rug, threadbare in places, covering most of the floor. One corner is slightly upturned, as if something underneath is pushing it up.",
+      "move": "You pull the rug aside and reveal a heavy trapdoor set into the floor! Iron bands reinforce the edges, and a modern keypad lock glows softly — four digits, waiting for input.",
+      "lift": "You pull the rug aside and reveal a heavy trapdoor set into the floor! Iron bands reinforce the edges, and a modern keypad lock glows softly — four digits, waiting for input.",
+      "look": "You peer under the upturned corner and see... metal. There's something under this rug. Try pulling it aside.",
+      "take": "It's too big and too shabby to be worth taking."
+    },
+    "takeable": false,
+    "setFlag": {
+      "move": "rugLifted",
+      "lift": "rugLifted"
+    }
+  },
   "coded_door": {
     "name": "trapdoor",
     "aliases": ["keypad", "keypad door", "heavy door", "trapdoor", "trap door", "hatch", "coded door", "door in floor"],
@@ -156,6 +172,7 @@
       "examine": "A heavy trapdoor set into the floor, reinforced with iron bands. A modern keypad lock glows softly — four digits, waiting for input. Stone steps descend into darkness below.",
       "use": "The keypad awaits a 4-digit code. Try entering a number."
     },
+    "requiresFlag": "rugLifted",
     "takeable": false,
     "acceptsCode": true,
     "correctCode": "1111",
