@@ -345,9 +345,32 @@ export function createGameEngine() {
       return { action: 'help' };
     }
 
-    // Replay code entry (4-8 alphanumeric characters)
+    // Bare 4-digit code
     if (/^\d{4}$/.test(normalized)) {
       return { action: 'code', code: normalized };
+    }
+
+    // "enter 1111", "type 1111", "enter code 1111", "use 1111", "input 1111"
+    // Also: "enter 1111 on trapdoor", "type 1111 into keypad", etc.
+    if (['enter', 'type', 'input', 'use', 'try'].includes(verb)) {
+      const codeMatch = rest.match(/\b(\d{4})\b/);
+      if (codeMatch) {
+        return { action: 'code', code: codeMatch[1] };
+      }
+      // "enter code on trapdoor", "use keypad", "type code" — no digits
+      const codeTargets = ['code', 'trapdoor', 'keypad', 'hatch', 'trap door', 'door'];
+      if (codeTargets.some(t => rest.includes(t)) || !rest) {
+        return { action: 'code_hint' };
+      }
+    }
+
+    // "code on trapdoor", "code 1111", "code trapdoor"
+    if (verb === 'code') {
+      const codeMatch = rest.match(/\b(\d{4})\b/);
+      if (codeMatch) {
+        return { action: 'code', code: codeMatch[1] };
+      }
+      return { action: 'code_hint' };
     }
 
     // Exits
@@ -812,6 +835,10 @@ export function createGameEngine() {
         }
 
         return "You're not sure how to use that.";
+      }
+
+      case 'code_hint': {
+        return 'It seems to need a code. Try typing "enter code xxxx".';
       }
 
       case 'code': {
