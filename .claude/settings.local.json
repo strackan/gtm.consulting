@@ -21,7 +21,11 @@
       "Bash(npx supabase functions deploy:*)",
       "Bash(npx supabase:*)",
       "Bash(git stash:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "mcp__claude_ai_Vercel__list_deployments",
+      "mcp__claude_ai_Vercel__get_deployment_build_logs",
+      "mcp__claude_ai_Vercel__web_fetch_vercel_url",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

@@ -11,6 +11,7 @@ export default defineConfig({
   server: {
     // SPA fallback: serve index.html for all /adventure/* routes in dev
     middlewareMode: false,
+    allowedHosts: ['.jrs'],
   },
   appType: 'spa',
 })

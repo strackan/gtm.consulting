@@ -18,6 +18,11 @@ const GHOST_ROOM_MAP = {
   maggie_room: 'cards',
 };
 
+// Relative direction helpers
+const OPPOSITE = { north: 'south', south: 'north', east: 'west', west: 'east' };
+const LEFT_OF  = { north: 'west', south: 'east', east: 'north', west: 'south' };
+const RIGHT_OF = { north: 'east', south: 'west', east: 'south', west: 'north' };
+
 export function createGameEngine() {
   // Game state
   let state = {
@@ -27,7 +32,8 @@ export function createGameEngine() {
     score: 0,
     moves: 0,
     visited: new Set(['west_of_house']),
-    unknownStreak: 0
+    unknownStreak: 0,
+    enteredFrom: 'west', // default: facing east toward the house
   };
 
   let visitorProfile = null;
@@ -172,17 +178,50 @@ export function createGameEngine() {
     const directionMap = {
       'n': 'north', 's': 'south', 'e': 'east', 'w': 'west',
       'north': 'north', 'south': 'south', 'east': 'east', 'west': 'west',
+      'u': 'up', 'd': 'down', 'up': 'up', 'down': 'down',
+      'upstairs': 'up', 'downstairs': 'down',
       'back': 'back', 'out': 'out'
     };
 
-    if (directionMap[verb]) {
-      return { action: 'go', direction: directionMap[verb] };
+    // Resolve relative directions (left/right) based on facing
+    function resolveRelative(dir) {
+      if (dir === 'left' || dir === 'right') {
+        const facing = OPPOSITE[state.enteredFrom] || 'north';
+        return dir === 'left' ? LEFT_OF[facing] : RIGHT_OF[facing];
+      }
+      return directionMap[dir] || dir;
+    }
+
+    if (directionMap[verb] || verb === 'left' || verb === 'right') {
+      return { action: 'go', direction: resolveRelative(verb) };
     }
 
     // Movement
     if (verb === 'go' && rest) {
-      const dir = directionMap[rest] || rest;
-      return { action: 'go', direction: dir };
+      // "go in boat", "go into boat" → enter
+      if (rest.startsWith('in ') || rest.startsWith('into ')) {
+        const target = rest.startsWith('in ') ? rest.slice(3) : rest.slice(5);
+        return { action: 'enter', target };
+      }
+      return { action: 'go', direction: resolveRelative(rest) };
+    }
+
+    // Rowing
+    if (verb === 'row') {
+      return { action: 'row', target: rest };
+    }
+
+    // Make wine
+    if (normalized === 'make wine' || normalized === 'make a wine' || normalized === 'crush grapes' || normalized === 'stomp grapes' || normalized === 'smash grapes') {
+      return { action: 'make_wine' };
+    }
+
+    // What kind of vines
+    if (normalized.includes('what kind') && (normalized.includes('vine') || normalized.includes('plant'))) {
+      return { action: 'examine', target: 'vines' };
+    }
+    if (verb === 'investigate' && (!rest || rest.includes('vine') || rest.includes('plant') || rest.includes('forest'))) {
+      return { action: 'examine', target: 'vines' };
     }
 
     // Looking
@@ -197,10 +236,12 @@ export function createGameEngine() {
 
     // Directional looking: "look north", "look n", "l e", etc.
     if (['look', 'l'].includes(verb) && rest) {
-      const dirMap = { 'n': 'north', 's': 'south', 'e': 'east', 'w': 'west',
-                       'north': 'north', 'south': 'south', 'east': 'east', 'west': 'west' };
-      if (dirMap[rest]) {
-        return { action: 'look_direction', direction: dirMap[rest] };
+      const lookDirMap = { 'n': 'north', 's': 'south', 'e': 'east', 'w': 'west',
+                       'north': 'north', 'south': 'south', 'east': 'east', 'west': 'west',
+                       'u': 'up', 'd': 'down', 'up': 'up', 'down': 'down',
+                       'left': 'left', 'right': 'right' };
+      if (lookDirMap[rest]) {
+        return { action: 'look_direction', direction: lookDirMap[rest] };
       }
     }
 
@@ -218,8 +259,8 @@ export function createGameEngine() {
       return { action: verb === 'read' ? 'read' : 'examine', target };
     }
 
-    // Taking
-    if (['take', 'get', 'grab', 'pick'].includes(verb)) {
+    // Taking — expanded verbs
+    if (['take', 'get', 'grab', 'pick', 'pocket', 'steal'].includes(verb)) {
       let target = rest;
       if (target.startsWith('up ')) target = target.slice(3);
       return { action: 'take', target };
@@ -241,10 +282,11 @@ export function createGameEngine() {
     }
 
     // Movement through objects
-    if (['enter', 'climb', 'go through'].includes(verb) || normalized.startsWith('climb through')) {
+    if (['enter', 'climb'].includes(verb) || normalized.startsWith('climb through') || normalized.startsWith('go through')) {
       let target = rest;
       if (target.startsWith('through ')) target = target.slice(8);
       if (target.startsWith('into ')) target = target.slice(5);
+      if (target.startsWith('in ')) target = target.slice(3);
       return { action: 'enter', target };
     }
 
@@ -310,31 +352,40 @@ export function createGameEngine() {
     const W  = box('west_of_house',  'WEST');
     const F  = box('front_of_house', 'FRONT');
     const N  = box('north_of_house', 'NORTH');
+    const NS = box('north_side',     'N.SIDE');
     const S  = box('south_of_house', 'SOUTH');
+    const SS = box('south_side',     'S.SIDE');
     const B  = box('behind_house',   'BEHIND');
     const M  = box('main_room',      'MAIN');
     const G  = box('game_room',      'GAME');
     const O  = box('ocean',          'BEACH');
     const Fo = box('forest',         'FOREST');
 
-    const hWF = has('west_of_house', 'front_of_house') ? '──' : '  ';
-    const hNB = has('north_of_house', 'behind_house')  ? '──' : '  ';
+    // Horizontal connectors
+    const hWF = has('west_of_house', 'front_of_house')  ? '──' : '  ';
+    const hNNS = has('north_of_house', 'north_side')    ? '──' : '  ';
+    const hSSS = has('south_of_house', 'south_side')    ? '──' : '  ';
+    const hBM = v.has('main_room')                      ? '──' : '  ';
     const hMG = (v.has('game_room') || (v.has('main_room') && state.flags.codeEntered)) ? '──' : '  ';
-    const vON = has('ocean', 'north_of_house')         ? '│' : ' ';
-    const vNF = has('north_of_house', 'front_of_house') ? '│' : ' ';
-    const vSF = has('south_of_house', 'front_of_house') ? '│' : ' ';
-    const vBM = has('behind_house', 'main_room')       ? '│' : ' ';
-    const vSFo = has('south_of_house', 'forest')       ? '│' : ' ';
-    const hSB = has('south_of_house', 'behind_house')  ? '──────────┘' : '           ';
+
+    // Vertical connectors
+    const vON  = has('ocean', 'north_of_house')          ? '│' : ' ';
+    const vNF  = has('north_of_house', 'front_of_house') ? '│' : ' ';
+    const vSF  = has('south_of_house', 'front_of_house') ? '│' : ' ';
+    const vSFo = has('south_of_house', 'forest')         ? '│' : ' ';
+
+    // North side to behind (vertical connector on right side)
+    const vNSB = has('north_side', 'behind_house')       ? '│' : ' ';
+    const vSSB = has('south_side', 'behind_house')       ? '│' : ' ';
 
     const lines = [
       `         ${O}`,
       `             ${vON}`,
-      `         ${N}${hNB}${B}`,
-      `          / ${vNF}        ${vBM}`,
-      `${W}${hWF}${F}  ${M}${hMG}${G}`,
-      `          \\ ${vSF}        ${vBM}`,
-      `         ${S}${hSB}`,
+      `         ${N}${hNNS}${NS}`,
+      `          / ${vNF}              ${vNSB}`,
+      `${W}${hWF}${F}       ${B}${hBM}${M}${hMG}${G}`,
+      `          \\ ${vSF}              ${vSSB}`,
+      `         ${S}${hSSS}${SS}`,
       `             ${vSFo}`,
       `         ${Fo}`,
     ];
@@ -390,6 +441,10 @@ export function createGameEngine() {
 
         state.location = nextLocId;
         state.visited.add(nextLocId);
+        // Track entry direction for relative left/right
+        if (OPPOSITE[cmd.direction]) {
+          state.enteredFrom = OPPOSITE[cmd.direction];
+        }
         if (!state.flags[`scored_${nextLocId}`]) {
           state.score += locations[nextLocId].score || 0;
           state.flags[`scored_${nextLocId}`] = true;
@@ -411,6 +466,23 @@ export function createGameEngine() {
         }
 
         return `${newLoc.name}\n${newLoc.description}`;
+      }
+
+      case 'row': {
+        return "There's no time for that right now.";
+      }
+
+      case 'make_wine': {
+        // Only works at the forest/vine location
+        if (state.location !== 'forest') {
+          return "There's nothing here to make wine with.";
+        }
+        if (state.inventory.includes('glass of wine')) {
+          return "You already made wine. One glass is enough for an adventure.";
+        }
+        state.inventory.push('glass of wine');
+        state.score += 5;
+        return "You grab a fistful of ripe grapes off the vine and somehow — with nothing but bare hands and sheer determination — smash them into a quaffable glass of table wine.\n\nIt's not great. But it's yours.\n\n(+5 points. A glass of wine has been added to your inventory.)";
       }
 
       case 'examine': {
@@ -445,6 +517,11 @@ export function createGameEngine() {
           return obj.descriptions.played || "You've already had your turn. The figure is gone. Ask Justin for a replay code.";
         }
 
+        // Personalized shelf book
+        if (obj.id === 'shelf_book' && visitorProfile?.executive_summary) {
+          return obj.descriptions.examine_personalized.replace('{name}', visitorProfile.name);
+        }
+
         // Check for flag-dependent descriptions
         if (state.flags.doorUnlocked && obj.id === 'door' && obj.descriptions.examine_unlocked) {
           return obj.descriptions.examine_unlocked;
@@ -470,6 +547,13 @@ export function createGameEngine() {
           }
         }
 
+        // Personalized shelf book
+        if (obj.id === 'shelf_book' && visitorProfile?.executive_summary) {
+          return obj.descriptions.read_personalized
+            .replace('{name}', visitorProfile.name)
+            .replace('{executive_summary}', visitorProfile.executive_summary);
+        }
+
         if (obj.descriptions.read) {
           if (obj.setFlag && obj.setFlag.read) {
             state.flags[obj.setFlag.read] = true;
@@ -491,10 +575,16 @@ export function createGameEngine() {
         }
 
         if (!obj.takeable) {
-          return "You can't take that.";
+          return obj.descriptions && obj.descriptions.take ? obj.descriptions.take : "You can't take that.";
         }
 
         state.inventory.push(obj.name);
+        // Award points for taking scored items
+        if (obj.score && !state.flags[`scored_take_${obj.name}`]) {
+          state.score += obj.score;
+          state.flags[`scored_take_${obj.name}`] = true;
+          return `Taken. (+${obj.score} points)`;
+        }
         return `Taken.`;
       }
 
@@ -538,7 +628,7 @@ export function createGameEngine() {
           return "You don't see that here.";
         }
 
-        // Special handling for door
+        // Special handling for back door
         if (obj.id === 'door') {
           if (state.flags.doorUnlocked) {
             state.location = obj.teleportTo;
@@ -547,6 +637,19 @@ export function createGameEngine() {
             return obj.descriptions.open + '\n\n' + newLoc.name + '\n' + newLoc.description;
           } else {
             return obj.descriptions.open_locked;
+          }
+        }
+
+        // Check if opening gives an item
+        if (obj.giveItem && obj.giveItemVerbs && obj.giveItemVerbs.includes('open')) {
+          if (!state.inventory.includes(obj.giveItem) && !state.flags[obj.setFlag?.open]) {
+            state.inventory.push(obj.giveItem);
+            if (obj.setFlag && obj.setFlag.open) {
+              state.flags[obj.setFlag.open] = true;
+            }
+            return obj.descriptions.open || `You open the ${obj.name}.`;
+          } else {
+            return "You've already found what was there.";
           }
         }
 
@@ -637,9 +740,9 @@ export function createGameEngine() {
 
         if (cmd.code === codeObj.correctCode) {
           state.flags.codeEntered = true;
-          // Add east exit to main_room
+          // Add down exit to main_room (trapdoor opens)
           if (locations.main_room) {
-            locations.main_room.exits.east = 'game_room';
+            locations.main_room.exits.down = 'game_room';
           }
           return codeObj.codeSuccess;
         } else {
@@ -667,10 +770,12 @@ export function createGameEngine() {
         return renderMap();
 
       case 'help':
-        return `MOVEMENT: north/n, south/s, east/e, west/w, go [direction], back/out
-ACTIONS:  look, look around, examine/x [object], read [object]
-          take/get [object], open [object], unlock [object]
-          move/lift [object], enter [object]
+        return `MOVEMENT: north/n, south/s, east/e, west/w, up/u, down/d
+          left, right, go [direction], back/out
+ACTIONS:  look, look around, look left/right, examine/x [object]
+          read [object], take/get/grab/pocket [object]
+          open [object], unlock [object], enter [object]
+          move/lift [object], make wine
 GHOST:    In a customer room, examine objects to begin. Type LEAVE to exit early.
 SPECIAL:  inventory/i, exits, map, help`;
 

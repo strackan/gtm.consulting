@@ -16,17 +16,48 @@
     "name": "boat",
     "aliases": ["rowboat"],
     "descriptions": {
-      "examine": "A weathered rowboat, half-filled with sand. It's seen better days -- one oar is missing and the hull has a crack running down the side.",
-      "look": "Inside the boat, you find a folded piece of paper tucked under the remaining oar.",
-      "read": "The note reads: \"Coming soon. - J\""
+      "examine": "A weathered rowboat, half-filled with sand. It's seen better days — one oar is missing and the hull has a crack running down the side. You could climb in.",
+      "enter": "You climb into the boat."
+    },
+    "teleportVerbs": ["enter"],
+    "teleportTo": "boat_interior",
+    "takeable": false
+  },
+  "toolbox": {
+    "name": "toolbox",
+    "aliases": ["box", "tool box", "rusty toolbox"],
+    "descriptions": {
+      "examine": "A rusty metal toolbox. There's a sticker on the lid — a fancy-looking robot with glowing eyes and a sly grin.",
+      "open": "You pop the latch and open the toolbox. Inside, nestled in a greasy rag, there's a screwdriver."
+    },
+    "giveItem": "screwdriver",
+    "giveItemVerbs": ["open"],
+    "setFlag": { "open": "toolboxOpened" },
+    "takeable": false
+  },
+  "screwdriver": {
+    "name": "screwdriver",
+    "aliases": ["driver", "tool"],
+    "descriptions": {
+      "examine": "A well-worn Phillips screwdriver. The handle has a small sticker — the same fancy robot logo as the toolbox."
+    },
+    "takeable": true,
+    "score": 3
+  },
+  "oar": {
+    "name": "oar",
+    "aliases": ["paddle"],
+    "descriptions": {
+      "examine": "A sun-bleached oar, cracked but still solid. It leans against the gunwale like it's been waiting for someone.",
+      "take": "It's wedged in pretty good. Better to leave it."
     },
     "takeable": false
   },
   "vines": {
     "name": "vines",
-    "aliases": ["undergrowth", "foliage"],
+    "aliases": ["undergrowth", "foliage", "grapevines", "grapes", "grape", "vine", "fruit"],
     "descriptions": {
-      "examine": "A thick tangle of vines blocks your path. Through small gaps, you can see light flickering on the other side, as if something interesting awaits. But for now, the passage is impassable."
+      "examine": "Grapevines. Thick, tangled grapevines loaded with dark fruit. They block the path deeper into the forest, but through small gaps you can see light flickering on the other side. The passage is impassable, but the grapes look ripe."
     },
     "takeable": false
   },
@@ -118,16 +149,16 @@
     "takeable": false
   },
   "coded_door": {
-    "name": "coded door",
-    "aliases": ["keypad", "keypad door", "eastern door", "heavy door"],
+    "name": "trapdoor",
+    "aliases": ["keypad", "keypad door", "heavy door", "trapdoor", "trap door", "hatch", "coded door", "door in floor"],
     "descriptions": {
-      "examine": "A heavy wooden door with a modern keypad lock. Four digits glow softly, waiting for input.",
+      "examine": "A heavy trapdoor set into the floor, reinforced with iron bands. A modern keypad lock glows softly — four digits, waiting for input. Stone steps descend into darkness below.",
       "use": "The keypad awaits a 4-digit code. Try entering a number."
     },
     "takeable": false,
     "acceptsCode": true,
     "correctCode": "1111",
-    "codeSuccess": "The keypad beeps cheerfully. You hear a click, and the door swings open.",
+    "codeSuccess": "The keypad beeps cheerfully. You hear a heavy click, and the trapdoor swings open. Stone steps lead down.",
     "codeFail": "The keypad beeps sadly. That's not the right code."
   },
   "front_door": {
@@ -271,6 +302,17 @@
     "aliases": ["mug", "y2k", "coffee mug", "chipped mug"],
     "descriptions": {
       "examine": "A coffee mug, chipped at the rim, that reads \"I Survived Y2K.\" Twenty-six years old and still in daily rotation. There's a faint lipstick mark on the rim. The coffee inside is half-finished — someone left in a hurry."
+    },
+    "takeable": false
+  },
+  "shelf_book": {
+    "name": "book",
+    "aliases": ["book", "books", "shelf", "shelf book"],
+    "descriptions": {
+      "examine": "A low shelf holds a few dog-eared books. Nothing special catches your eye.",
+      "examine_personalized": "A low shelf holds a few dog-eared books. One stands out — your name, {name}, is embossed on the cover in gold leaf.",
+      "read": "You flip through the books. Business strategy, a dog-eared copy of 'The Hard Thing About Hard Things,' and a few others. Nothing personal.",
+      "read_personalized": "You open the book with your name on it. Inside the front cover, a handwritten inscription:\n\n\"For {name} —\n\nI wrote this after spending time with your work. Consider it a thank-you for being interesting.\n\n— Justin\"\n\nYou turn the page and begin reading:\n\n{executive_summary}\n\n---\n\nP.S. If any of this resonates — or if I got something wrong — I'd love to hear about it.\n\nBook a conversation: calendly.com/justinstrackany\nOr just reply to whatever brought you here."
     },
     "takeable": false
   }

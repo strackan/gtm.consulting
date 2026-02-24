@@ -17,63 +17,112 @@
         "You head west, enjoying the fresh air. The field stretches on. You eventually return to the house.",
         "You explore the western field. It's peaceful, but empty. You make your way back.",
         "You venture west. A pleasant breeze. Some birds. Nothing else. You return to the clearing."
-      ]
+      ],
+      "left": "To your left, the field slopes gently downward toward a tree line. Beyond the dark canopy, you can just make out the flicker of sunlight on the forest floor.",
+      "right": "To your right, the grass thins into a sandy path that curves north. You catch the faint smell of salt and the distant crash of waves."
     },
     "objects": ["mailbox"]
   },
   "front_of_house": {
     "name": "Front of House",
-    "description": "You are facing the front of the white house. The front door is boarded shut with heavy planks.\n\nYou can go around the house to the north or south, or back west to the field.",
+    "description": "You are facing the front of the white house. The front door is boarded shut with heavy planks.\n\nPaths lead around the house to the north and south, or back west to the field.",
     "exits": {
       "west": "west_of_house",
       "north": "north_of_house",
       "south": "south_of_house"
+    },
+    "look": {
+      "left": "To your left, a worn dirt path wraps around the south side of the house. Past it, the tree line of a dense forest rises dark and still.",
+      "right": "To your right, the path continues around the north side. You catch a whiff of salt air drifting from somewhere beyond."
     },
     "objects": ["front_door", "boards"]
   },
   "north_of_house": {
     "name": "North of House",
-    "description": "You are facing the north side of the white house. A path leads around to the back.\n\nTo the north, you can hear waves crashing. You can go east around to the back, south to the front, or west to the field.",
+    "description": "You are at the northwest corner of the white house. The front is to the south and the north wall stretches east.\n\nTo the north, you can hear waves crashing. The path continues east along the side of the house.",
     "exits": {
       "west": "west_of_house",
       "south": "front_of_house",
-      "east": "behind_house",
+      "east": "north_side",
       "north": "ocean"
+    },
+    "look": {
+      "left": "To your left, the open field stretches west. You can see the mailbox standing in the clearing, catching the light.",
+      "right": "To your right, the north wall of the house stretches east. The white clapboard is weathered here, paint peeling in long strips."
+    },
+    "objects": []
+  },
+  "north_side": {
+    "name": "North Side of House",
+    "description": "You are along the north side of the house. The white clapboard wall runs beside you, paint peeling in places. A window on this side is shuttered.\n\nThe path continues west toward the front or east toward the back.",
+    "exits": {
+      "west": "north_of_house",
+      "east": "behind_house"
+    },
+    "look": {
+      "left": "To your left, the north wall of the house. Peeling paint, a shuttered window, a wasp nest tucked under the eaves. The house has been here a while.",
+      "right": "To your right, open ground slopes gently north toward the sound of waves. The grass is thinner here, giving way to sand."
     },
     "objects": []
   },
   "south_of_house": {
     "name": "South of House",
-    "description": "You are facing the south side of the white house. A path leads around to the back.\n\nTo the south, a forest path beckons. You can go east around to the back, north to the front, or west to the field.",
+    "description": "You are at the southwest corner of the white house. The front is to the north and the south wall stretches east.\n\nTo the south, a forest path beckons. The path continues east along the side of the house.",
     "exits": {
       "west": "west_of_house",
       "north": "front_of_house",
-      "east": "behind_house",
+      "east": "south_side",
       "south": "forest"
+    },
+    "look": {
+      "left": "To your left, the south wall of the house stretches east. Ivy creeps up the clapboard, and the air smells of earth and green things.",
+      "right": "To your right, the field opens up to the west. The grass is taller here, brushing against the side of the house."
     },
     "objects": ["forest"]
   },
+  "south_side": {
+    "name": "South Side of House",
+    "description": "You are along the south side of the house. Ivy climbs the wall here, thick and green. The air is cooler in the shade.\n\nThe path continues west toward the front or east toward the back.",
+    "exits": {
+      "west": "south_of_house",
+      "east": "behind_house"
+    },
+    "look": {
+      "left": "To your left, the forest looms close. Through gaps in the canopy, shifting patterns of light dance on the ground.",
+      "right": "To your right, the south wall of the house, half-covered in ivy. A drainpipe runs down from the roof, green with age."
+    },
+    "objects": []
+  },
   "behind_house": {
     "name": "Behind House",
-    "description": "You are behind the white house. The back door is here, looking more accessible than the boarded front.\n\nBelow your feet is a welcome mat. One window is slightly ajar.\n\nPaths lead around the house to the north and south.",
+    "description": "You are behind the white house. The back door is here, looking more accessible than the boarded front.\n\nBelow your feet is a welcome mat. One window is slightly ajar.\n\nPaths lead along the house to the north side and south side.",
     "exits": {
-      "north": "north_of_house",
-      "south": "south_of_house"
+      "north": "north_side",
+      "south": "south_side"
+    },
+    "look": {
+      "left": "To your left, the path leads south along the house. Ivy covers the wall on that side, thick and dark.",
+      "right": "To your right, the path leads north along the house. The whitewash is peeling here, exposing grey wood underneath."
     },
     "objects": ["door", "mat", "window"]
   },
   "main_room": {
     "name": "Main Room",
-    "description": "You are in a cozy main room. Warm light fills the space.\n\nTo the NORTH, you see the boarded front door from the inside, flanked by a portrait on the left and a phone on a small table to the right.\n\nTo the WEST, a clock hangs on the wall, its hands frozen at 11:11.\n\nTo the EAST, a heavy wooden door with a glowing 4-digit keypad beckons.\n\nThe back door to the SOUTH leads outside.",
+    "description": "You are in a cozy main room. Warm light fills the space.\n\nTo the NORTH, you see the boarded front door from the inside, flanked by a portrait on the left and a phone on a small table to the right.\n\nOn the west wall, a clock hangs with its hands frozen at 11:11.\n\nIn the floor, a heavy trapdoor with a glowing 4-digit keypad. Stone steps lead down into darkness.\n\nThe back door to the SOUTH leads outside.",
     "exits": {
       "south": "behind_house"
     },
-    "objects": ["portrait", "phone", "clock", "coded_door", "front_door"]
+    "look": {
+      "left": "To your left, the west wall. A clock hangs there, hands frozen at 11:11. The wallpaper around it is slightly faded, like the clock has been there a long time. Beneath it, a low shelf holds a few dog-eared books.",
+      "right": "To your right, the east wall. A phone sits on a small table. Above it, a portrait of a man with an easy smile."
+    },
+    "objects": ["portrait", "phone", "clock", "coded_door", "front_door", "shelf_book"]
   },
   "game_room": {
     "name": "The Game Room",
-    "description": "You step into a large, warm room at the heart of the cottage. Four doorways lead to four different rooms, each with its own atmosphere.\n\nTo the NORTH, through an archway, you see the glow of a desk lamp and the silhouette of a chess set.\n\nTo the EAST, you hear what might be music — something rhythmic, faint — and see the flicker of a monitor.\n\nTo the SOUTH, a dartboard hangs on the wall of a bright, open workspace.\n\nTo the WEST, a heavy mahogany door stands slightly ajar, warm light spilling through the crack.\n\nType BACK or OUT to return to the main room.",
+    "description": "You descend stone steps into a large, warm room beneath the cottage. Four doorways lead to four different rooms, each with its own atmosphere.\n\nTo the NORTH, through an archway, you see the glow of a desk lamp and the silhouette of a chess set.\n\nTo the EAST, you hear what might be music — something rhythmic, faint — and see the flicker of a monitor.\n\nTo the SOUTH, a dartboard hangs on the wall of a bright, open workspace.\n\nTo the WEST, a heavy mahogany door stands slightly ajar, warm light spilling through the crack.\n\nStone steps lead UP to the main room.",
     "exits": {
+      "up": "main_room",
       "back": "main_room",
       "out": "main_room",
       "north": "tommy_room",
@@ -81,34 +130,54 @@
       "south": "reena_room",
       "west": "maggie_room"
     },
+    "look": {
+      "left": "To your left, the southern doorway opens into a bright workspace. You can see a dartboard on the far wall, three darts clustered tight. Beyond it, the mahogany door to the west stands slightly ajar, warm amber light leaking through.",
+      "right": "To your right, the northern archway glows with lamplight. You can make out the edge of a chess set on a heavy desk. Past it, the eastern doorway flickers — a monitor casting green light, and the faintest sound of music."
+    },
     "objects": [],
     "score": 25
   },
   "tommy_room": {
     "name": "Tommy's Room",
     "description": "A leather chair sits behind a heavy desk. A military challenge coin glints on the desktop next to a Memphis Grizzlies mug, the coffee long gone cold. A framed photo of a platoon — twelve men squinting into desert sun — hangs on the wall.\n\nA CHESS SET dominates the desk, pieces frozen mid-game.\n\nThe door SOUTH leads back to the game room.",
-    "exits": { "south": "game_room" },
+    "exits": { "south": "game_room", "back": "game_room" },
+    "look": {
+      "left": "To your left, the platoon photo dominates the wall. Twelve men in desert camo, squinting hard into the sun. Below it, a shelf holds a folded American flag in a triangle case and a worn copy of \"The Art of War.\"",
+      "right": "To your right, a filing cabinet with one drawer slightly open. The Grizzlies mug sits on the desk edge, a dark ring stained into the wood beneath it. Someone drinks a lot of coffee and doesn't use coasters."
+    },
     "objects": ["chess", "tommy_coin", "tommy_mug"],
     "ghostRoom": "chess"
   },
   "reena_room": {
     "name": "Reena's Room",
     "description": "A standing desk with three monitors, all dark now. A DARTBOARD hangs on the wall, three darts clustered near the bullseye. On the windowsill, a collection of African violets — one has a label that reads \"Patience.\"\n\nA notebook sits open on the desk, filled with crossed-out lines.\n\nThe door NORTH leads back to the game room.",
-    "exits": { "north": "game_room" },
+    "exits": { "north": "game_room", "back": "game_room" },
+    "look": {
+      "left": "To your left, the windowsill. African violets in small ceramic pots, all tended with care. The newest one has a handwritten label: \"Patience.\" Sunlight catches the leaves. Someone waters these every morning.",
+      "right": "To your right, the standing desk. Three dark monitors and a notebook splayed open, pen resting in the crease. The page is a mess — lists rewritten, numbers crossed out, arrows pointing nowhere. Someone's been agonizing."
+    },
     "objects": ["dartboard", "reena_violets", "reena_notebook"],
     "ghostRoom": "dartboard"
   },
   "deck_room": {
     "name": "Deck's Room",
     "description": "A bass guitar leans against the wall — black, scuffed, well-loved. A terminal scrolls code on a monitor, casting green light across the room. A mechanical keyboard sits on the desk next to a half-finished PUZZLE — not a jigsaw, but a system architecture diagram made physical.\n\nTaped to the monitor: a child's drawing of a house with two stick figures, one big, one small. \"DADDY + ME\" in crayon.\n\nThe door WEST leads back to the game room.",
-    "exits": { "west": "game_room" },
+    "exits": { "west": "game_room", "back": "game_room" },
+    "look": {
+      "left": "To your left, the bass guitar leans against the wall. Black, scuffed at the edges, new strings gleaming. A sticker reads \"SEVERED CONTRACT\" in angular punk lettering. An amp sits on the floor, power light still on — a faint hum.",
+      "right": "To your right, the desk. Terminal scrolling green text, mechanical keyboard with worn keycaps, and the drawing — \"DADDY + ME\" in crayon, the letters getting bigger like she ran out of room. A cold energy drink can sits next to the keyboard."
+    },
     "objects": ["puzzle", "deck_guitar", "deck_drawing"],
     "ghostRoom": "puzzle"
   },
   "maggie_room": {
     "name": "Maggie's Room",
     "description": "Mahogany desk, polished to a mirror shine. Framed degrees line one wall — DePaul, two industry certifications, an award from the Healthcare IT Association. A photo of a man with kind eyes faces the desk chair. Next to it, a coffee mug — chipped, reads \"I Survived Y2K.\"\n\nA pristine DECK OF CARDS sits in a complex solitaire layout on a side table. Every option visible, nothing left to chance.\n\nThe door EAST leads back to the game room.",
-    "exits": { "east": "game_room" },
+    "exits": { "east": "game_room", "back": "game_room" },
+    "look": {
+      "left": "To your left, the wall of credentials. DePaul diploma, two industry certifications, the Healthcare IT Association award. They're hung with precision — level, evenly spaced. Thirty years of proof, framed and mounted.",
+      "right": "To your right, the side table with the solitaire layout. Every card placed with intention. A reading lamp casts warm light over the arrangement. Beside it, a folded copy of the Wall Street Journal — today's edition, already read."
+    },
     "objects": ["cards", "maggie_photo", "maggie_mug"],
     "ghostRoom": "cards"
   },
@@ -116,13 +185,31 @@
     "name": "Rocky Beach",
     "description": "You are standing on a rocky beach. Waves crash against the shore, and the salt air is refreshing.\n\nThere is a weathered boat here, half-buried in the sand.\n\nThe path back south leads to the house.",
     "exits": { "south": "north_of_house" },
+    "look": {
+      "left": "To your left, the coastline stretches west. Jagged rocks jut out of the surf, and beyond them the beach narrows to nothing against a cliff face. No way through.",
+      "right": "To your right, the coastline curves east. Tide pools glint between the rocks, and a few seabirds pick at something in the shallows. The water is impossibly clear."
+    },
     "objects": ["boat"],
     "score": 5
   },
+  "boat_interior": {
+    "name": "Inside the Boat",
+    "description": "You climb into the weathered rowboat. Sand crunches under your feet. One oar leans against the gunwale. Under the bow seat, a rusty toolbox catches your eye.\n\nThe beach is just a step away.",
+    "exits": { "out": "ocean", "back": "ocean" },
+    "look": {
+      "left": "To your left, the remaining oar rests against the side of the hull. The wood is sun-bleached and cracked, but it would still hold in a pinch.",
+      "right": "To your right, the bow seat. Underneath it, a rusty metal toolbox. The hull has a long crack running from bow to midship — this boat isn't going anywhere."
+    },
+    "objects": ["toolbox", "oar"]
+  },
   "forest": {
     "name": "Edge of Forest",
-    "description": "You stand at the edge of a dense forest. Sunlight filters through the canopy, casting shifting patterns on the ground.\n\nA thick tangle of vines blocks the path deeper in, but through small gaps you can see light flickering on the other side, as if something interesting awaits.\n\nThe path back north leads to the house.",
+    "description": "You stand at the edge of a dense forest. Sunlight filters through the canopy, casting shifting patterns on the ground.\n\nA thick tangle of grapevines blocks the path deeper in, but through small gaps you can see light flickering on the other side, as if something interesting awaits.\n\nThe path back north leads to the house.",
     "exits": { "north": "south_of_house" },
+    "look": {
+      "left": "To your left, the trees thin slightly. Through the branches you can make out the white wall of the house, catching the afternoon light. A bird watches you from a low branch.",
+      "right": "To your right, the undergrowth thickens into a wall of green. Grapevines coil around the trunks, heavy with dark fruit. The canopy closes overhead. It's darker that way. Quieter."
+    },
     "objects": ["vines"],
     "score": 5
   }
