@@ -412,15 +412,15 @@ export function createGameEngine() {
     const vMG  = (v.has('game_room') || (v.has('main_room') && state.flags.codeEntered)) ? '│' : ' ';
 
     const lines = [
-      `         ${O}`,
-      `             ${vON}`,
-      `         ${N}${hNNS}${NS}`,
-      `          / ${vNF}              ${vNSB}`,
+      `                    ${O}`,
+      `                        ${vON}`,
+      `                    ${N}${hNNS}${NS}`,
+      `                     / ${vNF}              ${vNSB}`,
       `${W}${hWF}${F}              ${B}${hBM}${M}`,
-      `          \\ ${vSF}              ${vSSB}      ${vMG}`,
-      `         ${S}${hSSS}${SS}        ${G}`,
-      `             ${vSFo}`,
-      `         ${Fo}`,
+      `                     \\ ${vSF}              ${vSSB}      ${vMG}`,
+      `                    ${S}${hSSS}${SS}        ${G}`,
+      `                        ${vSFo}`,
+      `                    ${Fo}`,
     ];
 
     return lines.join('\n');
