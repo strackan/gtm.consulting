@@ -888,6 +888,54 @@ ${loc.description}`;
     };
   }
 
+  // Serialize full game state for persistence
+  function saveState() {
+    const save = {
+      location: state.location,
+      inventory: [...state.inventory],
+      flags: { ...state.flags },
+      score: state.score,
+      moves: state.moves,
+      visited: [...state.visited],
+      unknownStreak: state.unknownStreak,
+      enteredFrom: state.enteredFrom,
+    };
+    try {
+      localStorage.setItem('adventure_save', JSON.stringify(save));
+    } catch {
+      // localStorage full or unavailable
+    }
+  }
+
+  // Restore game state from localStorage
+  function loadState() {
+    try {
+      const raw = localStorage.getItem('adventure_save');
+      if (!raw) return false;
+      const save = JSON.parse(raw);
+      state.location = save.location;
+      state.inventory = save.inventory || [];
+      state.flags = save.flags || {};
+      state.score = save.score || 0;
+      state.moves = save.moves || 0;
+      state.visited = new Set(save.visited || ['west_of_house']);
+      state.unknownStreak = save.unknownStreak || 0;
+      state.enteredFrom = save.enteredFrom || 'west';
+      // Re-apply location mutations based on flags
+      if (state.flags.codeEntered && locations.main_room) {
+        locations.main_room.exits.down = 'game_room';
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // Clear saved game
+  function clearSave() {
+    localStorage.removeItem('adventure_save');
+  }
+
   return {
     execute,
     getIntro,
@@ -896,5 +944,8 @@ ${loc.description}`;
     setVisitorProfile,
     onGhostTrigger,
     setGlobalQuestionCount,
+    saveState,
+    loadState,
+    clearSave,
   };
 }

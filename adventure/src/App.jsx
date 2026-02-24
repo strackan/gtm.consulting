@@ -9,6 +9,18 @@ import { scenarios, scoringPrompts, getScenarioOutcome, getVerdict } from './sce
 import { lookupVisitor, scoreSession } from './api';
 
 const GLOBAL_MAX_QUESTIONS = 10;
+const SAVE_KEY = 'adventure_app_state';
+
+function saveAppState(data) {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch {}
+}
+
+function loadAppState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
 
 function App() {
   const [mode, setMode] = useState('loading'); // loading | gate | explore | ghost | action | score | debrief
@@ -25,23 +37,61 @@ function App() {
 
   const gameEngine = useMemo(() => createGameEngine(), []);
 
-  // Parse slug from URL path: /adventure/some-slug → "some-slug"
-  // If no slug, show the passkey gate
+  // Persist app-level session state after relevant changes
+  useEffect(() => {
+    if (mode === 'loading') return; // don't save during init
+    saveAppState({
+      globalQuestionCount,
+      completedScenarios,
+      isGuest,
+      visitorSlug: visitorProfile?.slug || null,
+    });
+  }, [globalQuestionCount, completedScenarios, isGuest, visitorProfile, mode]);
+
+  // Parse slug from URL path or restore saved session
   useEffect(() => {
     const path = window.location.pathname;
     const prefix = '/adventure/';
+    const saved = loadAppState();
+
     if (path.startsWith(prefix)) {
       const slug = path.slice(prefix.length).replace(/\/$/, '');
       if (slug && slug !== '' && !slug.includes('/')) {
         lookupVisitor(slug).then(profile => {
           if (profile) {
+            profile.slug = slug;
             setVisitorProfile(profile);
             gameEngine.setVisitorProfile(profile);
+          }
+          // Restore app state if it matches this slug
+          if (saved && saved.visitorSlug === slug) {
+            setGlobalQuestionCount(saved.globalQuestionCount || 0);
+            setCompletedScenarios(saved.completedScenarios || {});
           }
           setMode('explore');
         });
       } else {
-        setMode('gate');
+        // No slug in URL — check for saved session
+        if (saved && localStorage.getItem('adventure_save')) {
+          // Restore previous session
+          setGlobalQuestionCount(saved.globalQuestionCount || 0);
+          setCompletedScenarios(saved.completedScenarios || {});
+          setIsGuest(saved.isGuest || false);
+          if (saved.visitorSlug) {
+            lookupVisitor(saved.visitorSlug).then(profile => {
+              if (profile) {
+                profile.slug = saved.visitorSlug;
+                setVisitorProfile(profile);
+                gameEngine.setVisitorProfile(profile);
+              }
+              setMode('explore');
+            });
+          } else {
+            setMode('explore');
+          }
+        } else {
+          setMode('gate');
+        }
       }
     } else {
       setMode('gate');
@@ -56,6 +106,7 @@ function App() {
   const handlePasskey = useCallback(async (slug) => {
     const profile = await lookupVisitor(slug);
     if (!profile) throw new Error('Not found');
+    profile.slug = slug;
     setVisitorProfile(profile);
     gameEngine.setVisitorProfile(profile);
     setMode('explore');

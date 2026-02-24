@@ -10,10 +10,16 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remaining
   const outputRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Initialize game
+  // Initialize game — restore saved state or show intro
   useEffect(() => {
-    const intro = gameEngine.getIntro();
-    setOutput([{ type: 'text', content: intro }]);
+    const restored = gameEngine.loadState();
+    if (restored) {
+      const loc = gameEngine.getCurrentLocation();
+      setOutput([{ type: 'text', content: `[Save restored]\n\n${loc.name}\n${loc.description}` }]);
+    } else {
+      const intro = gameEngine.getIntro();
+      setOutput([{ type: 'text', content: intro }]);
+    }
     setGameState(gameEngine.getState());
   }, [gameEngine]);
 
@@ -64,6 +70,7 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remaining
 
       setInput('');
       setGameState(gameEngine.getState());
+      gameEngine.saveState();
       return;
     }
 
@@ -72,8 +79,9 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remaining
       setOutput(prev => [...prev, { type: 'text', content: result }]);
     }
 
-    // Update game state
+    // Update game state and auto-save
     setGameState(gameEngine.getState());
+    gameEngine.saveState();
 
     // Clear input
     setInput('');
@@ -107,7 +115,8 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remaining
   const showQuestions = globalQuestionCount > 0 || (gameState?.location === 'The Game Room' || gameState?.location?.includes('Room'));
 
   const handleReset = () => {
-    // Clear all adventure localStorage flags
+    // Clear game save and all adventure localStorage flags
+    gameEngine.clearSave();
     const keysToRemove = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
