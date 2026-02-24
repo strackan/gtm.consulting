@@ -106,6 +106,19 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remaining
   // Show questions remaining only when in the game room area and questions have been used
   const showQuestions = globalQuestionCount > 0 || (gameState?.location === 'The Game Room' || gameState?.location?.includes('Room'));
 
+  const handleReset = () => {
+    // Clear all adventure localStorage flags
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('ghost_played')) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(k => localStorage.removeItem(k));
+    window.location.reload();
+  };
+
   return (
     <div className="terminal">
       {/* Status Bar */}
@@ -122,6 +135,14 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remaining
           )}
           <span>Score: {gameState?.score || 0}</span>
           <span>Moves: {gameState?.moves || 0}</span>
+          <button
+            className="reset-btn"
+            onClick={handleReset}
+            title="Reset adventure"
+            aria-label="Reset adventure"
+          >
+            &#x21bb;
+          </button>
         </div>
       </div>
 

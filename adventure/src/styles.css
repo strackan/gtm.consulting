@@ -55,6 +55,21 @@ body {
   color: #E8A838;
 }
 
+.status-bar .reset-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.status-bar .reset-btn:hover {
+  color: #888;
+}
+
 /* Output Area */
 .output {
   flex: 1;
