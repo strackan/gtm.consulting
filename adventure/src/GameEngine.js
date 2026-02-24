@@ -397,32 +397,30 @@ export function createGameEngine() {
     const Fo = box('forest',         'FOREST');
 
     // Horizontal connectors
-    const hWF = has('west_of_house', 'front_of_house')  ? '──' : '  ';
-    const hNNS = has('north_of_house', 'north_side')    ? '──' : '  ';
-    const hSSS = has('south_of_house', 'south_side')    ? '──' : '  ';
-    const hBM = v.has('main_room')                      ? '──' : '  ';
-    const hMG = (v.has('game_room') || (v.has('main_room') && state.flags.codeEntered)) ? '──' : '  ';
+    const hWF  = has('west_of_house', 'front_of_house')  ? '──' : '  ';
+    const hNNS = has('north_of_house', 'north_side')     ? '──' : '  ';
+    const hSSS = has('south_of_house', 'south_side')     ? '──' : '  ';
+    const hBM  = v.has('main_room')                      ? '──' : '  ';
 
     // Vertical connectors
     const vON  = has('ocean', 'north_of_house')          ? '│' : ' ';
     const vNF  = has('north_of_house', 'front_of_house') ? '│' : ' ';
     const vSF  = has('south_of_house', 'front_of_house') ? '│' : ' ';
     const vSFo = has('south_of_house', 'forest')         ? '│' : ' ';
-
-    // North side to behind (vertical connector on right side)
     const vNSB = has('north_side', 'behind_house')       ? '│' : ' ';
     const vSSB = has('south_side', 'behind_house')       ? '│' : ' ';
+    const vMG  = (v.has('game_room') || (v.has('main_room') && state.flags.codeEntered)) ? '│' : ' ';
 
     const lines = [
-      `                              ${O}`,
-      `                                  ${vON}`,
-      `                              ${N}${hNNS}${NS}`,
-      `                               / ${vNF}              ${vNSB}`,
-      `${G}${hMG}${M}${hBM}${B}       ${F}${hWF}${W}`,
-      `                               \\ ${vSF}              ${vSSB}`,
-      `                              ${S}${hSSS}${SS}`,
-      `                                  ${vSFo}`,
-      `                              ${Fo}`,
+      `         ${O}`,
+      `             ${vON}`,
+      `         ${N}${hNNS}${NS}`,
+      `          / ${vNF}              ${vNSB}`,
+      `${W}${hWF}${F}              ${B}${hBM}${M}`,
+      `          \\ ${vSF}              ${vSSB}      ${vMG}`,
+      `         ${S}${hSSS}${SS}        ${G}`,
+      `             ${vSFo}`,
+      `         ${Fo}`,
     ];
 
     return lines.join('\n');
