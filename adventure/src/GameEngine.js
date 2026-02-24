@@ -97,6 +97,9 @@ export function createGameEngine() {
       const obj = objects[objId];
       if (!obj) continue;
 
+      // Skip objects gated behind a flag that hasn't been set yet
+      if (obj.requiresFlag && !state.flags[obj.requiresFlag]) continue;
+
       if (objId.toLowerCase() === q) return { id: objId, ...obj };
       if (obj.name.toLowerCase() === q) return { id: objId, ...obj };
       if (obj.aliases && obj.aliases.some(a => a.toLowerCase() === q)) {
@@ -180,7 +183,7 @@ export function createGameEngine() {
       'north': 'north', 'south': 'south', 'east': 'east', 'west': 'west',
       'u': 'up', 'd': 'down', 'up': 'up', 'down': 'down',
       'upstairs': 'up', 'downstairs': 'down',
-      'back': 'back', 'out': 'out'
+      'back': 'back', 'out': 'out', 'exit': 'exit', 'leave': 'leave'
     };
 
     // Resolve relative directions (left/right) based on facing
@@ -257,6 +260,17 @@ export function createGameEngine() {
         return { action: 'move', target: target.slice(6) };
       }
       return { action: verb === 'read' ? 'read' : 'examine', target };
+    }
+
+    // "get in/into X" → enter, "get out" → go out (before take handler claims it)
+    if (verb === 'get' && rest) {
+      if (rest.startsWith('in ') || rest.startsWith('into ')) {
+        const target = rest.startsWith('in ') ? rest.slice(3) : rest.slice(5);
+        return { action: 'enter', target };
+      }
+      if (rest === 'out' || rest.startsWith('out of')) {
+        return { action: 'go', direction: 'out' };
+      }
     }
 
     // Taking — expanded verbs
@@ -436,6 +450,9 @@ export function createGameEngine() {
         const nextLocId = loc.exits[cmd.direction];
 
         if (!nextLocId) {
+          if (state.location === 'boat_interior') {
+            return "You have to leave the boat first, silly.";
+          }
           return "You can't go that way.";
         }
 
@@ -640,16 +657,15 @@ export function createGameEngine() {
           }
         }
 
-        // Check if opening gives an item
+        // Check if opening reveals an item (doesn't auto-take it)
         if (obj.giveItem && obj.giveItemVerbs && obj.giveItemVerbs.includes('open')) {
-          if (!state.inventory.includes(obj.giveItem) && !state.flags[obj.setFlag?.open]) {
-            state.inventory.push(obj.giveItem);
+          if (!state.flags[obj.setFlag?.open]) {
             if (obj.setFlag && obj.setFlag.open) {
               state.flags[obj.setFlag.open] = true;
             }
             return obj.descriptions.open || `You open the ${obj.name}.`;
           } else {
-            return "You've already found what was there.";
+            return `The ${obj.name} is already open.`;
           }
         }
 

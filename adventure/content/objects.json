@@ -41,6 +41,7 @@
     "descriptions": {
       "examine": "A well-worn Phillips screwdriver. The handle has a small sticker — the same fancy robot logo as the toolbox."
     },
+    "requiresFlag": "toolboxOpened",
     "takeable": true,
     "score": 3
   },

@@ -195,12 +195,12 @@
   "boat_interior": {
     "name": "Inside the Boat",
     "description": "You climb into the weathered rowboat. Sand crunches under your feet. One oar leans against the gunwale. Under the bow seat, a rusty toolbox catches your eye.\n\nThe beach is just a step away.",
-    "exits": { "out": "ocean", "back": "ocean" },
+    "exits": { "out": "ocean", "back": "ocean", "exit": "ocean", "leave": "ocean" },
     "look": {
       "left": "To your left, the remaining oar rests against the side of the hull. The wood is sun-bleached and cracked, but it would still hold in a pinch.",
       "right": "To your right, the bow seat. Underneath it, a rusty metal toolbox. The hull has a long crack running from bow to midship — this boat isn't going anywhere."
     },
-    "objects": ["toolbox", "oar"]
+    "objects": ["toolbox", "oar", "screwdriver"]
   },
   "forest": {
     "name": "Edge of Forest",
