@@ -616,10 +616,9 @@ export function createGameEngine() {
 
         const verbKey = cmd.action;
 
-        // Check if this action gives an item
+        // Check if this action reveals an item (doesn't auto-take it)
         if (obj.giveItem && obj.giveItemVerbs && obj.giveItemVerbs.includes(verbKey)) {
-          if (!state.inventory.includes(obj.giveItem) && !state.flags[obj.setFlag?.[verbKey]]) {
-            state.inventory.push(obj.giveItem);
+          if (!state.flags[obj.setFlag?.[verbKey]]) {
             if (obj.setFlag && obj.setFlag[verbKey]) {
               state.flags[obj.setFlag[verbKey]] = true;
             }

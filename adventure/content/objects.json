@@ -86,8 +86,8 @@
     "descriptions": {
       "examine": "A small brass key. It looks like it might fit the back door."
     },
-    "takeable": true,
-    "inInventory": true
+    "requiresFlag": "foundKey",
+    "takeable": true
   },
   "window": {
     "name": "window",

@@ -104,7 +104,7 @@
       "left": "To your left, the path leads south along the house. Ivy covers the wall on that side, thick and dark.",
       "right": "To your right, the path leads north along the house. The whitewash is peeling here, exposing grey wood underneath."
     },
-    "objects": ["door", "mat", "window"]
+    "objects": ["door", "mat", "window", "brass key"]
   },
   "main_room": {
     "name": "Main Room",
