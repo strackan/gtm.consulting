@@ -19,7 +19,7 @@ function buildGhostMaps(objects, locations) {
   return { scenarioMap, roomMap };
 }
 
-export function createGhostTriggers(locations, objects, getCurrentLocation, getCurrentLocationId, getGhostTriggerCallback, getGlobalQuestionCount, getGlobalMaxQuestions) {
+export function createGhostTriggers(locations, objects, getCurrentLocation, getCurrentLocationId, _getGhostTriggerCallback, getGlobalQuestionCount, getGlobalMaxQuestions) {
 
   const { scenarioMap, roomMap } = buildGhostMaps(objects, locations);
 
@@ -30,8 +30,6 @@ export function createGhostTriggers(locations, objects, getCurrentLocation, getC
     const isGhostRoom = currentLoc.ghostRoom === objId;
     const isGameRoom = getCurrentLocationId() === 'game_room';
     if (!isGhostRoom && !isGameRoom) return false;
-
-    if (!getGhostTriggerCallback()) return false;
 
     const hasPlayed = typeof localStorage !== 'undefined' && localStorage.getItem('ghost_played');
     if (hasPlayed) return false;

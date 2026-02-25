@@ -116,12 +116,12 @@
       "left": "To your left, the west wall. The front door is boarded shut from the outside — heavy planks nailed in an X. A portrait of a man with an easy smile hangs beside it.",
       "right": "To your right, the east wall. A phone sits on a small table with a drawer. Above the north wall, a clock with hands frozen at 11:11."
     },
-    "objects": ["portrait", "phone", "clock", "rug", "coded_door", "front_door", "shelf_book"],
+    "objects": ["portrait", "phone", "clock", "rug", "coded_door", "front_door", "shelf_book", "back_page"],
     "indoor": true
   },
   "game_room": {
     "name": "The Game Room",
-    "description": "You descend stone steps into a large, warm room beneath the cottage. Four doorways lead to four different rooms, each with its own atmosphere.\n\nTo the NORTH, through an archway, you see the glow of a desk lamp and the silhouette of a chess set.\n\nTo the EAST, you hear what might be music — something rhythmic, faint — and see the flicker of a monitor.\n\nTo the SOUTH, a dartboard hangs on the wall of a bright, open workspace.\n\nTo the WEST, a heavy mahogany door stands slightly ajar, warm light spilling through the crack.\n\nStone steps lead UP to the main room.",
+    "description": "You descend stone steps into a large, warm room beneath the cottage. Four doorways lead to four different rooms, each with its own atmosphere.\n\nTo the NORTH, through an archway, you see the glow of a desk lamp and the silhouette of a chess set.\n\nTo the EAST, you hear what might be music — something rhythmic, faint — and see the flicker of a monitor.\n\nTo the SOUTH, a dartboard hangs on the wall of a bright, open workspace.\n\nTo the WEST, a heavy mahogany door stands slightly ajar, warm light spilling through the crack.\n\nStone steps lead UP to the main room.\n\nOn the table sits a thick envelope with {visitor_name} written in ornate calligraphy. Next to it, a handwritten letter on ivory paper, folded once.",
     "exits": {
       "up": "main_room",
       "back": "main_room",
@@ -135,7 +135,7 @@
       "left": "To your left, the southern doorway opens into a bright workspace. You can see a dartboard on the far wall, three darts clustered tight. Beyond it, the mahogany door to the west stands slightly ajar, warm amber light leaking through.",
       "right": "To your right, the northern archway glows with lamplight. You can make out the edge of a chess set on a heavy desk. Past it, the eastern doorway flickers — a monitor casting green light, and the faintest sound of music."
     },
-    "objects": [],
+    "objects": ["envelope", "handwritten_letter"],
     "score": 25,
     "indoor": true
   },

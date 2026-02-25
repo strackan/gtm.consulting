@@ -12,6 +12,7 @@ export function createCommandParser(getEnteredFrom) {
     'north': 'north', 'south': 'south', 'east': 'east', 'west': 'west',
     'u': 'up', 'd': 'down', 'up': 'up', 'down': 'down',
     'upstairs': 'up', 'downstairs': 'down',
+    'up stairs': 'up', 'down stairs': 'down',
     'back': 'back', 'out': 'out', 'exit': 'exit', 'leave': 'leave'
   };
 
@@ -138,6 +139,11 @@ export function createCommandParser(getEnteredFrom) {
       return { action: verb, target: rest };
     }
 
+    // Say — deliver a phone message
+    if (verb === 'say') {
+      return { action: 'say', message: rest };
+    }
+
     // Talk/speak/interview — trigger ghost if in character room
     if (['talk', 'speak', 'interview', 'chat', 'sit'].includes(verb)) {
       let target = rest;
@@ -145,6 +151,7 @@ export function createCommandParser(getEnteredFrom) {
       if (target.startsWith('with ')) target = target.slice(5);
       if (target.startsWith('at ')) target = target.slice(3);
       if (target.startsWith('down at ')) target = target.slice(8);
+      if (target === 'down') target = '';
       return { action: 'examine', target: target || '' };
     }
 

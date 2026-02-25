@@ -71,6 +71,11 @@ export function createCommandExecutor(
     return value;
   }
 
+  function personalizeLocationText(text) {
+    const name = getVisitorProfile()?.name || 'your name';
+    return text.replace(/\{visitor_name\}/g, name);
+  }
+
   function checkEasterEgg(input) {
     const normalized = input.toLowerCase().trim();
     for (const category of Object.values(responses)) {
@@ -101,11 +106,12 @@ export function createCommandExecutor(
 
       case 'look': {
         const loc = getCurrentLocation();
+        const desc = personalizeLocationText(loc.description);
         const ghostScenario = locations[state.location]?.ghostRoom;
         if (ghostScenario && !localStorage.getItem('ghost_played') && !localStorage.getItem(`ghost_played_${ghostScenario}`) && getGlobalQuestionCount() < getGlobalMaxQuestions()) {
-          return `${loc.name}\n${loc.description}\n\nThe air feels heavy, expectant. Someone is waiting here. Examine what catches your eye to begin.`;
+          return `${loc.name}\n${desc}\n\nThe air feels heavy, expectant. Someone is waiting here. Examine what catches your eye to begin.`;
         }
-        return `${loc.name}\n${loc.description}`;
+        return `${loc.name}\n${desc}`;
       }
 
       case 'look_direction': {
@@ -144,20 +150,21 @@ export function createCommandExecutor(
           state.flags[`scored_${nextLocId}`] = true;
         }
         const newLoc = locations[nextLocId];
+        const newDesc = personalizeLocationText(newLoc.description);
 
         const ghostScenario = ghostTriggers.checkRoomGhostTrigger(nextLocId);
         if (ghostScenario) {
           const questionsLeft = getGlobalMaxQuestions() - getGlobalQuestionCount();
-          return `${newLoc.name}\n${newLoc.description}\n\nThe air shifts. Someone is here, waiting. You have ${questionsLeft} question${questionsLeft !== 1 ? 's' : ''} remaining.\n\nExamine what catches your eye to begin.`;
+          return `${newLoc.name}\n${newDesc}\n\nThe air shifts. Someone is here, waiting. You have ${questionsLeft} question${questionsLeft !== 1 ? 's' : ''} remaining.\n\nExamine what catches your eye to begin.`;
         }
 
         if (nextLocId === 'game_room' && !state.flags.ghost_intro_shown && !localStorage.getItem('ghost_played')) {
           state.flags.ghost_intro_shown = true;
           const questionsLeft = getGlobalMaxQuestions() - getGlobalQuestionCount();
-          return `${newLoc.name}\n${newLoc.description}\n\nFour rooms. Four customers. ${questionsLeft} question${questionsLeft !== 1 ? 's' : ''} remaining.\n\nChoose a direction to enter a room.`;
+          return `${newLoc.name}\n${newDesc}\n\nFour rooms. Four customers. ${questionsLeft} question${questionsLeft !== 1 ? 's' : ''} remaining.\n\nChoose a direction to enter a room.`;
         }
 
-        return `${newLoc.name}\n${newLoc.description}`;
+        return `${newLoc.name}\n${newDesc}`;
       }
 
       case 'row': {
@@ -181,6 +188,10 @@ export function createCommandExecutor(
       }
 
       case 'examine': {
+        // In a ghost room with no specific target (e.g. "sit down"), target the ghost object
+        if (!cmd.target && locations[state.location]?.ghostRoom) {
+          cmd.target = locations[state.location].ghostRoom;
+        }
         if (!cmd.target) {
           return getCurrentLocation().description;
         }
@@ -396,10 +407,26 @@ export function createCommandExecutor(
         }
 
         if (obj.descriptions.use) {
+          if (obj.setFlag && obj.setFlag.use) {
+            state.flags[obj.setFlag.use] = true;
+          }
           return obj.descriptions.use;
         }
 
         return "You're not sure how to use that.";
+      }
+
+      case 'say': {
+        if (!state.flags.holdingPhone) {
+          return "You speak into the empty room. No one's listening. Maybe try picking up a phone first.";
+        }
+        if (state.flags.phoneMsgSent) {
+          return "The line's gone quiet. Your message was already sent.";
+        }
+        if (!cmd.message) {
+          return "Say what? Type SAY followed by your message.";
+        }
+        return { type: 'phone_message', message: cmd.message, displayText: `You speak into the receiver: "${cmd.message}"` };
       }
 
       case 'code_hint': {
@@ -463,6 +490,7 @@ ACTIONS:  look, look around, look left/right, examine/x [object]
           read [object], take/get/grab/pocket [object]
           open [object], unlock [object], enter [object]
           move/lift [object], make wine
+          use [object], say [message] (after using phone)
 GHOST:    In a customer room, examine objects to begin. Type LEAVE to exit early.
 SPECIAL:  inventory/i, exits, map, help`;
 

@@ -142,8 +142,11 @@
     "aliases": ["rotary phone", "telephone"],
     "descriptions": {
       "examine": "An old rotary phone sits on a small table. It has a satisfying weight to it. There's a small drawer in the table beneath it.",
-      "use": "You pick up the receiver and hear a warm voice: \"Hey, glad you made it this far. If you want to talk for real, check the drawer.\"",
+      "use": "You pick up the receiver. There's a crackle, then a voice — warm, unhurried:\n\n\"Hello! It's Justin. Well, a recording of Justin. The real one is probably drinking coffee somewhere.\n\nListen — if you've made it this far, you're my kind of person. Most people don't get past the mailbox.\n\nIf you want to leave me a message, just SAY whatever's on your mind. I'll hear it.\n\nOr if you'd rather talk for real, check the drawer.\"\n\nThe line stays open, waiting.",
       "open": "You open the drawer and find a business card with clean, simple text:\n\n\"Ready to talk?\nBook a conversation: calendly.com/justinstrackany\n\nOr just reply to whatever email brought you here.\n\nNo pitch deck. No pressure. Just a conversation about what's possible.\""
+    },
+    "setFlag": {
+      "use": "holdingPhone"
     },
     "takeable": false
   },
@@ -346,6 +349,57 @@
     "personalization": {
       "examine": { "condition": "visitorProfile.executive_summary", "template": "examine_personalized", "replacements": { "{name}": "visitorProfile.name" } },
       "read": { "condition": "visitorProfile.executive_summary", "template": "read_personalized", "replacements": { "{name}": "visitorProfile.name", "{executive_summary}": "visitorProfile.executive_summary" } }
+    },
+    "setFlag": {
+      "read": "readBook"
+    },
+    "takeable": false
+  },
+  "envelope": {
+    "name": "envelope",
+    "aliases": ["envelope", "letter", "note", "handwritten letter", "handwritten envelope"],
+    "descriptions": {
+      "examine": "A thick envelope made of cream-colored paper. 'Your name' is written on the front in ornate calligraphy. The seal is broken — it's been waiting for you.",
+      "examine_personalized": "A thick envelope made of cream-colored paper. '{name}' is written on the front in ornate calligraphy. The seal is broken — it's been waiting for you.",
+      "read": "You unfold the letter inside.\n\n\"Hey friend,\n\nIf you're reading this, you've made it past the locked door, the trapdoor code, and into the game room. Nice work.\n\nHere's the deal: there are four rooms down here. In each one, a customer is waiting — someone with a real problem, a ticking clock, and a story they'll only tell if you ask the right questions.\n\nYou get 10 questions total. Across all four rooms. Spend them wisely.\n\nWhen you're done, head back upstairs. There's a book on the shelf with your name on it — consider it a gift. Check the back page before you leave.\n\nAnd if you find the phone... well, say what you need to say.\n\nGood luck.\n\n— Justin\"",
+      "read_personalized": "You unfold the letter inside.\n\n\"Hey {name},\n\nIf you're reading this, you've made it past the locked door, the trapdoor code, and into the game room. Nice work.\n\nHere's the deal: there are four rooms down here. In each one, a customer is waiting — someone with a real problem, a ticking clock, and a story they'll only tell if you ask the right questions.\n\nYou get 10 questions total. Across all four rooms. Spend them wisely.\n\nWhen you're done, head back upstairs. There's a book on the shelf with your name on it — consider it a gift. Check the back page before you leave.\n\nAnd if you find the phone... well, say what you need to say.\n\nGood luck.\n\n— Justin\""
+    },
+    "personalization": {
+      "examine": { "condition": "visitorProfile.name", "template": "examine_personalized", "replacements": { "{name}": "visitorProfile.name" } },
+      "read": { "condition": "visitorProfile.name", "template": "read_personalized", "replacements": { "{name}": "visitorProfile.name" } }
+    },
+    "takeable": false
+  },
+  "handwritten_letter": {
+    "name": "handwritten letter",
+    "aliases": ["handwritten letter", "handwritten note", "personal letter", "folded letter", "table letter"],
+    "descriptions": {
+      "examine": "A folded letter on the corner of the table, written on thick ivory paper. The handwriting is loose and unhurried — someone took their time.",
+      "examine_personalized": "A folded letter on the corner of the table, written on thick ivory paper. \"{name}\" is written on the front in careful, unhurried handwriting.",
+      "read": "You unfold the letter.\n\n\"Hey —\n\nIf you made it this far, you're not the kind of person who skips to the answer.\n\nThe four people in these rooms are composites of real customers I've worked with. Real stakes, real pressure, real moments where the right question changed everything.\n\nThis game isn't about scoring points. It's about listening.\n\nGood luck down here.\n\n— Justin\"",
+      "read_personalized": "You unfold the letter.\n\n\"Hey {name},\n\nI made this for you. Not a deck, not a case study — something you actually have to engage with.\n\nYou're {role} at {company}. I know the kind of conversations you're in every day. The four people in these rooms will feel familiar.\n\nThis isn't about scoring points. It's about listening — really listening — the way you have to when the renewal is on the line and the customer hasn't told you what's actually wrong yet.\n\nI think you'll be good at this.\n\n— Justin\""
+    },
+    "personalization": {
+      "examine": { "condition": "visitorProfile.name", "template": "examine_personalized", "replacements": { "{name}": "visitorProfile.name" } },
+      "read": { "condition": "visitorProfile.company", "template": "read_personalized", "replacements": { "{name}": "visitorProfile.name", "{role}": "visitorProfile.role", "{company}": "visitorProfile.company" } }
+    },
+    "takeable": false
+  },
+  "back_page": {
+    "name": "back page",
+    "aliases": ["back page", "back cover", "back of book", "last page", "inside back cover", "back of the book"],
+    "requiresFlag": "readBook",
+    "descriptions": {
+      "examine": "The back of the book. There seems to be something written in pencil on the inside back cover.",
+      "read": "You flip to the back cover. The pages are blank.",
+      "read_personalized": "You flip to the inside of the back cover. In barely visible pencil, someone has written:\n\n\"{secret_message}\"\n\nWhat an odd thing to write in a book. Maybe someone needs to hear this message?"
+    },
+    "personalization": {
+      "read": {
+        "condition": "visitorProfile.secret_message",
+        "template": "read_personalized",
+        "replacements": { "{secret_message}": "visitorProfile.secret_message" }
+      }
     },
     "takeable": false
   }
