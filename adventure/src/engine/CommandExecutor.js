@@ -522,6 +522,11 @@ SPECIAL:  inventory/i, exits, map, help`;
       }
 
       case 'unknown': {
+        // If the phone is active, treat any unrecognized input as speech
+        if (state.flags.holdingPhone && !state.flags.phoneMsgSent) {
+          return { type: 'phone_message', message: cmd.original, displayText: `You speak into the receiver: "${cmd.original}"` };
+        }
+
         const easterEgg = checkEasterEgg(cmd.original);
         if (easterEgg) {
           state.unknownStreak = 0;
