@@ -116,7 +116,8 @@
       "left": "To your left, the west wall. The front door is boarded shut from the outside — heavy planks nailed in an X. A portrait of a man with an easy smile hangs beside it.",
       "right": "To your right, the east wall. A phone sits on a small table with a drawer. Above the north wall, a clock with hands frozen at 11:11."
     },
-    "objects": ["portrait", "phone", "clock", "rug", "coded_door", "front_door", "shelf_book"]
+    "objects": ["portrait", "phone", "clock", "rug", "coded_door", "front_door", "shelf_book"],
+    "indoor": true
   },
   "game_room": {
     "name": "The Game Room",
@@ -135,7 +136,8 @@
       "right": "To your right, the northern archway glows with lamplight. You can make out the edge of a chess set on a heavy desk. Past it, the eastern doorway flickers — a monitor casting green light, and the faintest sound of music."
     },
     "objects": [],
-    "score": 25
+    "score": 25,
+    "indoor": true
   },
   "tommy_room": {
     "name": "Tommy's Room",
@@ -146,7 +148,8 @@
       "right": "To your right, a filing cabinet with one drawer slightly open. The Grizzlies mug sits on the desk edge, a dark ring stained into the wood beneath it. Someone drinks a lot of coffee and doesn't use coasters."
     },
     "objects": ["chess", "tommy_coin", "tommy_mug"],
-    "ghostRoom": "chess"
+    "ghostRoom": "chess",
+    "indoor": true
   },
   "reena_room": {
     "name": "Reena's Room",
@@ -157,7 +160,8 @@
       "right": "To your right, the standing desk. Three dark monitors and a notebook splayed open, pen resting in the crease. The page is a mess — lists rewritten, numbers crossed out, arrows pointing nowhere. Someone's been agonizing."
     },
     "objects": ["dartboard", "reena_violets", "reena_notebook"],
-    "ghostRoom": "dartboard"
+    "ghostRoom": "dartboard",
+    "indoor": true
   },
   "deck_room": {
     "name": "Deck's Room",
@@ -168,7 +172,8 @@
       "right": "To your right, the desk. Terminal scrolling green text, mechanical keyboard with worn keycaps, and the drawing — \"DADDY + ME\" in crayon, the letters getting bigger like she ran out of room. A cold energy drink can sits next to the keyboard."
     },
     "objects": ["puzzle", "deck_guitar", "deck_drawing"],
-    "ghostRoom": "puzzle"
+    "ghostRoom": "puzzle",
+    "indoor": true
   },
   "maggie_room": {
     "name": "Maggie's Room",
@@ -179,7 +184,8 @@
       "right": "To your right, the side table with the solitaire layout. Every card placed with intention. A reading lamp casts warm light over the arrangement. Beside it, a folded copy of the Wall Street Journal — today's edition, already read."
     },
     "objects": ["cards", "maggie_photo", "maggie_mug"],
-    "ghostRoom": "cards"
+    "ghostRoom": "cards",
+    "indoor": true
   },
   "ocean": {
     "name": "Rocky Beach",
@@ -211,6 +217,16 @@
       "right": "To your right, the undergrowth thickens into a wall of green. Grapevines coil around the trunks, heavy with dark fruit. The canopy closes overhead. It's darker that way. Quieter."
     },
     "objects": ["vines"],
-    "score": 5
+    "score": 5,
+    "locationActions": {
+      "make_wine": {
+        "notHere": "There's nothing here to make wine with.",
+        "alreadyDone": { "flag": "madeWine", "message": "You already made wine. One glass is enough for an adventure." },
+        "success": "You grab a fistful of ripe grapes off the vine and somehow — with nothing but bare hands and sheer determination — smash them into a quaffable glass of table wine.\n\nIt's not great. But it's yours.\n\n(+5 points. A glass of wine has been added to your inventory.)",
+        "giveItem": "glass of wine",
+        "setFlag": "madeWine",
+        "score": 5
+      }
+    }
   }
 }

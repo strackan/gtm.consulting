@@ -7,6 +7,9 @@
       "read": "You unfold the letter and read:\n\n\"Hey! Welcome to gtm.consulting.\n\nMost consultants give you a pitch deck. I made you an adventure.\n\nIf you're here, you're probably wondering how AI actually transforms executive work -- not in theory, but in practice. Not in jargon, but in joy.\n\nExplore. Have fun. Type HELP if you get stuck.\n\nI'm excited to see where you go.\n\n- Justin\"",
       "open": "You open the mailbox. There's a letter inside. (Try: READ LETTER)"
     },
+    "personalization": {
+      "read": { "condition": "visitorProfile", "handler": "mailbox_letter" }
+    },
     "takeable": false,
     "setFlag": {
       "read": "readMailbox"
@@ -114,6 +117,9 @@
       "open": "You open the door and step inside.",
       "open_locked": "The door is locked."
     },
+    "personalization": {
+      "examine": { "condition": "flags.doorUnlocked", "template": "examine_unlocked" }
+    },
     "requiresItem": "brass key",
     "requiresItemVerbs": ["unlock"],
     "teleportVerbs": ["open", "enter"],
@@ -177,7 +183,8 @@
     "acceptsCode": true,
     "correctCode": "1111",
     "codeSuccess": "The keypad beeps cheerfully. You hear a heavy click, and the trapdoor swings open. Stone steps lead down.",
-    "codeFail": "The keypad beeps sadly. That's not the right code."
+    "codeFail": "The keypad beeps sadly. That's not the right code.",
+    "codeUnlocksExit": { "location": "main_room", "direction": "down", "target": "game_room" }
   },
   "front_door": {
     "name": "front door",
@@ -217,6 +224,7 @@
   "chess": {
     "name": "chess set",
     "aliases": ["chess", "chess set", "chess pieces", "chessboard", "tommy"],
+    "ghostScenario": "chess",
     "descriptions": {
       "examine": "A beautiful chess set, carved from dark and light wood. The pieces are arranged mid-game — a complex position where both sides have chances.\n\nAs you reach for the board, the air thickens. You sense someone across the table — stocky, crew cut, the ghost of black coffee on his breath.\n\nSit down?",
       "ghost": "A beautiful chess set. The pieces are frozen mid-game. As you approach, the chair across from you seems occupied — a flicker, like heat haze.\n\nYou feel the weight of someone's gaze.",
@@ -228,6 +236,7 @@
   "dartboard": {
     "name": "dartboard",
     "aliases": ["dartboard", "dart board", "darts", "board", "reena"],
+    "ghostScenario": "dartboard",
     "descriptions": {
       "examine": "A well-used dartboard. Three darts cluster near the bullseye — someone here doesn't miss.\n\nAs you step closer, you hear a nervous laugh. A woman sits at the table beside the board, notebook open, pen tapping. She looks up with bright eyes and maybe a little too much energy.\n\nSit down?",
       "ghost": "The dartboard. Three darts, tight cluster. The chair beside it feels warm, like someone just stood up. You catch the faint scent of African violet.",
@@ -239,6 +248,7 @@
   "puzzle": {
     "name": "puzzle",
     "aliases": ["puzzle", "jigsaw", "deck", "deckard"],
+    "ghostScenario": "puzzle",
     "descriptions": {
       "examine": "An intricate puzzle, half-completed. The image emerging is a system architecture diagram — boxes, arrows, dependencies.\n\nA monitor flickers on the desk beside it. A guy in a black t-shirt sits with his feet up, mechanical keyboard on his lap. He doesn't smile. Doesn't frown. Just looks at you.\n\nSit down?",
       "ghost": "The puzzle. Half-finished architecture diagram. The desk lamp is on and you can see terminal output scrolling on the monitor. Someone was here moments ago.",
@@ -250,6 +260,7 @@
   "cards": {
     "name": "deck of cards",
     "aliases": ["cards", "deck", "card deck", "deck of cards", "maggie", "margaret"],
+    "ghostScenario": "cards",
     "descriptions": {
       "examine": "A pristine deck of cards in a complex solitaire layout. Every option visible, nothing left to chance.\n\nA woman sits at the desk behind the cards — back straight, reading glasses on, reviewing a document. She takes off her glasses and regards you with steady blue eyes.\n\nSit down?",
       "ghost": "The cards. Perfect solitaire layout. The desk behind them has a coffee mug — chipped, reads 'I Survived Y2K.' A framed photo faces away from you.",
@@ -331,6 +342,10 @@
       "examine_personalized": "A low shelf holds a few dog-eared books. One stands out — your name, {name}, is embossed on the cover in gold leaf.",
       "read": "You flip through the books. Business strategy, a dog-eared copy of 'The Hard Thing About Hard Things,' and a few others. Nothing personal.",
       "read_personalized": "You open the book with your name on it. Inside the front cover, a handwritten inscription:\n\n\"For {name} —\n\nI wrote this after spending time with your work. Consider it a thank-you for being interesting.\n\n— Justin\"\n\nYou turn the page and begin reading:\n\n{executive_summary}\n\n---\n\nP.S. If any of this resonates — or if I got something wrong — I'd love to hear about it.\n\nBook a conversation: calendly.com/justinstrackany\nOr just reply to whatever brought you here."
+    },
+    "personalization": {
+      "examine": { "condition": "visitorProfile.executive_summary", "template": "examine_personalized", "replacements": { "{name}": "visitorProfile.name" } },
+      "read": { "condition": "visitorProfile.executive_summary", "template": "read_personalized", "replacements": { "{name}": "visitorProfile.name", "{executive_summary}": "visitorProfile.executive_summary" } }
     },
     "takeable": false
   }
