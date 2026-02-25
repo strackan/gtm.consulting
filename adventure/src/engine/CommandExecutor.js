@@ -270,6 +270,11 @@ export function createCommandExecutor(
           return "You don't see that here.";
         }
 
+        // "pick up phone" / "take phone" → use the phone
+        if (obj.id === 'phone') {
+          return execute({ action: 'use', target: cmd.target });
+        }
+
         if (obj.inInventory) {
           return "You already have that.";
         }
