@@ -122,6 +122,10 @@ export function createGameEngine() {
     ghostTriggerCallback = callback;
   }
 
+  function setFlag(flag, value = true) {
+    state.flags[flag] = value;
+  }
+
   function setGlobalQuestionCount(count, max) {
     globalQuestionCount = count;
     globalMaxQuestions = max;
@@ -135,6 +139,7 @@ export function createGameEngine() {
     setVisitorProfile,
     onGhostTrigger,
     setGlobalQuestionCount,
+    setFlag,
     saveState: persistence.saveState,
     loadState: persistence.loadState,
     clearSave: persistence.clearSave,

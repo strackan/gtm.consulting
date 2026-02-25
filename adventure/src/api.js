@@ -34,6 +34,23 @@ export async function lookupVisitor(slug) {
 }
 
 /**
+ * Send a phone message from the adventure (fire-and-forget).
+ * Posts to founder_os.messages via edge function.
+ */
+export async function postPhoneMessage(visitorId, visitorName, message) {
+  if (!SUPABASE_URL) return;
+  try {
+    await fetch(fnUrl('adventure-phone-message'), {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ visitor_id: visitorId, visitor_name: visitorName, message }),
+    });
+  } catch {
+    // Non-critical — don't block the UX
+  }
+}
+
+/**
  * Stream a ghost customer chat response.
  * Returns a ReadableStream of text chunks.
  * The last chunk may contain <!-- METADATA: {...} --> which should be stripped and parsed.

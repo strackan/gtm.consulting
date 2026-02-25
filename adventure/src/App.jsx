@@ -98,6 +98,11 @@ function App() {
     }
   }, [gameEngine]);
 
+  // Register ghost trigger callback so the engine knows ghost mode is available
+  useEffect(() => {
+    gameEngine.onGhostTrigger(handleGhostTrigger);
+  }, [gameEngine, handleGhostTrigger]);
+
   // Expose globalQuestionCount to the game engine for status bar
   useEffect(() => {
     gameEngine.setGlobalQuestionCount(globalQuestionCount, GLOBAL_MAX_QUESTIONS);

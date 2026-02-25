@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { postPhoneMessage } from './api';
 
 export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remainingQuestions, globalQuestionCount, maxQuestions }) {
   const [output, setOutput] = useState([]);
@@ -67,6 +68,26 @@ export function Terminal({ gameEngine, onGhostTrigger, visitorProfile, remaining
       setTimeout(() => {
         onGhostTrigger(result.scenarioId);
       }, 1500);
+
+      setInput('');
+      setGameState(gameEngine.getState());
+      gameEngine.saveState();
+      return;
+    }
+
+    // Check if the result is a phone message signal
+    if (result && typeof result === 'object' && result.type === 'phone_message') {
+      // Show what the player said
+      setOutput(prev => [...prev, { type: 'text', content: result.displayText }]);
+
+      // Fire-and-forget API call
+      postPhoneMessage(visitorProfile?.id, visitorProfile?.name, result.message);
+
+      // Show confirmation
+      setOutput(prev => [...prev, { type: 'text', content: '\nThe phone crackles. A warm voice: "Got it. I\'ll make sure Justin sees that. Thanks for playing."' }]);
+
+      // Set flag so they can't send another
+      gameEngine.setFlag('phoneMsgSent');
 
       setInput('');
       setGameState(gameEngine.getState());
