@@ -98,16 +98,6 @@ function App() {
     }
   }, [gameEngine]);
 
-  // Register ghost trigger callback so the engine knows ghost mode is available
-  useEffect(() => {
-    gameEngine.onGhostTrigger(handleGhostTrigger);
-  }, [gameEngine, handleGhostTrigger]);
-
-  // Expose globalQuestionCount to the game engine for status bar
-  useEffect(() => {
-    gameEngine.setGlobalQuestionCount(globalQuestionCount, GLOBAL_MAX_QUESTIONS);
-  }, [gameEngine, globalQuestionCount]);
-
   const handlePasskey = useCallback(async (slug) => {
     const profile = await lookupVisitor(slug);
     if (!profile) throw new Error('Not found');
@@ -127,6 +117,16 @@ function App() {
     setSessionData(null);
     setMode('ghost');
   }, []);
+
+  // Register ghost trigger callback so the engine knows ghost mode is available
+  useEffect(() => {
+    gameEngine.onGhostTrigger(handleGhostTrigger);
+  }, [gameEngine, handleGhostTrigger]);
+
+  // Expose globalQuestionCount to the game engine for status bar
+  useEffect(() => {
+    gameEngine.setGlobalQuestionCount(globalQuestionCount, GLOBAL_MAX_QUESTIONS);
+  }, [gameEngine, globalQuestionCount]);
 
   const handleGhostComplete = useCallback((transcript, factsDiscovered, maxRapport) => {
     const questionsUsed = transcript.filter(m => m.role === 'user').length;
