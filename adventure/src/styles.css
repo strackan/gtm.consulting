@@ -983,9 +983,39 @@ body {
   text-align: right;
 }
 
-.tape-difficulty {
-  color: #E8A838;
-  letter-spacing: -1px;
+.tape-arr {
+  color: #4A9D4A;
+  font-weight: 500;
+}
+
+.tape-reason {
+  color: #E84038;
+  font-size: 12px;
+}
+
+.tape-stat-row-reason {
+  margin-bottom: 12px;
+}
+
+/* Difficulty bar — CSS segments instead of Unicode */
+.tape-diff-bar {
+  display: inline-flex;
+  gap: 3px;
+  vertical-align: middle;
+}
+
+.tape-diff-seg {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+}
+
+.tape-diff-filled {
+  background-color: #E8A838;
+}
+
+.tape-diff-empty {
+  background-color: #333;
 }
 
 .tape-prompt {

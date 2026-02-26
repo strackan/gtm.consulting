@@ -16,10 +16,14 @@ const difficultyMap = {
   cards: 4,     // Maggie — formal, layered, requires patience
 };
 
-function renderDifficultyBar(level) {
-  const filled = '\u2588'.repeat(level);
-  const empty = '\u2591'.repeat(5 - level);
-  return filled + empty;
+function DifficultyBar({ level }) {
+  const segments = [];
+  for (let i = 0; i < 5; i++) {
+    segments.push(
+      <span key={i} className={`tape-diff-seg ${i < level ? 'tape-diff-filled' : 'tape-diff-empty'}`} />
+    );
+  }
+  return <span className="tape-diff-bar">{segments}</span>;
 }
 
 export function TaleOfTheTape({ scenario, onReady }) {
@@ -41,7 +45,7 @@ export function TaleOfTheTape({ scenario, onReady }) {
     containerRef.current?.focus();
   }, []);
 
-  const { character, headline, datePressure, totalFacts, id } = scenario;
+  const { character, headline, datePressure, totalFacts, id, arr, statedChurnReason } = scenario;
   const avatarUrl = avatarUrls[id] || avatarUrls.chess;
   const difficulty = difficultyMap[id] || 3;
 
@@ -74,8 +78,16 @@ export function TaleOfTheTape({ scenario, onReady }) {
             <span className="tape-stat-value">{headline}</span>
           </div>
           <div className="tape-stat-row">
+            <span className="tape-stat-label">ARR</span>
+            <span className="tape-stat-value tape-arr">{arr}</span>
+          </div>
+          <div className="tape-stat-row">
             <span className="tape-stat-label">Clock</span>
             <span className="tape-stat-value">{datePressure}</span>
+          </div>
+          <div className="tape-stat-row tape-stat-row-reason">
+            <span className="tape-stat-label">Stated Reason</span>
+            <span className="tape-stat-value tape-reason">{statedChurnReason}</span>
           </div>
           <div className="tape-stat-row">
             <span className="tape-stat-label">Signals</span>
@@ -83,7 +95,7 @@ export function TaleOfTheTape({ scenario, onReady }) {
           </div>
           <div className="tape-stat-row">
             <span className="tape-stat-label">Difficulty</span>
-            <span className="tape-stat-value tape-difficulty">{renderDifficultyBar(difficulty)}</span>
+            <span className="tape-stat-value"><DifficultyBar level={difficulty} /></span>
           </div>
         </div>
 
