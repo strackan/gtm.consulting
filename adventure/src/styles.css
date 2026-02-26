@@ -236,6 +236,16 @@ body {
   color: #D4D4D4;
 }
 
+.ghost-message.system {
+  color: #888;
+  border-left: 2px solid #4A9D4A;
+  padding-left: 12px;
+  margin: 8px 0;
+  white-space: pre-line;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .ghost-label {
   color: #666;
   margin-right: 8px;
@@ -954,7 +964,7 @@ body {
 .tape-company {
   color: #666;
   font-size: 13px;
-  margin-bottom: 24px;
+  margin-bottom: 4px;
 }
 
 .tape-stats-divider {
@@ -986,6 +996,8 @@ body {
 .tape-arr {
   color: #4A9D4A;
   font-weight: 500;
+  font-size: 15px;
+  margin-bottom: 24px;
 }
 
 .tape-reason {

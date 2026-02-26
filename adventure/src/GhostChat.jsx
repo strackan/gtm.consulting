@@ -90,8 +90,21 @@ export function GhostChat({ scenario, visitorProfile, onComplete, maxQuestionsPe
     const trimmedInput = input.trim();
     if (!trimmedInput || isWaiting || isEnding) return;
 
-    // Check for early exit commands
+    // Check for special commands
     const upperInput = trimmedInput.toUpperCase();
+
+    // TALE — restate the dossier
+    if (['TALE', 'DOSSIER', 'TAPE', 'STATS', 'CARD', 'INTRO'].includes(upperInput)) {
+      setInput('');
+      const { character, headline, datePressure, arr, statedChurnReason, totalFacts } = scenario;
+      setMessages(prev => [...prev, {
+        role: 'system',
+        content: `── TALE OF THE TAPE ──\n${character.name} · ${character.title}\n${character.company} · ${arr}\n\nScenario: ${headline}\nDeadline: ${datePressure}\nStated Reason: ${statedChurnReason}\nSignals: ${totalFacts} hidden facts`
+      }]);
+      return;
+    }
+
+    // LEAVE — early exit
     if (upperInput === 'LEAVE' || upperInput === 'DONE' || upperInput === 'EXIT') {
       setInput('');
       setMessages(prev => [...prev, { role: 'user', content: trimmedInput }]);
@@ -260,7 +273,7 @@ export function GhostChat({ scenario, visitorProfile, onComplete, maxQuestionsPe
             className="input-field"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={isWaiting ? 'waiting...' : `${questionsRemaining} questions remain — type LEAVE to exit early`}
+            placeholder={isWaiting ? 'waiting...' : `${questionsRemaining} questions remain — TALE for dossier, LEAVE to exit`}
             disabled={isWaiting}
             autoFocus
             autoComplete="off"

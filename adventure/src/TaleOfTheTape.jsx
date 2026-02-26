@@ -69,6 +69,7 @@ export function TaleOfTheTape({ scenario, onReady }) {
         <div className="tape-name">{character.name.toUpperCase()}</div>
         <div className="tape-role">{character.title}</div>
         <div className="tape-company">{character.company}</div>
+        <div className="tape-arr">{arr}</div>
 
         <div className="tape-stats-divider"></div>
 
@@ -78,11 +79,7 @@ export function TaleOfTheTape({ scenario, onReady }) {
             <span className="tape-stat-value">{headline}</span>
           </div>
           <div className="tape-stat-row">
-            <span className="tape-stat-label">ARR</span>
-            <span className="tape-stat-value tape-arr">{arr}</span>
-          </div>
-          <div className="tape-stat-row">
-            <span className="tape-stat-label">Clock</span>
+            <span className="tape-stat-label">Deadline</span>
             <span className="tape-stat-value">{datePressure}</span>
           </div>
           <div className="tape-stat-row tape-stat-row-reason">
