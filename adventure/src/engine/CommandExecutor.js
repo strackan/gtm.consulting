@@ -405,6 +405,28 @@ export function createCommandExecutor(
         return "You can't enter that.";
       }
 
+      case 'close': {
+        const obj = objectResolver.findObject(cmd.target);
+        if (!obj) {
+          return "You don't see that here.";
+        }
+
+        // Hanging up the phone clears holdingPhone
+        if (obj.id === 'phone' && state.flags.holdingPhone) {
+          state.flags.holdingPhone = false;
+          return obj.descriptions.close || "You put it down.";
+        }
+
+        if (obj.descriptions.close) {
+          if (obj.setFlag && obj.setFlag.close) {
+            state.flags[obj.setFlag.close] = true;
+          }
+          return obj.descriptions.close;
+        }
+
+        return "You can't close that.";
+      }
+
       case 'use': {
         const obj = objectResolver.findObject(cmd.target);
         if (!obj) {

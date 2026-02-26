@@ -139,14 +139,16 @@
   },
   "phone": {
     "name": "phone",
-    "aliases": ["rotary phone", "telephone"],
+    "aliases": ["rotary phone", "telephone", "drawer", "table drawer", "phone table", "small table"],
     "descriptions": {
       "examine": "An old rotary phone sits on a small table. It has a satisfying weight to it. There's a small drawer in the table beneath it.",
       "use": "You pick up the receiver. There's a crackle, then a voice — warm, unhurried:\n\n\"Hello! It's Justin. Well, a recording of Justin. The real one is probably drinking coffee somewhere.\n\nListen — if you've made it this far, you're my kind of person. Most people don't get past the mailbox.\n\nIf you want to leave me a message, just SAY whatever's on your mind. I'll hear it.\n\nOr if you'd rather talk for real, check the drawer.\"\n\nThe line stays open, waiting.",
-      "open": "You open the drawer and find a business card with clean, simple text:\n\n\"Ready to talk?\nBook a conversation: calendly.com/justinstrackany\n\nOr just reply to whatever email brought you here.\n\nNo pitch deck. No pressure. Just a conversation about what's possible.\""
+      "open": "You open the drawer and find a business card with clean, simple text:\n\n\"Ready to talk?\nBook a conversation: calendly.com/justinstrackany\n\nOr just reply to whatever email brought you here.\n\nNo pitch deck. No pressure. Just a conversation about what's possible.\"",
+      "close": "You place the receiver back on the cradle. The line goes quiet."
     },
     "setFlag": {
-      "use": "holdingPhone"
+      "use": "holdingPhone",
+      "close": "phoneHungUp"
     },
     "takeable": false
   },

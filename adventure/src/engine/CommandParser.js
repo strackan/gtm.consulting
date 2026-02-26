@@ -134,6 +134,13 @@ export function createCommandParser(getEnteredFrom) {
       return { action: 'unlock', target };
     }
 
+    // Hang up / put down phone
+    if (normalized === 'hang up' || normalized === 'hang up phone' ||
+        normalized === 'put down phone' || normalized === 'put phone down' ||
+        normalized === 'put down receiver' || normalized === 'put receiver down') {
+      return { action: 'close', target: 'phone' };
+    }
+
     // Using/Opening/Unlocking
     if (['use', 'open', 'unlock', 'close'].includes(verb)) {
       return { action: verb, target: rest };
