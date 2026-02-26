@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { streamGhostChat, extractMetadata } from './api';
 
-export function GhostChat({ scenario, visitorProfile, onComplete, remainingQuestions: globalRemaining }) {
+export function GhostChat({ scenario, visitorProfile, onComplete, maxQuestionsPerSession = 5 }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
@@ -16,8 +16,7 @@ export function GhostChat({ scenario, visitorProfile, onComplete, remainingQuest
   const outputRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Use global remaining questions as the limit for this session
-  const maxQuestions = globalRemaining || 10;
+  const maxQuestions = maxQuestionsPerSession;
 
   // Show intro message on mount
   useEffect(() => {

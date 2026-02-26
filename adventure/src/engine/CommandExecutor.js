@@ -38,7 +38,12 @@ export function createCommandExecutor(
       let text = obj.descriptions[spec.template];
       if (spec.replacements) {
         for (const [placeholder, path] of Object.entries(spec.replacements)) {
-          text = text.replace(placeholder, resolveDataPath(path) || '');
+          let value = resolveDataPath(path) || '';
+          // Support first_name extraction from full name
+          if (placeholder === '{first_name}' && value) {
+            value = value.split(' ')[0];
+          }
+          text = text.replaceAll(placeholder, value);
         }
       }
       return text;
@@ -108,7 +113,7 @@ export function createCommandExecutor(
         const loc = getCurrentLocation();
         const desc = personalizeLocationText(loc.description);
         const ghostScenario = locations[state.location]?.ghostRoom;
-        if (ghostScenario && !localStorage.getItem('ghost_played') && !localStorage.getItem(`ghost_played_${ghostScenario}`) && getGlobalQuestionCount() < getGlobalMaxQuestions()) {
+        if (ghostScenario && !localStorage.getItem(`ghost_played_${ghostScenario}`) && getGlobalQuestionCount() < getGlobalMaxQuestions()) {
           return `${loc.name}\n${desc}\n\nThe air feels heavy, expectant. Someone is waiting here. Examine what catches your eye to begin.`;
         }
         return `${loc.name}\n${desc}`;
@@ -158,7 +163,7 @@ export function createCommandExecutor(
           return `${newLoc.name}\n${newDesc}\n\nThe air shifts. Someone is here, waiting. You have ${questionsLeft} question${questionsLeft !== 1 ? 's' : ''} remaining.\n\nExamine what catches your eye to begin.`;
         }
 
-        if (nextLocId === 'game_room' && !state.flags.ghost_intro_shown && !localStorage.getItem('ghost_played')) {
+        if (nextLocId === 'game_room' && !state.flags.ghost_intro_shown) {
           state.flags.ghost_intro_shown = true;
           const questionsLeft = getGlobalMaxQuestions() - getGlobalQuestionCount();
           return `${newLoc.name}\n${newDesc}\n\nFour rooms. Four customers. ${questionsLeft} question${questionsLeft !== 1 ? 's' : ''} remaining.\n\nChoose a direction to enter a room.`;
@@ -213,10 +218,6 @@ export function createCommandExecutor(
 
         if (ghostTriggers.isGhostObject(obj.id) && getGlobalQuestionCount() >= getGlobalMaxQuestions()) {
           return "Your questions are spent. The figure fades. Time moves on.";
-        }
-
-        if (ghostTriggers.isGhostObject(obj.id) && localStorage.getItem('ghost_played')) {
-          return obj.descriptions.played || "You've already had your turn. The figure is gone. Ask Justin for a replay code.";
         }
 
         // Data-driven personalization

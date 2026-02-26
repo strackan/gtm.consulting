@@ -84,7 +84,7 @@ export function createCommandParser(getEnteredFrom) {
       }
     }
 
-    if (['look', 'l', 'examine', 'x', 'inspect', 'read'].includes(verb)) {
+    if (['look', 'l', 'examine', 'x', 'inspect', 'read', 'play'].includes(verb)) {
       let target = rest;
       if (target.startsWith('at ')) target = target.slice(3);
       if (target.startsWith('in ') || target.startsWith('inside ')) {

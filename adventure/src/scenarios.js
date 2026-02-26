@@ -27,6 +27,23 @@ export const scoringPrompts = Object.fromEntries(
 // Result labels from shared data
 export const resultLabels = shared.resultLabels;
 
+// Computed max possible score per scenario and total across all scenarios
+// Per scenario: discovery(40) + action(40) + efficiency(20) + sentiment(15) + easter_eggs(3/badge) + achievements(10)
+export const MAX_PER_SCENARIO = Object.fromEntries(
+  Object.entries(scenarios).map(([id, s]) => {
+    const discoveryMax = 40;
+    const actionMax = 40;
+    const efficiencyMax = 20;
+    const sentimentMax = 15;
+    const easterEggCount = s.facts.filter(f => f.tier === 4 && f.badge).length;
+    const easterEggMax = easterEggCount * 3;
+    const achievementMax = 10; // the_silence(5) + first_instinct(5)
+    return [id, discoveryMax + actionMax + efficiencyMax + sentimentMax + easterEggMax + achievementMax];
+  })
+);
+
+export const MAX_POSSIBLE_SCORE = Object.values(MAX_PER_SCENARIO).reduce((sum, v) => sum + v, 0);
+
 export function getResultLabel(score) {
   for (const tier of resultLabels) {
     if (score >= tier.min && score <= tier.max) return tier.label;

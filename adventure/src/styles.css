@@ -893,6 +893,308 @@ body {
 }
 
 /* ====================================================================
+   TALE OF THE TAPE — CHARACTER CARD
+   ==================================================================== */
+
+.tape-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: pointer;
+}
+
+.tape-card {
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid #333;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.tape-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: #E8A838;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+
+.tape-divider {
+  border-bottom: 1px solid #333;
+  margin-bottom: 24px;
+}
+
+.tape-avatar-wrapper {
+  margin-bottom: 20px;
+}
+
+.tape-avatar {
+  width: 128px;
+  height: 128px;
+  image-rendering: pixelated;
+  border: 2px solid #333;
+  background-color: #1A1A1A;
+}
+
+.tape-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  color: #D4D4D4;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.tape-role {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.tape-company {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+.tape-stats-divider {
+  border-bottom: 1px solid #222;
+  margin-bottom: 16px;
+}
+
+.tape-stats {
+  text-align: left;
+  margin-bottom: 24px;
+}
+
+.tape-stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.tape-stat-label {
+  color: #666;
+}
+
+.tape-stat-value {
+  color: #D4D4D4;
+  text-align: right;
+}
+
+.tape-difficulty {
+  color: #E8A838;
+  letter-spacing: -1px;
+}
+
+.tape-prompt {
+  color: #4A9D4A;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-top: 8px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ====================================================================
+   SCORING LOADER
+   ==================================================================== */
+
+.scoring-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.scoring-loader-inner {
+  text-align: center;
+  max-width: 400px;
+}
+
+.scoring-loader-character {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+.scoring-loader-text {
+  color: #D4D4D4;
+  font-size: 16px;
+  margin-bottom: 24px;
+  min-height: 1.5em;
+}
+
+.scoring-loader-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.scoring-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #4A9D4A;
+  animation: scoringPulse 1.4s ease-in-out infinite;
+}
+
+.scoring-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.scoring-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes scoringPulse {
+  0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+/* ====================================================================
+   LEADERBOARD
+   ==================================================================== */
+
+.leaderboard {
+  padding-bottom: 0;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #1A1A1A;
+  border-bottom: 1px solid #333;
+}
+
+.leaderboard-title {
+  color: #D4D4D4;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 2px;
+}
+
+.leaderboard-max {
+  color: #666;
+  font-size: 12px;
+}
+
+.leaderboard-output {
+  padding: 24px 16px;
+}
+
+.leaderboard-loading {
+  color: #666;
+  font-style: italic;
+}
+
+.leaderboard-empty {
+  color: #666;
+  font-style: italic;
+}
+
+.leaderboard-table {
+  width: 100%;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #1A1A1A;
+  font-size: 13px;
+}
+
+.leaderboard-row-header {
+  color: #666;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+
+.leaderboard-top3 {
+  color: #E8A838;
+}
+
+.leaderboard-top3:first-of-type {
+  color: #4A9D4A;
+}
+
+.leaderboard-col-rank {
+  width: 40px;
+  color: #555;
+  font-variant-numeric: tabular-nums;
+}
+
+.leaderboard-top3 .leaderboard-col-rank {
+  color: inherit;
+}
+
+.leaderboard-col-name {
+  flex: 1;
+  color: #D4D4D4;
+}
+
+.leaderboard-top3 .leaderboard-col-name {
+  color: inherit;
+}
+
+.leaderboard-company {
+  color: #666;
+  font-size: 12px;
+}
+
+.leaderboard-col-scenarios {
+  width: 60px;
+  text-align: center;
+  color: #888;
+}
+
+.leaderboard-col-score {
+  width: 60px;
+  text-align: right;
+  color: #D4D4D4;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.leaderboard-top3 .leaderboard-col-score {
+  color: inherit;
+}
+
+.leaderboard-nav {
+  padding: 16px;
+  border-top: 1px solid #222;
+}
+
+/* ====================================================================
+   SCORE CARD — Multi-button nav
+   ==================================================================== */
+
+.score-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+}
+
+.score-button-primary {
+  border-color: #4A9D4A;
+  color: #4A9D4A;
+}
+
+.score-button-primary:hover {
+  background-color: #1A2A1A;
+  border-color: #4A9D4A;
+  color: #4A9D4A;
+}
+
+/* ====================================================================
    MOBILE ADJUSTMENTS
    ==================================================================== */
 
@@ -939,5 +1241,23 @@ body {
 
   .score-bar {
     font-size: 10px;
+  }
+
+  .tape-title {
+    font-size: 11px;
+  }
+
+  .tape-name {
+    font-size: 10px;
+  }
+
+  .leaderboard-header {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+
+  .score-nav {
+    flex-direction: column;
   }
 }

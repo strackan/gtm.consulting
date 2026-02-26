@@ -31,9 +31,6 @@ export function createGhostTriggers(locations, objects, getCurrentLocation, getC
     const isGameRoom = getCurrentLocationId() === 'game_room';
     if (!isGhostRoom && !isGameRoom) return false;
 
-    const hasPlayed = typeof localStorage !== 'undefined' && localStorage.getItem('ghost_played');
-    if (hasPlayed) return false;
-
     if (getGlobalQuestionCount() >= getGlobalMaxQuestions()) return false;
 
     const scenarioPlayed = typeof localStorage !== 'undefined' && localStorage.getItem(`ghost_played_${objId}`);
@@ -45,9 +42,6 @@ export function createGhostTriggers(locations, objects, getCurrentLocation, getC
   function checkRoomGhostTrigger(roomId) {
     const scenarioId = roomMap[roomId];
     if (!scenarioId) return null;
-
-    const hasPlayed = typeof localStorage !== 'undefined' && localStorage.getItem('ghost_played');
-    if (hasPlayed) return null;
 
     if (getGlobalQuestionCount() >= getGlobalMaxQuestions()) return null;
 

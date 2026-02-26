@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getResultLabel } from './scenarios';
 
-export function ScoreCard({ scenario, sessionData, onComplete }) {
+export function ScoreCard({ scenario, sessionData, onComplete, hasMoreRooms }) {
   const [revealed, setRevealed] = useState(0); // 0=nothing, 1=verdict, 2=scores, 3=delta+badges, 4=missed, 5=cta
   const [animatedScores, setAnimatedScores] = useState({ discovery: 0, action: 0, efficiency: 0, total: 0 });
   const outputRef = useRef(null);
@@ -205,8 +205,16 @@ export function ScoreCard({ scenario, sessionData, onComplete }) {
             </div>
 
             <div className="score-nav">
-              <button className="score-button" onClick={onComplete}>
-                Return to the cottage
+              {hasMoreRooms && (
+                <button className="score-button score-button-primary" onClick={() => onComplete('continue')}>
+                  Talk to Another Customer
+                </button>
+              )}
+              <button className="score-button" onClick={() => onComplete('restart')}>
+                Start Over
+              </button>
+              <button className="score-button" onClick={() => onComplete('leaderboard')}>
+                View Leaderboard
               </button>
             </div>
           </div>

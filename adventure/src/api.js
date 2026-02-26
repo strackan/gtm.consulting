@@ -115,6 +115,24 @@ export async function saveSession(visitorId, scenarioId, data) {
 }
 
 /**
+ * Fetch the leaderboard — top 25 players by aggregate score.
+ * Returns [{ name, company, total_score, scenarios_played, last_played }]
+ */
+export async function fetchLeaderboard() {
+  if (!SUPABASE_URL) return [];
+  try {
+    const res = await fetch(fnUrl('adventure-leaderboard'), {
+      method: 'GET',
+      headers: headers(),
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Extract metadata from a ghost response.
  * Looks for <!-- METADATA: {...} --> and returns the parsed JSON + clean text.
  */

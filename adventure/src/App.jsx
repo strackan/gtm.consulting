@@ -4,11 +4,15 @@ import { GhostChat } from './GhostChat';
 import { ActionPhase } from './ActionPhase';
 import { ScoreCard } from './ScoreCard';
 import { PasskeyGate } from './PasskeyGate';
+import { TaleOfTheTape } from './TaleOfTheTape';
+import { ScoringLoader } from './ScoringLoader';
+import { Leaderboard } from './Leaderboard';
 import { createGameEngine } from './GameEngine';
 import { scenarios, scoringPrompts, getScenarioOutcome, getVerdict } from './scenarios';
 import { lookupVisitor, scoreSession } from './api';
 
-const GLOBAL_MAX_QUESTIONS = 10;
+const GLOBAL_MAX_QUESTIONS = 20;
+const PER_SESSION_MAX_QUESTIONS = 5;
 const SAVE_KEY = 'adventure_app_state';
 
 function saveAppState(data) {
@@ -23,7 +27,7 @@ function loadAppState() {
 }
 
 function App() {
-  const [mode, setMode] = useState('loading'); // loading | gate | explore | ghost | action | score | debrief
+  const [mode, setMode] = useState('loading'); // loading | gate | explore | tape | ghost | action | scoring | score | leaderboard
   const [visitorProfile, setVisitorProfile] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
   const [currentScenarioId, setCurrentScenarioId] = useState(null);
@@ -115,6 +119,10 @@ function App() {
   const handleGhostTrigger = useCallback((scenarioId) => {
     setCurrentScenarioId(scenarioId);
     setSessionData(null);
+    setMode('tape');
+  }, []);
+
+  const handleTapeReady = useCallback(() => {
     setMode('ghost');
   }, []);
 
@@ -137,6 +145,7 @@ function App() {
 
   const handleActionComplete = useCallback(async (actionChosen) => {
     setSessionData(prev => ({ ...prev, actionChosen }));
+    setMode('scoring'); // Show loading screen while scoring
 
     // Score the session — guests use client-side scoring only (no API credits)
     let finalScores;
@@ -221,25 +230,48 @@ function App() {
 
     setMode('score');
 
-    // Mark as played in localStorage
-    localStorage.setItem('ghost_played', 'true');
+    // Mark this scenario as played in localStorage
     localStorage.setItem(`ghost_played_${currentScenarioId}`, 'true');
   }, [currentScenarioId, sessionData, isGuest]);
 
-  const handleScoreComplete = useCallback(() => {
-    // Check if all questions are used up
-    if (globalQuestionCount >= GLOBAL_MAX_QUESTIONS) {
-      // Could show combined debrief here in the future
-      setMode('explore');
-    } else {
-      setMode('explore');
+  const handleScoreComplete = useCallback((action) => {
+    if (action === 'leaderboard') {
+      setMode('leaderboard');
+      return;
     }
+
+    if (action === 'restart') {
+      // Clear all state and reload
+      localStorage.removeItem(SAVE_KEY);
+      localStorage.removeItem('adventure_save');
+      // Clear per-scenario played flags
+      Object.keys(scenarios).forEach(id => {
+        localStorage.removeItem(`ghost_played_${id}`);
+      });
+      window.location.reload();
+      return;
+    }
+
+    // 'continue' or fallback — return to game room
+    setMode('explore');
     setCurrentScenarioId(null);
     setSessionData(null);
-  }, [globalQuestionCount]);
+  }, []);
+
+  const handleLeaderboardBack = useCallback(() => {
+    setMode('explore');
+    setCurrentScenarioId(null);
+    setSessionData(null);
+  }, []);
 
   const currentScenario = currentScenarioId ? scenarios[currentScenarioId] : null;
   const remainingQuestions = GLOBAL_MAX_QUESTIONS - globalQuestionCount;
+
+  // Check if there are unvisited rooms with questions remaining
+  const allScenarioIds = Object.keys(scenarios);
+  const completedIds = Object.keys(completedScenarios);
+  const unvisitedRooms = allScenarioIds.filter(id => !completedIds.includes(id));
+  const hasMoreRooms = unvisitedRooms.length > 0 && remainingQuestions > 0;
 
   switch (mode) {
     case 'loading':
@@ -259,13 +291,20 @@ function App() {
           maxQuestions={GLOBAL_MAX_QUESTIONS}
         />
       );
+    case 'tape':
+      return (
+        <TaleOfTheTape
+          scenario={currentScenario}
+          onReady={handleTapeReady}
+        />
+      );
     case 'ghost':
       return (
         <GhostChat
           scenario={currentScenario}
           visitorProfile={visitorProfile}
           onComplete={handleGhostComplete}
-          remainingQuestions={remainingQuestions}
+          maxQuestionsPerSession={PER_SESSION_MAX_QUESTIONS}
         />
       );
     case 'action':
@@ -276,13 +315,22 @@ function App() {
           onComplete={handleActionComplete}
         />
       );
+    case 'scoring':
+      return (
+        <ScoringLoader scenario={currentScenario} />
+      );
     case 'score':
       return (
         <ScoreCard
           scenario={currentScenario}
           sessionData={sessionData}
           onComplete={handleScoreComplete}
+          hasMoreRooms={hasMoreRooms}
         />
+      );
+    case 'leaderboard':
+      return (
+        <Leaderboard onBack={handleLeaderboardBack} />
       );
     default:
       return (
