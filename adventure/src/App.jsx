@@ -9,7 +9,7 @@ import { ScoringLoader } from './ScoringLoader';
 import { Leaderboard } from './Leaderboard';
 import { createGameEngine } from './GameEngine';
 import { scenarios, scoringPrompts, getScenarioOutcome, getVerdict } from './scenarios';
-import { lookupVisitor, scoreSession } from './api';
+import { lookupVisitor, scoreSession, saveSession } from './api';
 
 const GLOBAL_MAX_QUESTIONS = 20;
 const PER_SESSION_MAX_QUESTIONS = 5;
@@ -232,7 +232,21 @@ function App() {
 
     // Mark this scenario as played in localStorage
     localStorage.setItem(`ghost_played_${currentScenarioId}`, 'true');
-  }, [currentScenarioId, sessionData, isGuest]);
+
+    // Persist session to database (fire-and-forget)
+    saveSession(visitorProfile?.id || null, currentScenarioId, {
+      transcript: sessionData.transcript,
+      facts_discovered: sessionData.factsDiscovered,
+      action_chosen: actionChosen,
+      score_discovery: finalScores.score_discovery,
+      score_action: finalScores.score_action,
+      score_efficiency: finalScores.score_efficiency,
+      score_total: finalScores.score_total + bonuses.totalBonus,
+      verdict: verdict,
+      outcome_delta: outcome?.delta || null,
+      bonuses,
+    });
+  }, [currentScenarioId, sessionData, isGuest, visitorProfile]);
 
   const handleScoreComplete = useCallback((action) => {
     if (action === 'leaderboard') {
