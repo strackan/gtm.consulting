@@ -131,6 +131,19 @@ export function createGameEngine() {
     globalMaxQuestions = max;
   }
 
+  function resetState() {
+    state.location = 'west_of_house';
+    state.inventory = [];
+    state.flags = {};
+    state.score = 0;
+    state.moves = 0;
+    state.visited = new Set(['west_of_house']);
+    state.unknownStreak = 0;
+    state.enteredFrom = 'west';
+    globalQuestionCount = 0;
+    persistence.clearSave();
+  }
+
   return {
     execute,
     getIntro,
@@ -140,6 +153,7 @@ export function createGameEngine() {
     onGhostTrigger,
     setGlobalQuestionCount,
     setFlag,
+    resetState,
     saveState: persistence.saveState,
     loadState: persistence.loadState,
     clearSave: persistence.clearSave,

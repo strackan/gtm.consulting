@@ -52,6 +52,15 @@ function App() {
     });
   }, [globalQuestionCount, completedScenarios, isGuest, visitorProfile, mode]);
 
+  // Clear all adventure state from localStorage (used when switching visitors)
+  function clearAllAdventureState() {
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem('adventure_save');
+    Object.keys(scenarios).forEach(id => {
+      localStorage.removeItem(`ghost_played_${id}`);
+    });
+  }
+
   // Parse slug from URL path or restore saved session
   useEffect(() => {
     const path = window.location.pathname;
@@ -67,31 +76,39 @@ function App() {
             setVisitorProfile(profile);
             gameEngine.setVisitorProfile(profile);
           }
-          // Restore app state if it matches this slug
+          // Restore app state only if it matches this exact slug
           if (saved && saved.visitorSlug === slug) {
             setGlobalQuestionCount(saved.globalQuestionCount || 0);
             setCompletedScenarios(saved.completedScenarios || {});
+          } else {
+            // Different visitor (or guest→visitor switch) — clear stale state
+            clearAllAdventureState();
+            gameEngine.resetState();
           }
           setMode('explore');
         });
       } else {
         // No slug in URL — check for saved session
         if (saved && localStorage.getItem('adventure_save')) {
-          // Restore previous session
-          setGlobalQuestionCount(saved.globalQuestionCount || 0);
-          setCompletedScenarios(saved.completedScenarios || {});
-          setIsGuest(saved.isGuest || false);
-          if (saved.visitorSlug) {
+          // Only restore if it was a guest session (no slug) or matching slug
+          if (!saved.visitorSlug || saved.isGuest) {
+            setGlobalQuestionCount(saved.globalQuestionCount || 0);
+            setCompletedScenarios(saved.completedScenarios || {});
+            setIsGuest(saved.isGuest || false);
+            setMode('explore');
+          } else if (saved.visitorSlug) {
             lookupVisitor(saved.visitorSlug).then(profile => {
               if (profile) {
                 profile.slug = saved.visitorSlug;
                 setVisitorProfile(profile);
                 gameEngine.setVisitorProfile(profile);
+                setGlobalQuestionCount(saved.globalQuestionCount || 0);
+                setCompletedScenarios(saved.completedScenarios || {});
               }
               setMode('explore');
             });
           } else {
-            setMode('explore');
+            setMode('gate');
           }
         } else {
           setMode('gate');
